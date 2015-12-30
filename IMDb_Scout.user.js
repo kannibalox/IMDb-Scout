@@ -7,7 +7,7 @@
 // @require     https://greasyfork.org/libraries/GM_config/20131122/GM_config.js
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js
 //
-// @version        3.1.1
+// @version        3.1.2
 // @include        http://*.imdb.com/title/tt*
 // @include        http://*.imdb.de/title/tt*
 // @include        http://*.imdb.es/title/tt*
@@ -207,6 +207,9 @@
 
 3.1.1   -    Fix KASS
 
+3.1.2   -    Fix TPB, TE, HDT
+        -    Add MTV, DVDSeed
+
 --------------------------------------------------------*/
 
 
@@ -308,6 +311,9 @@ var sites = [
     'searchUrl': 'http://www.demonoid.pw/files/?query=%tt%',
     'matchRegex': /<b>No torrents found<\/b>|We are currently performing the daily site maintenance.<br>/,
     'both': true},
+{   'name': 'DVDSeed',
+    'searchUrl': 'http://www.dvdseed.eu/browse2.php?search=%tt%&wheresearch=2&incldead=1&polish=0&nuke=0&rodzaj=0',
+    'matchRegex': /Nic tutaj nie ma!<\/h2>/},
 {   'name': 'DHive',
     'searchUrl': 'https://gks.gs/sphinx/?category=0&prez=&sort=normal&order=desc&q=%tt%',
     'matchRegex': /Votre Recherche aucun|<h1>Mot de passe<\/h1>/},
@@ -358,7 +364,8 @@ var sites = [
     'TV': true},
 {   'name': 'HDT',
     'searchUrl': 'http://hd-torrents.org/torrents.php?active=0&options=2&search=%tt%',
-    'matchRegex': /No torrents here.../},
+    'matchRegex': /No torrents here.../,
+    'both': true},
 {   'name': 'HDVN',
     'searchUrl': 'http://torviet.com/torrents.php?search=%tt%&search_area=4&search_mode=0',
     'matchRegex': /Nothing found! Try again with a refined search string|You need cookies enabled to log in or switch language/,
@@ -387,6 +394,13 @@ var sites = [
     'searchUrl': 'http://www.myspleen.org/browse.php?search=%search_string%&title=1&cat=0',
     'matchRegex': /<p>Try again with a refined search string.<\/p>|<title>MySpleen :: Login<\/title>/,
     'both': true},
+{   'name': 'MTV',
+    'searchUrl': 'https://www.morethan.tv/torrents.php?searchstr=%search_string%&filter_cat%5B2%5D=1',
+    'matchRegex': /<h2>Your search did not match anything.<\/h2>/,
+    'TV': true},
+{   'name': 'MTV',
+    'searchUrl': 'https://www.morethan.tv/torrents.php?searchstr=%search_string%&filter_cat%5B1%5D=1',
+    'matchRegex': /<h2>Your search did not match anything.<\/h2>/},
 {   'name': 'PTP',
     'searchUrl': 'https://tls.passthepopcorn.me/torrents.php?imdb=%tt%',
     'matchRegex': /<h2>Your search did not match anything.<\/h2>/},
@@ -450,7 +464,7 @@ var sites = [
     'searchUrl': 'http://www.surrealmoviez.info/advanced_search.php?simdb=%tt%',
     'matchRegex': /0 Movies found matching search criteria|You need to be logged in to view this page/},
 {   'name': 'TE',
-    'searchUrl': 'https://theempire.bz/browse.php?incldead=0&country=&nonboolean=1&search=%tt%',
+    'searchUrl': 'http://theempire.bz/browse.php?incldead=0&country=&nonboolean=1&search=%tt%',
     'matchRegex': /Try again with a refined search string|<h1>You need cookies enabled to log in.<\/h1>/,
     'both': true},
 {   'name': 'TehC',
@@ -474,7 +488,7 @@ var sites = [
     'searchUrl': 'http://www.torrentleech.org/torrents/browse/index/query/%search_string%+%year%/categories/1,8,9,10,11,12,13,14,15,29',
     'matchRegex': /Signup With Invite|Please refine your search./},
 {   'name': 'TPB',
-    'searchUrl': 'https://thepiratebay.gd/search/%tt%',
+    'searchUrl': 'https://thepiratebay.se/search/%tt%',
     'matchRegex': /No hits. Try adding an asterisk in you search phrase.<\/h2>/,
     'both': true},
 {   'name': 'TSH',
