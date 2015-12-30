@@ -1,5 +1,5 @@
 # IMDb-Scout
-Add links from IMDb pages to torrent sites -- easy downloading from IMDb
+Add links in IMDb pages to torrent sites -- easy downloading from IMDb
 
 ## Adding new sites
 
@@ -19,3 +19,9 @@ To create a search URL, there are four parameters you can use inside the URL:
   - %year%: The movie year (e.g. 1961)
   
 See the script for examples.
+
+## Versioning
+Follows a bastardization of the [semver](http://semver.org/) standard:
+* Patch versions will not change behavior, only the URL/settings for trackers.
+* Minor versions will definitely change code, although behavior may in fact remain the same.
+* Major versions will definitely change behavior, although it will only be increased at the discretion of the current maintainer. 
