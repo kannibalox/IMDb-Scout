@@ -7,7 +7,7 @@
 // @require     https://greasyfork.org/libraries/GM_config/20131122/GM_config.js
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js
 //
-// @version        3.1.2
+// @version        3.1.3
 // @include        http://*.imdb.com/title/tt*
 // @include        http://*.imdb.de/title/tt*
 // @include        http://*.imdb.es/title/tt*
@@ -210,6 +210,9 @@
 3.1.2   -    Fix TPB, TE, HDT
         -    Add MTV, DVDSeed
 
+3.1.3   -    Add M-T, UHDB, HDC, Blu-ray.com
+        -    Fix scenehd, RT
+
 --------------------------------------------------------*/
 
 
@@ -348,6 +351,9 @@ var sites = [
     'searchUrl': 'https://hdbits.org/browse.php?c3=1&c1=1&c4=1&c2=1&imdb=%tt%',
     'matchRegex': /Nothing here!|You need cookies enabled to log in/,
     'both': true},
+{   'name': 'HDC',
+    'searchUrl': 'https://hdchina.club/torrents.php?incldead=0&spstate=0&inclbookmarked=0&boardid=0&seeders=&search=%tt%&search_area=4&search_mode=2',
+    'matchRegex': /Nothing found! Try again with a refined search string./},
 {   'name': 'HDME',
     'searchUrl': 'https://hdme.eu/browse.php?search=%search_string%&blah=0&cat=0&incldead=1',
     'matchRegex': /Try again with a refined search string.|<h1>You need cookies enabled to log in.<\/h1>/,
@@ -401,6 +407,9 @@ var sites = [
 {   'name': 'MTV',
     'searchUrl': 'https://www.morethan.tv/torrents.php?searchstr=%search_string%&filter_cat%5B1%5D=1',
     'matchRegex': /<h2>Your search did not match anything.<\/h2>/},
+{   'name': 'M-T',
+    'searchUrl': 'https://tp.m-team.cc/torrents.php?incldead=0&spstate=0&inclbookmarked=0&search=%tt%&search_area=4&search_mode=2',
+    'matchRegex': /Nothing here!|Try again with a refined search string./},
 {   'name': 'PTP',
     'searchUrl': 'https://tls.passthepopcorn.me/torrents.php?imdb=%tt%',
     'matchRegex': /<h2>Your search did not match anything.<\/h2>/},
@@ -458,7 +467,7 @@ var sites = [
     'searchUrl': 'http://sdbits.org/browse.php?c6=1&c3=1&c1=1&c4=1&c5=1&c2=1&m1=1&incldead=0&from=&to=&imdbgt=0&imdblt=10&uppedby=&imdb=&search=%tt%',
     'matchRegex': /Nothing found!|<h1>You need cookies enabled to log in.<\/h1>/},
 {   'name': 'sHD',
-    'searchUrl': 'https://scenehd.org/browse.php?options&unpack&incldead&search=%search_string%',
+    'searchUrl': 'https://scenehd.org/browse.php?search=%tt%',
     'matchRegex': /<h2>No torrents found!<\/h2>/},
 {   'name': 'SM',
     'searchUrl': 'http://www.surrealmoviez.info/advanced_search.php?simdb=%tt%',
@@ -498,6 +507,9 @@ var sites = [
     'searchUrl': 'http://tv-vault.me/torrents.php?searchstr=%search_string%',
     'matchRegex': /Nothing found<\/h2>/,
     'TV': true},
+{   'name': 'UHDB',
+    'searchUrl': 'https://uhdbits.org/torrents.php?action=advanced&groupname=%tt%',
+    'matchRegex': /Your search did not match anything./},
 {   'name': 'x264',
     'searchUrl': 'http://x264.me/browse.php?incldead=0&xtype=0&stype=3&search=%tt%',
     'matchRegex': /Try again with a refined search string.|<h1>Forgot your password?<\/h1>/}
@@ -512,7 +524,7 @@ icon_sites = [
     'searchUrl': 'https://www.youtube.com/results?search_query="%search_string%"'},
 {   'name': 'Rotten Tomatoes',
     'icon': 'https://www.rottentomatoes.com/favicon.ico',
-    'searchUrl': 'https://www.rottentomatoes.com/alias?type=imdbid&s=%nott%'},
+    'searchUrl': 'https://www.rottentomatoes.com/search/?search=%search_string%'},
 {   'name': 'Criticker',
     'icon': 'http://www.criticker.com/favicon.ico',
     'searchUrl': 'http://www.criticker.com/?st=movies&h=%search_string%&g=Go'},
@@ -558,7 +570,10 @@ icon_sites = [
 {   'name': 'Amazon',
     'icon': 'http://www.amazon.com/favicon.ico',
     'searchUrl': 'http://www.amazon.com/s/ref=nb_sb_noss?url=search-alias%3Dmovies-tv&field-keywords=%search_string%',
-    'showByDefault': false}
+    'showByDefault': false},
+{   'name': 'Blu-ray.com',
+    'icon': 'http://www.blu-ray.com/favicon.ico',
+    'searchUrl': 'http://www.blu-ray.com/search/?quicksearch=1&quicksearch_country=all&quicksearch_keyword=%search_string%+&section=bluraymovies'}
 ];
 
 function replaceSearchUrlParams(search_url, movie_id, movie_title) {
