@@ -7,7 +7,7 @@
 // @require     https://greasyfork.org/libraries/GM_config/20131122/GM_config.js
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js
 //
-// @version        3.1.4
+// @version        3.2
 // @include        http://*.imdb.com/title/tt*
 // @include        http://*.imdb.de/title/tt*
 // @include        http://*.imdb.es/title/tt*
@@ -214,6 +214,8 @@
         -    Fix scenehd, RT
 
 3.1.4   -    Add HDClub
+
+3.2     -    Fix the button on new-style pages
 
 --------------------------------------------------------*/
 
@@ -709,8 +711,10 @@ function displayButton() {
     }));
     if (onSearchPage) {
         $('#sidebar').append(p);
-    } else {
+    } else if ($('h1.header:first').length) {
         $('h1.header:first').parent().append(p);
+    } else {
+        $('#title-overview-widget').parent().append(p);
     }
 }
 
