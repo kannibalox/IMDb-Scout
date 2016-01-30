@@ -7,7 +7,7 @@
 // @require     https://greasyfork.org/libraries/GM_config/20131122/GM_config.js
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js
 //
-// @version        3.1.3
+// @version        3.1.4
 // @include        http://*.imdb.com/title/tt*
 // @include        http://*.imdb.de/title/tt*
 // @include        http://*.imdb.es/title/tt*
@@ -213,6 +213,8 @@
 3.1.3   -    Add M-T, UHDB, HDC, Blu-ray.com
         -    Fix scenehd, RT
 
+3.1.4   -    Add HDClub
+
 --------------------------------------------------------*/
 
 
@@ -354,6 +356,9 @@ var sites = [
 {   'name': 'HDC',
     'searchUrl': 'https://hdchina.club/torrents.php?incldead=0&spstate=0&inclbookmarked=0&boardid=0&seeders=&search=%tt%&search_area=4&search_mode=2',
     'matchRegex': /Nothing found! Try again with a refined search string./},
+{   'name': 'HDClub',
+    'searchUrl': 'http://hdclub.org/browse.php?webdl=0&3d=0&search=&incldead=0&dsearch=%tt%',
+    'matchRegex': /Nothing was found/},
 {   'name': 'HDME',
     'searchUrl': 'https://hdme.eu/browse.php?search=%search_string%&blah=0&cat=0&incldead=1',
     'matchRegex': /Try again with a refined search string.|<h1>You need cookies enabled to log in.<\/h1>/,
