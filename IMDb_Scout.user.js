@@ -661,14 +661,14 @@ function maybeAddLink(elem, link_text, search_url, search_fail_match, success_ma
                 addLink(elem, search_url, link_text, false);
             }
         },
-		onerror: function(response) {
-			alert('Call to ' + search_url + ' for ' + link_text + ' failed with status ' + response.statusText + '.\n' +
-			'Please go to the URL in your browser and make sure it is valid.');
-		},
-		onabort: function(response) {
-			alert('Call to ' + search_url + ' for ' + link_text + 'aborted with status ' + response.statusText + '.\n' +
-			'Please go to the URL in your browser and make sure it is valid.');
-		}
+	onerror: function(response) {
+	    alert('Call to ' + search_url + ' for ' + link_text + ' failed with status ' + response.statusText + '.\n' +
+		  'Please go to the URL in your browser and make sure it is valid.');
+	},
+	onabort: function(response) {
+	    alert('Call to ' + search_url + ' for ' + link_text + 'aborted with status ' + response.statusText + '.\n' +
+		  'Please go to the URL in your browser and make sure it is valid.');
+	}
     });
 }
 
