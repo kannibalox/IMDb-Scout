@@ -7,7 +7,7 @@
 // @require     https://greasyfork.org/libraries/GM_config/20131122/GM_config.js
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js
 //
-// @version        3.2.1
+// @version        3.3
 // @include        http://*.imdb.com/title/tt*
 // @include        http://*.imdb.de/title/tt*
 // @include        http://*.imdb.es/title/tt*
@@ -218,6 +218,8 @@
 3.2     -    Fix the button on new-style pages
 
 3.2.1   -    Fix AHD
+
+3.3     -    Be less obnoxious about failed calls
 
 --------------------------------------------------------*/
 
@@ -603,13 +605,16 @@ function replaceSearchUrlParams(search_url, movie_id, movie_title) {
 }
 
 // Adds search links to an element
-function addLink(elem, search_url, link_text, strikeout) {
+function addLink(elem, search_url, link_text, strikeout, error = false) {
     var a = $('<a />').attr('href', search_url).attr('target', '_blank');
 
     if (strikeout) {
         a.append($('<s />').append(link_text));
     } else {
         a.append(link_text);
+    }
+    if (error) {
+        a.css('color', 'red');
     }
 
     if (!onSearchPage) {
@@ -662,12 +667,10 @@ function maybeAddLink(elem, link_text, search_url, search_fail_match, success_ma
             }
         },
 	onerror: function(response) {
-	    alert('Call to ' + search_url + ' for ' + link_text + ' failed with status ' + response.statusText + '.\n' +
-		  'Please go to the URL in your browser and make sure it is valid.');
+            addLink(elem, search_url, link_text, true, true);
 	},
 	onabort: function(response) {
-	    alert('Call to ' + search_url + ' for ' + link_text + 'aborted with status ' + response.statusText + '.\n' +
-		  'Please go to the URL in your browser and make sure it is valid.');
+            addLink(elem, search_url, link_text, true, true);
 	}
     });
 }
