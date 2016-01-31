@@ -7,7 +7,7 @@
 // @require     https://greasyfork.org/libraries/GM_config/20131122/GM_config.js
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js
 //
-// @version        3.2
+// @version        3.2.1
 // @include        http://*.imdb.com/title/tt*
 // @include        http://*.imdb.de/title/tt*
 // @include        http://*.imdb.es/title/tt*
@@ -217,6 +217,8 @@
 
 3.2     -    Fix the button on new-style pages
 
+3.2.1   -    Fix AHD
+
 --------------------------------------------------------*/
 
 
@@ -256,11 +258,11 @@ var sites = [
     'matchRegex': /Your search returned zero results|<h1>You need cookies enabled to log in.<\/h1>/,
     'both': true},
 {   'name': 'AHD',
-    'searchUrl': 'https://awesome-hd.net/torrents.php?searchstr=%search_string%',
+    'searchUrl': 'https://awesome-hd.me/torrents.php?searchstr=%search_string%',
     'matchRegex': /<h2>Error 404<\/h2>/,
     'TV': true},
 {   'name': 'AHD',
-    'searchUrl': 'https://awesome-hd.net/torrents.php?id=%tt%',
+    'searchUrl': 'https://awesome-hd.me/torrents.php?id=%tt%',
     'matchRegex': /<h2>Error 404<\/h2>/},
 {   'name': 'AT',
     'searchUrl': 'https://avistaz.to/torrents?in=0&search=%tt%',
