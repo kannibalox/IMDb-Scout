@@ -7,7 +7,7 @@
 // @require     https://greasyfork.org/libraries/GM_config/20131122/GM_config.js
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js
 //
-// @version        3.3
+// @version        3.4
 // @include        http://*.imdb.com/title/tt*
 // @include        http://*.imdb.de/title/tt*
 // @include        http://*.imdb.es/title/tt*
@@ -220,6 +220,9 @@
 3.2.1   -    Fix AHD
 
 3.3     -    Be less obnoxious about failed calls
+
+3.4     -    Add Netflix icon
+        -    Remove a default parameter to satisfy Chrome
 
 --------------------------------------------------------*/
 
@@ -582,6 +585,10 @@ icon_sites = [
     'icon': 'http://www.amazon.com/favicon.ico',
     'searchUrl': 'http://www.amazon.com/s/ref=nb_sb_noss?url=search-alias%3Dmovies-tv&field-keywords=%search_string%',
     'showByDefault': false},
+{   'name': 'Netflix',
+    'icon': 'https://whatimg.com/i/jOa2ac.png',
+    'searchUrl': 'http://www.netflix.com/search/%search_string%',
+    'showByDefault': false},
 {   'name': 'Blu-ray.com',
     'icon': 'http://www.blu-ray.com/favicon.ico',
     'searchUrl': 'http://www.blu-ray.com/search/?quicksearch=1&quicksearch_country=all&quicksearch_keyword=%search_string%+&section=bluraymovies'}
@@ -605,7 +612,7 @@ function replaceSearchUrlParams(search_url, movie_id, movie_title) {
 }
 
 // Adds search links to an element
-function addLink(elem, search_url, link_text, strikeout, error = false) {
+function addLink(elem, search_url, link_text, strikeout, error) {
     var a = $('<a />').attr('href', search_url).attr('target', '_blank');
 
     if (strikeout) {
