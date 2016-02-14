@@ -367,7 +367,7 @@ var sites = [
     'matchRegex': /Nothing found! Try again with a refined search string./},
 {   'name': 'HDClub',
     'searchUrl': 'http://hdclub.org/browse.php?webdl=0&3d=0&search=&incldead=0&dsearch=%tt%',
-    'matchRegex': /Nothing was found/},
+    'matchRegex': /Nothing was found|Ничего не найдено|Нічого не знайдено/},
 {   'name': 'HDME',
     'searchUrl': 'https://hdme.eu/browse.php?search=%search_string%&blah=0&cat=0&incldead=1',
     'matchRegex': /Try again with a refined search string.|<h1>You need cookies enabled to log in.<\/h1>/,
