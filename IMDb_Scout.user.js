@@ -445,7 +445,7 @@ var sites = [
 {   'name': 'RevTT',
     'searchUrl': 'https://www.revolutiontt.me/browse.php?search=%tt%',
     'matchRegex': /<h2>Nothing found!<\/h2>/},
-{   'name': 'RUT',
+{   'name': 'RuT',
     'searchUrl': 'http://rutracker.org/forum/tracker.php?nm=%search_string%+%year%',
     'matchRegex': 'Не найдено'},
 {   'name': 'Rutor',
