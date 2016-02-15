@@ -913,11 +913,6 @@ var config_fields = {
     }
 };
 
-// Sort the sites into a consistent pattern
-sites.sort(function(a, b) {
-    return a['name'].toLowerCase() > b['name'].toLowerCase();
-});
-
 // Add each site to a GM_config dictionary schema
 // The GM_config default for checkboxes is false
 $.each(sites, function(index, site) {
