@@ -867,33 +867,33 @@ var config_fields = {
         'default': 'Pirate this film: '
     },
     'call_http_movie': {
-        'label': 'Actually check for torrents on movie page?',
         'type': 'checkbox',
+        'label': 'Actually check for torrents on movie page?',
         'default': true
     },
     'call_http_search': {
-        'label': 'Actually check for torrents on search page?',
         'type': 'checkbox',
+        'label': 'Actually check for torrents on search page?',
         'default': true
     },
     'load_on_start': {
-        'label': 'Load on start on movie page?',
         'type': 'checkbox',
+        'label': 'Load on start on movie page?',
         'default': true
     },
     'load_on_start_search': {
-        'label': 'Load on start on search page?',
         'type': 'checkbox',
+        'label': 'Load on start on search page?',
         'default': true
     },
     'strikeout_links_search': {
-        'label': 'Strike out links on search page?',
         'type': 'checkbox',
+        'label': 'Strike out links on search page?',
         'default': true
     },
     'strikeout_links_movie': {
-        'label': 'Strike out links on movie page?',
         'type': 'checkbox',
+        'label': 'Strike out links on movie page?',
         'default': true
     }
 };
