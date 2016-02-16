@@ -890,33 +890,33 @@ var config_fields = {
         'default': 'Pirate this film: '
     },
     'call_http_movie': {
-        'label': 'Actually check for torrents on movie page?',
         'type': 'checkbox',
+        'label': 'Actually check for torrents on movie page?',
         'default': true
     },
     'call_http_search': {
-        'label': 'Actually check for torrents on search page?',
         'type': 'checkbox',
+        'label': 'Actually check for torrents on search page?',
         'default': true
     },
     'load_on_start': {
-        'label': 'Load on start on movie page?',
         'type': 'checkbox',
+        'label': 'Load on start on movie page?',
         'default': true
     },
     'load_on_start_search': {
-        'label': 'Load on start on search page?',
         'type': 'checkbox',
+        'label': 'Load on start on search page?',
         'default': true
     },
     'strikeout_links_search': {
-        'label': 'Strike out links on search page?',
         'type': 'checkbox',
+        'label': 'Strike out links on search page?',
         'default': true
     },
     'strikeout_links_movie': {
-        'label': 'Strike out links on movie page?',
         'type': 'checkbox',
+        'label': 'Strike out links on movie page?',
         'default': true
     }
 };
@@ -925,8 +925,8 @@ var config_fields = {
 // The GM_config default for checkboxes is false
 $.each(sites, function(index, site) {
     config_fields['show_' + site['name'] + (site['TV'] ? '_TV' : '')] = {
-        'label': 'Show ' + site['name'] + (site['TV'] ? ' (TV)' : '') + '?',
-        'type': 'checkbox'
+        'type': 'checkbox',
+        'label': 'Show ' + site['name'] + (site['TV'] ? ' (TV)' : '') + '?'
     };
 });
 
@@ -934,8 +934,8 @@ $.each(sites, function(index, site) {
 // since they barely use any resources.
 $.each(icon_sites, function(index, icon_site) {
     config_fields['show_icon_' + icon_site['name']] = {
-        'label': 'Show ' + icon_site['name'] + ' icon?',
         'type': 'checkbox',
+        'label': 'Show ' + icon_site['name'] + ' icon?',
         'default': ('showByDefault' in icon_site) ?
             icon_site['showByDefault'] : true
     };
