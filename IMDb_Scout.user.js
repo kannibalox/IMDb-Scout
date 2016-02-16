@@ -946,7 +946,7 @@ $.each(icon_sites, function(index, icon_site) {
 
 // Initialize and register GM_config
 GM_config.init({
-    'id': 'imbd_scout',
+    'id': 'imdb_scout',
     'title': 'IMDb Scout Preferences',
     'fields': config_fields
 });
