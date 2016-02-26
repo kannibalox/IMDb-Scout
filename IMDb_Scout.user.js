@@ -1,4 +1,4 @@
-﻿// ==UserScript==
+// ==UserScript==
 // @name           IMDb Scout
 // @namespace      https://greasyfork.org/users/1057-kannibalox
 // @description    Add links from IMDb pages to torrent sites -- easy downloading from IMDb
@@ -202,7 +202,7 @@
 3.0.3   -    Removed GOEM, FY, PS, MT
         -    Added Metacritic, CanIStream.It?, AllMovie, Facebook, Amazon, Cartoon Chaos, MySpleen, Secret Cinema
         -    Fixed Wikipedia icon
-		
+
 3.1     -    Handle HTTP failures less silently
 
 3.1.1   -    Fix KASS
@@ -516,7 +516,7 @@ var sites = [
 {   'name': 'TD',
     'searchUrl': 'https://www.torrentday.com/browse.php?search=%search_string%&cata=yes&c29=1&c30=1&c25=1&c11=1&c5=1&c3=1&c21=1&c22=1&c13=1&c44=1&c1=1&c24=1&c32=1&c31=1&c33=1&c46=1&c14=1&c26=1&c7=1&c2=1',
     'matchRegex': /Nothing found!/,
-    'both': true},    
+    'both': true},
 {   'name': 'TE',
     'searchUrl': 'http://theempire.bz/browse.php?incldead=0&country=&nonboolean=1&search=%tt%',
     'matchRegex': /Try again with a refined search string|<h1>You need cookies enabled to log in.<\/h1>/,
@@ -562,66 +562,48 @@ var sites = [
 
 icon_sites = [
 {   'name': 'OpenSubtitles',
-    'icon': 'http://www.opensubtitles.org/favicon.ico',
     'searchUrl': 'http://www.opensubtitles.org/en/search/imdbid-%tt%'},
 {   'name': 'YouTube.com',
-    'icon': 'https://www.youtube.com/favicon.ico',
     'searchUrl': 'https://www.youtube.com/results?search_query="%search_string%"'},
 {   'name': 'Rotten Tomatoes',
-    'icon': 'https://www.rottentomatoes.com/favicon.ico',
     'searchUrl': 'https://www.rottentomatoes.com/search/?search=%search_string%'},
 {   'name': 'Criticker',
-    'icon': 'http://www.criticker.com/favicon.ico',
     'searchUrl': 'http://www.criticker.com/?st=movies&h=%search_string%&g=Go'},
 {   'name': 'iCheckMovies',
-    'icon': 'https://www.icheckmovies.com/favicon.ico',
     'searchUrl': 'https://www.icheckmovies.com/search/movies/?query=%tt%'},
 {   'name': 'Letterboxd',
-    'icon': 'http://letterboxd.com/favicon.ico',
     'searchUrl': 'http://letterboxd.com/imdb/%nott%'},
 {   'name': 'Subscene',
-    'icon': 'http://subscene.com/favicon.ico',
     'searchUrl': 'http://subscene.com/subtitles/title?q=%search_string%'},
 {   'name': 'SubtitleSeeker',
-    'icon': 'http://www.subtitleseeker.com/favicon.ico',
     'searchUrl': 'http://www.subtitleseeker.com/%nott%/Movie/Releases/English/'},
 {   'name': 'Wikipedia',
-    'icon': 'https://www.wikipedia.org/static/favicon/wikipedia.ico',
     'searchUrl': 'https://en.wikipedia.org/w/index.php?search=%search_string%&go=Go'},
 {   'name': 'FilmAffinity',
-    'icon': 'http://www.filmaffinity.com/favicon.ico',
     'searchUrl': 'http://www.filmaffinity.com/en/advsearch.php?stext=%search_string%&stype[]=title&fromyear=%year%&toyear=%year%',
     'showByDefault': false},
 {   'name': 'Metacritic',
-    'icon': 'http://www.metacritic.com/favicon.ico',
     'searchUrl': 'http://www.metacritic.com/search/all/%search_string%/results?cats[movie]=1&cats[tv]=1&search_type=advanced&sort=relevancy',
     'showByDefault': false},
 {   'name': 'Can I Stream.It? (Movie)',
-    'icon': 'http://www.canistream.it/favicon.ico',
     'searchUrl': 'http://www.canistream.it/search/movie/%search_string%',
     'showByDefault': false},
 {   'name': 'Can I Stream.It? (TV)',
-    'icon': 'http://www.canistream.it/favicon.ico',
     'searchUrl': 'http://www.canistream.it/search/tv/%search_string%',
     'showByDefault': false},
 {   'name': 'AllMovie',
-    'icon': 'http://www.allmovie.com/favicon.ico',
     'searchUrl': 'http://www.allmovie.com/search/movies/%search_string%',
     'showByDefault': false},
 {   'name': 'Facebook',
-    'icon': 'https://www.facebook.com/favicon.ico',
     'searchUrl': 'https://www.facebook.com/search/str/%search_string%/keywords_pages',
     'showByDefault': false},
 {   'name': 'Amazon',
-    'icon': 'http://www.amazon.com/favicon.ico',
     'searchUrl': 'http://www.amazon.com/s/ref=nb_sb_noss?url=search-alias%3Dmovies-tv&field-keywords=%search_string%',
     'showByDefault': false},
 {   'name': 'Netflix',
-    'icon': 'https://whatimg.com/i/jOa2ac.png',
     'searchUrl': 'http://www.netflix.com/search/%search_string%',
     'showByDefault': false},
 {   'name': 'Blu-ray.com',
-    'icon': 'http://www.blu-ray.com/favicon.ico',
     'searchUrl': 'http://www.blu-ray.com/search/?quicksearch=1&quicksearch_country=all&quicksearch_keyword=%search_string%+&section=bluraymovies'}
 ];
 
@@ -779,10 +761,11 @@ function addIconBar(movie_id, movie_title) {
         if (site['show']) {
             var search_url = replaceSearchUrlParams(site['searchUrl'],
                                                     movie_id, movie_title);
+            url = new URL(icon_sites[index].searchUrl);
             var image = $('<img />').attr({'style': '-moz-opacity: 0.4;',
                                            'width': '16',
                                            'border': '0',
-                                           'src': site['icon'],
+                                           'src': url.origin + '\/favicon.ico',
                                            'title': site['name']});
             var html = $('<span />').append($('<a />').attr('href', search_url)
                         .addClass('iconbar_icon').append(image));
@@ -921,18 +904,20 @@ var config_fields = {
 // Add each site to a GM_config dictionary schema
 // The GM_config default for checkboxes is false
 $.each(sites, function(index, site) {
-    config_fields['show_' + site['name'] + (site['TV'] ? '_TV' : '')] = {
-        'type': 'checkbox',
-        'label': 'Show ' + site['name'] + (site['TV'] ? ' (TV)' : '') + '?'
-    };
+        config_fields['show_' + site['name'] + (site['TV'] ? '_TV' : '')] = {
+            'section': (index == 0) ? ['Torrents:'] : '',
+            'type': 'checkbox',
+            'label': ' ' + site['name'] + (site['TV'] ? ' (TV)' : '')
+        };
 });
 
 // Icon sites should be shown by default though,
 // since they barely use any resources.
 $.each(icon_sites, function(index, icon_site) {
     config_fields['show_icon_' + icon_site['name']] = {
+        'section': (index == 0) ? ['Other sites:'] : '',
         'type': 'checkbox',
-        'label': 'Show ' + icon_site['name'] + ' icon?',
+        'label': ' ' + icon_site['name'],
         'default': ('showByDefault' in icon_site) ?
             icon_site['showByDefault'] : true
     };
@@ -942,7 +927,29 @@ $.each(icon_sites, function(index, icon_site) {
 GM_config.init({
     'id': 'imdb_scout',
     'title': 'IMDb Scout Preferences',
-    'fields': config_fields
+    'fields': config_fields,
+    'css':  '.section_header { \
+                background: white   !important; \
+                color:  black       !important; \
+                border: 0px         !important; \
+                text-align: left    !important;} \
+             .field_label { \
+                font-weight: normal !important;}',
+    'events':
+    {
+        'open': function() {
+            $('#imdb_scout').contents().find('#imdb_scout_section_0').find('.field_label').each(function(index, label) {
+                url = new URL(sites[index].searchUrl);
+                $(label).append(' ' + '<a class="grey_link" target="_blank" style="color: gray; text-decoration : none" href="' + url.origin + '">'
+                + (/www./.test(url.hostname) ? url.hostname.match(/www.(.*)/)[1] : url.hostname)  + '</a>');
+                $(label).prepend('<img style="-moz-opacity: 0.4;" width="16" border="0" src="' + url.origin + '\/favicon.ico">');
+            });
+            $('#imdb_scout').contents().find('#imdb_scout_section_1').find('.field_label').each(function(index, label) {
+                url = new URL(icon_sites[index].searchUrl);
+                $(label).prepend('<img style="-moz-opacity: 0.4;" width="16" border="0" src="' + url.origin + '\/favicon.ico">');
+            });
+        }
+    }
 });
 GM_registerMenuCommand('IMDb Scout Preferences', function() {GM_config.open()});
 
