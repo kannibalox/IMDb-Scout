@@ -261,6 +261,10 @@ if (window.top != window.self)  //don't run on frames or iframes
 //  - spaceEncode (optional):
 //      Changes the character used to encode spaces in movie titles
 //      The default is '+'.
+//  - goToUrl (optional):
+//      Most of the time the same URLs that are used for checking are
+//      the ones that are used to actually get to the movie,
+//      but this allows overriding that
 // To create a search URL, there are four parameters
 // you can use inside the URL:
 //  - %tt%:
@@ -664,9 +668,9 @@ function getFavicon(site, hide_on_err) {
 }
 
 // Adds search links to an element
-function addLink(elem, search_url, link_text, strikeout, error, site) {
+function addLink(elem, target, link_text, strikeout, error, site) {
     if (onSearchPage ? GM_config.get('use_icons_search') : GM_config.get('use_icons_movie')) { //icon
-        var link = $('<a />').attr('href', search_url).attr('target', '_blank');
+        var link = $('<a />').attr('href', target).attr('target', '_blank');
         var icon = getFavicon(site);
         icon.css({'border-width': '3px', 'border-style': 'solid', 'border-radius': '2px'});
         if (error) {
@@ -678,7 +682,7 @@ function addLink(elem, search_url, link_text, strikeout, error, site) {
         }
         link.append(icon);
     } else {
-        var link = $('<a />').attr('href', search_url).attr('target', '_blank');
+        var link = $('<a />').attr('href', target).attr('target', '_blank');
         if (strikeout) {
             link.append($('<s />').append(link_text));
         } else {
@@ -716,15 +720,16 @@ function maybeAddLink(elem, link_text, search_url, site) {
         });
         return;
     }
-    var search_fail_match = site['matchRegex']
-    var success_match = ('positiveMatch' in site) ? site['positiveMatch'] : false
+    var target = site['goToUrl'];
+    var search_fail_match = site['matchRegex'];
+    var success_match = ('positiveMatch' in site) ? site['positiveMatch'] : false;
     GM_xmlhttpRequest({
         method: 'GET',
         url: search_url,
         onload: function(response_details) {
             if (String(response_details.responseText).match(search_fail_match) ? !(success_match) : success_match) {
                 if (onSearchPage ? GM_config.get('strikeout_links_search') : GM_config.get('strikeout_links_movie')) {
-                    addLink(elem, search_url, link_text, true, false, site);
+                    addLink(elem, target, link_text, true, false, site);
                 }
                 // If we're on the search page and it isn't found on PTP
                 if (onSearchPage && link_text == 'PTP') {
@@ -736,14 +741,14 @@ function maybeAddLink(elem, link_text, search_url, site) {
                     }
                 }
             } else {
-                addLink(elem, search_url, link_text, false, false, site);
+                addLink(elem, target, link_text, false, false, site);
             }
         },
 	onerror: function(response) {
-            addLink(elem, search_url, link_text, true, true, site);
+            addLink(elem, target, link_text, true, true, site);
 	},
 	onabort: function(response) {
-            addLink(elem, search_url, link_text, true, true, site);
+            addLink(elem, target, link_text, true, true, site);
 	}
     });
 }
@@ -759,6 +764,15 @@ function perform(elem, movie_id, movie_title, is_tv, is_movie) {
                  Boolean(site['both'])) ||
                 (!is_tv && !is_movie)) {
                 searchUrl = replaceSearchUrlParams(site, movie_id, movie_title);
+                // Ugly hack
+                if ('goToUrl' in site) {
+                    site['goToUrl'] = replaceSearchUrlParams({
+                        'searchUrl': site['goToUrl'],
+                        'spaceEncode': ('spaceEncode' in site) ? site['spaceEncode'] : '+'
+                    }, movie_id, movie_title);
+                } else {
+                    site['goToUrl'] = searchUrl;
+                }
                 if ((!onSearchPage && GM_config.get('call_http_movie')) ||
                     (onSearchPage && GM_config.get('call_http_search'))) {
                     maybeAddLink(elem, site['name'], searchUrl, site);
