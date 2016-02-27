@@ -962,6 +962,7 @@ GM_config.init({
     {
         'open': function() {
             $('#imdb_scout').contents().find('#imdb_scout_section_2').find('.field_label').each(function(index, label) {
+                url = new URL(sites[index].searchUrl);
                 $(label).append(' ' + '<a class="grey_link" target="_blank" style="color: gray; text-decoration : none" href="' + url.origin + '">'
                 + (/www./.test(url.hostname) ? url.hostname.match(/www.(.*)/)[1] : url.hostname)  + '</a>');
                 $(label).prepend(getFavicon(sites[index], true));
