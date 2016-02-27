@@ -263,7 +263,7 @@ if (window.top != window.self) // Don't run on frames or iframes
 //  - goToUrl (optional):
 //      Most of the time the same URLs that are used for checking are
 //      the ones that are used to actually get to the movie,
-//      but this allows overriding that
+//      but this allows overriding that.
 // To create a search URL, there are four parameters
 // you can use inside the URL:
 //  - %tt%:
@@ -903,9 +903,21 @@ function getLinkArea() {
     if ($('#imdbscout_header').length) {
         return $('#imdbscout_header');
     }
-    var p = $('<p />').append(GM_config.get('imdbscout_header_text')).attr('id', 'imdbscout_header').attr('style', 'font-weight:bold; color:black; background-color: lightgray;');
+    var p = $('<p />').append('<h2>' + GM_config.get('imdbscout_header_text') + '</h2>').attr('id', 'imdbscout_header').css({
+        'padding': '0px 20px',
+        'font-weight': 'bold'
+    });
     $.each(valid_states, function(i, name) {
-        p.append($('<span />').attr('id', 'imdbscout_' + name));
+        if (GM_config.get('one_line')) {
+            p.append($('<span />').attr('id', 'imdbscout_' + name));
+        } else {
+            title = $('<span>' + name.replace('_', ' ') + ': </span>').css({
+                'textTransform': 'capitalize',
+                'min-width': '100px',
+                'display': 'inline-block'
+            });
+            p.append($('<div />').attr('id', 'imdbscout_' + name).append(title));
+        }
     });
     if ($('h1.header:first').length) {
         $('h1.header:first').parent().append(p);
@@ -929,6 +941,11 @@ var config_fields = {
         'label': 'Header text:',
         'type': 'text',
         'default': 'Pirate this film: '
+    },
+    'one_line': {
+        'type': 'checkbox',
+        'label': 'Show torrents on one line?',
+        'default': true
     },
     'call_http_movie': {
         'section': 'Movie Page:',
