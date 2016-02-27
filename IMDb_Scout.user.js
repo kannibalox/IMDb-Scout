@@ -673,12 +673,13 @@ function addLink(elem, search_url, link_text, strikeout, error, use_icon) {
         link.append(icon);
     } else {
         var link = $('<a />').attr('href', search_url).attr('target', '_blank');
-        if (error) {
-            link.css('color', 'red');
-        } else if (strikeout) {
+        if (strikeout) {
             link.append($('<s />').append(link_text));
         } else {
             link.append(link_text);
+        }
+        if (error) {
+            link.css('color', 'red');
         }
     }
 
@@ -701,15 +702,16 @@ function addLink(elem, search_url, link_text, strikeout, error, use_icon) {
 
 // Performs an ajax request to determine
 // whether or not a url should be displayed
-function maybeAddLink(elem, link_text, search_url, search_fail_match, success_match) {
-    if (typeof(success_match) === 'undefined') success_match = false;
+function maybeAddLink(elem, link_text, search_url, site) {
     // If the search URL is an array, recurse briefly on the elements.
     if ($.isArray(search_url)) {
         $.each(search_url, function(index, url) {
-            maybeAddLink(elem, link_text + '_' + (index + 1).toString(), url, search_fail_match, success_match);
+            maybeAddLink(elem, link_text + '_' + (index + 1).toString(), url, site);
         });
         return;
     }
+    var search_fail_match = site['matchRegex']
+    var success_match = ('positiveMatch' in site) ? site['positiveMatch'] : false
     GM_xmlhttpRequest({
         method: 'GET',
         url: search_url,
@@ -753,7 +755,7 @@ function perform(elem, movie_id, movie_title, is_tv, is_movie) {
                 searchUrl = replaceSearchUrlParams(site['searchUrl'], movie_id, movie_title);
                 if ((!onSearchPage && GM_config.get('call_http_movie')) ||
                     (onSearchPage && GM_config.get('call_http_search'))) {
-                    maybeAddLink(elem, site['name'], searchUrl, site['matchRegex'], site['positiveMatch']);
+                    maybeAddLink(elem, site['name'], searchUrl, site);
                 } else {
                     addLink(elem, searchUrl, site['name'], false);
                 }
