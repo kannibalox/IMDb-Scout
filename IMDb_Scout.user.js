@@ -233,9 +233,8 @@
 --------------------------------------------------------*/
 
 
-if (window.top != window.self)  //don't run on frames or iframes
+if (window.top != window.self) // Don't run on frames or iframes
 {
-    //Optional: GM_log ('In frame');
     return;
 }
 
@@ -649,7 +648,7 @@ function replaceSearchUrlParams(site, movie_id, movie_title) {
                      .replace(/%year%/g, movie_year);
 }
 
-// Small utility function
+// Small utility function to return a site's icon
 function getFavicon(site, hide_on_err) {
     if (typeof(hide_on_err) === 'undefined') hide_on_err = false;
     if ('icon' in site) {
@@ -668,38 +667,34 @@ function getFavicon(site, hide_on_err) {
 }
 
 // Adds search links to an element
-function addLink(elem, link_text, target, strikeout, error, site) {
-    if (onSearchPage ? GM_config.get('use_icons_search') : GM_config.get('use_icons_movie')) { //icon
-        var link = $('<a />').attr('href', target).attr('target', '_blank');
+// category should always be one of the four values:
+// missing, found, error, loggedout
+function addLink(elem, link_text, target, site, category) {
+    var link = $('<a />').attr('href', target).attr('target', '_blank');
+    if (onSearchPage ? GM_config.get('use_icons_search') : GM_config.get('use_icons_movie')) {
         var icon = getFavicon(site);
         icon.css({'border-width': '3px', 'border-style': 'solid', 'border-radius': '2px'});
-        if (error) {
+        if (category == 'error') {
             icon.css('border-color', 'red');
-        } else if (strikeout) {
+        } else if (category == 'missing') {
             icon.css('border-color', 'yellow');
         } else {
             icon.css('border-color', 'green');
         }
         link.append(icon);
     } else {
-        var link = $('<a />').attr('href', target).attr('target', '_blank');
-        if (strikeout) {
+        if (category == 'missing' || category == 'error') {
             link.append($('<s />').append(link_text));
         } else {
             link.append(link_text);
         }
-        if (error) {
+        if (category == 'error') {
             link.css('color', 'red');
         }
     }
 
     if (!onSearchPage) {
-        // A little bit of trickery to make matches appear first in a list
-        if (strikeout) {
-            $('#imdbscout_header').append(link).append(' ');
-        } else {
-            $('#imdbscout_found').append(link).append(' ');
-        }
+        $('#imdbscout_' + category).append(link).append(' ');
     } else {
         var result_box = $(elem).find('td.result_box');
         if (result_box.length > 0) {
@@ -729,17 +724,17 @@ function maybeAddLink(elem, link_text, search_url, site) {
         onload: function(response_details) {
             if (String(response_details.responseText).match(search_fail_match) ? !(success_match) : success_match) {
                 if (onSearchPage ? GM_config.get('strikeout_links_search') : GM_config.get('strikeout_links_movie')) {
-                    addLink(elem, link_text, target, true, false, site);
+                    addLink(elem, link_text, target, site, 'missing');
                 }
             } else {
-                addLink(elem, link_text, target, false, false, site);
+                addLink(elem, link_text, target, site, 'found');
             }
         },
 	onerror: function(response) {
-            addLink(elem, link_text, target, true, true, site);
+            addLink(elem, link_text, target, site, 'error');
 	},
 	onabort: function(response) {
-            addLink(elem, link_text, target, true, true, site);
+            addLink(elem, link_text, target, site, 'error');
 	}
     });
 }
@@ -768,7 +763,7 @@ function perform(elem, movie_id, movie_title, is_tv, is_movie) {
                     (onSearchPage && GM_config.get('call_http_search'))) {
                     maybeAddLink(elem, site['name'], searchUrl, site);
                 } else {
-                    addLink(elem, searchUrl, site['name'], false, false, site);
+                    addLink(elem, searchUrl, site['name'], site, 'found');
                 }
             }
         }
@@ -898,6 +893,9 @@ function getLinkArea() {
     }
     var p = $('<p />').append(GM_config.get('imdbscout_header_text')).attr('id', 'imdbscout_header').attr('style', 'font-weight:bold; color:black; background-color: lightgray;');
     p.append($('<span />').attr('id', 'imdbscout_found'));
+    p.append($('<span />').attr('id', 'imdbscout_loggedout'));
+    p.append($('<span />').attr('id', 'imdbscout_missing'));
+    p.append($('<span />').attr('id', 'imdbscout_error'));
     if ($('h1.header:first').length) {
         $('h1.header:first').parent().append(p);
     } else if ($('#title-overview-widget').length) {
