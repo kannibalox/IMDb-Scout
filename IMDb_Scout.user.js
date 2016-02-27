@@ -649,9 +649,8 @@ function getFavicon(site, hide_on_err) {
         url = new URL(site['searchUrl'])
         favicon = url.origin + '\/favicon.ico';
     }
-    img = $('<img />').attr({'style': '-moz-opacity: 0.4;',
+    img = $('<img />').attr({'style': '-moz-opacity: 0.4; border: 0',
                              'width': '16',
-                             'border': '0',
                              'src': favicon,
                              'title': site['name']});
     if (hide_on_err) img.attr('onerror', "this.style.display='none';");
@@ -659,31 +658,43 @@ function getFavicon(site, hide_on_err) {
 }
 
 // Adds search links to an element
-function addLink(elem, search_url, link_text, strikeout, error) {
-    var a = $('<a />').attr('href', search_url).attr('target', '_blank');
-
-    if (strikeout) {
-        a.append($('<s />').append(link_text));
+function addLink(elem, search_url, link_text, strikeout, error, use_icon) {
+    if (false) { //icon
+        var link = $('<a />').attr('href', search_url).attr('target', '_blank');
+        var icon = getFavicon({'searchUrl': search_url});
+        icon.css({'border-width': '3px', 'border-style': 'solid', 'border-radius': '2px'});
+        if (error) {
+            icon.css('border-color', 'red');
+        } else if (strikeout) {
+            icon.css('border-color', 'yellow');
+        } else {
+            icon.css('border-color', 'green');
+        }
+        link.append(icon);
     } else {
-        a.append(link_text);
-    }
-    if (error) {
-        a.css('color', 'red');
+        var link = $('<a />').attr('href', search_url).attr('target', '_blank');
+        if (error) {
+            link.css('color', 'red');
+        } else if (strikeout) {
+            link.append($('<s />').append(link_text));
+        } else {
+            link.append(link_text);
+        }
     }
 
     if (!onSearchPage) {
         // A little bit of trickery to make matches appear first in a list
         if (strikeout) {
-            $('#imdbscout_header').append(a).append(' ');
+            $('#imdbscout_header').append(link).append(' ');
         } else {
-            $('#imdbscout_found').append(a).append(' ');
+            $('#imdbscout_found').append(link).append(' ');
         }
     } else {
         var result_box = $(elem).find('td.result_box');
         if (result_box.length > 0) {
-            $(result_box).append(a);
+            $(result_box).append(link);
         } else {
-            $(elem).append($('<td />').append(a).addClass('result_box'));
+            $(elem).append($('<td />').append(link).addClass('result_box'));
         }
     }
 }
@@ -914,6 +925,11 @@ var config_fields = {
         'label': 'Strike out links?',
         'default': true
     },
+    'use_icons_movie': {
+        'type': 'checkbox',
+        'label': 'Use icons instead of text?',
+        'default': false
+    },
     'call_http_search': {
         'section': 'Search Page:',
         'type': 'checkbox',
@@ -929,6 +945,11 @@ var config_fields = {
         'type': 'checkbox',
         'label': 'Strike out links?',
         'default': true
+    },
+    'use_icons_search': {
+        'type': 'checkbox',
+        'label': 'Use icons instead of text?',
+        'default': false
     }
 };
 
