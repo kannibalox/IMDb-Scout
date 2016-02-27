@@ -224,6 +224,12 @@
 3.4     -    Add Netflix icon
         -    Remove a default parameter to satisfy Chrome
 
+3.5     -    Add KZ, NNM, BB-HD, t411, TD, Rutor
+        -    Fix HDClub
+        -    Fix preferences in Chrome, sort sites properly
+
+3.5.1   -    Remove DHive, Fix AHD
+
 --------------------------------------------------------*/
 
 
