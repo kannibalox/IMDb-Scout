@@ -649,19 +649,20 @@ function getFavicon(site, hide_on_err) {
         url = new URL(site['searchUrl'])
         favicon = url.origin + '\/favicon.ico';
     }
-    img = $('<img />').attr({'style': '-moz-opacity: 0.4; border: 0',
+    img = $('<img />').attr({'style': '-moz-opacity: 0.4; border: 0; vertical-align: text-top',
                              'width': '16',
                              'src': favicon,
-                             'title': site['name']});
+                             'title': site['name'],
+                             'alt': site['name']});
     if (hide_on_err) img.attr('onerror', "this.style.display='none';");
     return img;
 }
 
 // Adds search links to an element
-function addLink(elem, search_url, link_text, strikeout, error, use_icon) {
-    if (false) { //icon
+function addLink(elem, search_url, link_text, strikeout, error, site) {
+    if (onSearchPage ? GM_config.get('use_icons_search') : GM_config.get('use_icons_movie')) { //icon
         var link = $('<a />').attr('href', search_url).attr('target', '_blank');
-        var icon = getFavicon({'searchUrl': search_url});
+        var icon = getFavicon(site);
         icon.css({'border-width': '3px', 'border-style': 'solid', 'border-radius': '2px'});
         if (error) {
             icon.css('border-color', 'red');
@@ -718,7 +719,7 @@ function maybeAddLink(elem, link_text, search_url, site) {
         onload: function(response_details) {
             if (String(response_details.responseText).match(search_fail_match) ? !(success_match) : success_match) {
                 if (onSearchPage ? GM_config.get('strikeout_links_search') : GM_config.get('strikeout_links_movie')) {
-                    addLink(elem, search_url, link_text, true);
+                    addLink(elem, search_url, link_text, true, false, site);
                 }
                 // If we're on the search page and it isn't found on PTP
                 if (onSearchPage && link_text == 'PTP') {
@@ -730,14 +731,14 @@ function maybeAddLink(elem, link_text, search_url, site) {
                     }
                 }
             } else {
-                addLink(elem, search_url, link_text, false);
+                addLink(elem, search_url, link_text, false, false, site);
             }
         },
 	onerror: function(response) {
-            addLink(elem, search_url, link_text, true, true);
+            addLink(elem, search_url, link_text, true, true, site);
 	},
 	onabort: function(response) {
-            addLink(elem, search_url, link_text, true, true);
+            addLink(elem, search_url, link_text, true, true, site);
 	}
     });
 }
