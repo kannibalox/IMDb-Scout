@@ -668,7 +668,7 @@ function getFavicon(site, hide_on_err) {
 }
 
 // Adds search links to an element
-function addLink(elem, target, link_text, strikeout, error, site) {
+function addLink(elem, link_text, target, strikeout, error, site) {
     if (onSearchPage ? GM_config.get('use_icons_search') : GM_config.get('use_icons_movie')) { //icon
         var link = $('<a />').attr('href', target).attr('target', '_blank');
         var icon = getFavicon(site);
@@ -729,7 +729,7 @@ function maybeAddLink(elem, link_text, search_url, site) {
         onload: function(response_details) {
             if (String(response_details.responseText).match(search_fail_match) ? !(success_match) : success_match) {
                 if (onSearchPage ? GM_config.get('strikeout_links_search') : GM_config.get('strikeout_links_movie')) {
-                    addLink(elem, target, link_text, true, false, site);
+                    addLink(elem, link_text, target, true, false, site);
                 }
                 // If we're on the search page and it isn't found on PTP
                 if (onSearchPage && link_text == 'PTP') {
@@ -741,14 +741,14 @@ function maybeAddLink(elem, link_text, search_url, site) {
                     }
                 }
             } else {
-                addLink(elem, target, link_text, false, false, site);
+                addLink(elem, link_text, target, false, false, site);
             }
         },
 	onerror: function(response) {
-            addLink(elem, target, link_text, true, true, site);
+            addLink(elem, link_text, target, true, true, site);
 	},
 	onabort: function(response) {
-            addLink(elem, target, link_text, true, true, site);
+            addLink(elem, link_text, target, true, true, site);
 	}
     });
 }
