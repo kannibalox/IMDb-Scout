@@ -731,15 +731,6 @@ function maybeAddLink(elem, link_text, search_url, site) {
                 if (onSearchPage ? GM_config.get('strikeout_links_search') : GM_config.get('strikeout_links_movie')) {
                     addLink(elem, link_text, target, true, false, site);
                 }
-                // If we're on the search page and it isn't found on PTP
-                if (onSearchPage && link_text == 'PTP') {
-                    var box = $(elem).find('td.result_box');
-                    if (box.length > 0) {
-                        box.css('background-color', 'green');
-                    } else {
-                        $(elem).append($('<td />').css('background-color', 'green').addClass('result_box'));
-                    }
-                }
             } else {
                 addLink(elem, link_text, target, false, false, site);
             }
