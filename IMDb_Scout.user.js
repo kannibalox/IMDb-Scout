@@ -822,10 +822,10 @@ function addIconBar(movie_id, movie_title) {
 function performSearch() {
     //Add css for the new table cells we're going to add
     var styles = '.result_box {width: 335px}';
-        styles += '.result_box a { margin-right: 5px; color: #444;} ';
+        styles += ' .result_box a { margin-right: 5px; color: #444;} ';
         styles += ' .result_box a:visited { color: red;}';
         styles += ' #content-2-wide #main, #content-2-wide';
-        styles += '.maindetails_center {margin-left: 5px; width: 1001px;} ';
+        styles += ' .maindetails_center {margin-left: 5px; width: 1001px;} ';
     GM_addStyle(styles);
 
     //Loop through each result row
