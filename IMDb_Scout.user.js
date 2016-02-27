@@ -586,7 +586,7 @@ var sites = [
     'matchRegex': /Try again with a refined search string.|<h1>Forgot your password?<\/h1>/}
 ];
 
-icon_sites = [
+var icon_sites = [
 {   'name': 'OpenSubtitles',
     'searchUrl': 'http://www.opensubtitles.org/en/search/imdbid-%tt%'},
 {   'name': 'YouTube.com',
@@ -636,7 +636,7 @@ icon_sites = [
 ];
 
 // For internal use (order matters)
-valid_states = [
+var valid_states = [
     'found',
     'missing',
     'logged_out',
@@ -644,10 +644,10 @@ valid_states = [
 ]
 
 function replaceSearchUrlParams(site, movie_id, movie_title) {
-    search_url = site['searchUrl']
+    var search_url = site['searchUrl']
     // If an array, do a little bit of recursion
     if ($.isArray(search_url)) {
-        search_array = [];
+        var search_array = [];
         $.each(search_url, function(index, url) {
             search_array[index] = replaceSearchUrlParams(url, movie_id, movie_title);
         });
@@ -670,12 +670,12 @@ function getPageSetting(key) {
 function getFavicon(site, hide_on_err) {
     if (typeof(hide_on_err) === 'undefined') hide_on_err = false;
     if ('icon' in site) {
-        favicon = site['icon'];
+        var favicon = site['icon'];
     } else {
-        url = new URL(site['searchUrl'])
-        favicon = url.origin + '\/favicon.ico';
+        var url = new URL(site['searchUrl'])
+        var favicon = url.origin + '\/favicon.ico';
     }
-    img = $('<img />').attr({'style': '-moz-opacity: 0.4; border: 0; vertical-align: text-top',
+    var img = $('<img />').attr({'style': '-moz-opacity: 0.4; border: 0; vertical-align: text-top',
                              'width': '16',
                              'src': favicon,
                              'title': site['name'],
@@ -762,7 +762,7 @@ function maybeAddLink(elem, link_text, search_url, site) {
 
 // Run code to create fields and display sites
 function perform(elem, movie_id, movie_title, is_tv, is_movie) {
-    site_shown = false;
+    var site_shown = false;
     $.each(sites, function(index, site) {
         if (site['show']) {
             site_shown = true;
@@ -873,8 +873,8 @@ function performSearch() {
                             .match('TV Series'));
         var is_movie = Boolean($(this).find('.year_type').html()
                                .match(/\(([0-9]*)\)/));
-        movie_title = link.html();
-        movie_id = link.attr('href').match(/tt([0-9]*)\/?$/)[1];
+        var movie_title = link.html();
+        var movie_id = link.attr('href').match(/tt([0-9]*)\/?$/)[1];
 
         $(this).find('span.genre a').each(function() {
             if ($(this).html() == 'Adult') {
@@ -919,7 +919,7 @@ function getLinkArea() {
         if (GM_config.get('one_line')) {
             p.append($('<span />').attr('id', 'imdbscout_' + name));
         } else {
-            title = $('<span>' + name.replace('_', ' ') + ': </span>').css({
+            var title = $('<span>' + name.replace('_', ' ') + ': </span>').css({
                 'textTransform': 'capitalize',
                 'min-width': '100px',
                 'display': 'inline-block'
