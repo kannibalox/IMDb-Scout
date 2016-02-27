@@ -703,7 +703,7 @@ function addLink(elem, link_text, target, site, state) {
         }
         link.append(icon);
     } else {
-        if (state == 'missing' || state == 'error' or state == 'logged_out') {
+        if (state == 'missing' || state == 'error' || state == 'logged_out') {
             link.append($('<s />').append(link_text));
         } else {
             link.append(link_text);
@@ -861,7 +861,7 @@ function performSearch() {
     //Add css for the new table cells we're going to add
     var styles = '.result_box {width: 335px}';
         styles += ' .result_box a { margin-right: 5px; color: #444;} ';
-        styles += ' .result_box a:visited { color: red;}';
+        styles += ' .result_box a:visited { color: #551A8B; }';
         styles += ' #content-2-wide #main, #content-2-wide';
         styles += ' .maindetails_center {margin-left: 5px; width: 1001px;} ';
     GM_addStyle(styles);
@@ -950,11 +950,6 @@ var config_fields = {
         'type': 'text',
         'default': 'Pirate this film: '
     },
-    'one_line': {
-        'type': 'checkbox',
-        'label': 'Show results on one line?',
-        'default': true
-    },
     'call_http_movie': {
         'section': 'Movie Page:',
         'type': 'checkbox',
@@ -975,6 +970,11 @@ var config_fields = {
         'type': 'checkbox',
         'label': 'Use icons instead of text?',
         'default': false
+    },
+    'one_line': {
+        'type': 'checkbox',
+        'label': 'Show results on one line?',
+        'default': true
     },
     'call_http_search': {
         'section': 'Search Page:',
