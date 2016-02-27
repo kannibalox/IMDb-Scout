@@ -256,7 +256,7 @@ if (window.top != window.self) // Don't run on frames or iframes
 //  - matchRegex:
 //      The string which appears if the searchUrl *doesn't* return a result
 //  - postiveMatch:
-//      Changes the test to return true if the searchUrl *does* return 
+//      Changes the test to return true if the searchUrl *does* return
 //      a result that matches matchRegex
 //  - TV (optional):
 //      If true, it means that this site will only show up on TV pages.
