@@ -258,6 +258,9 @@ if (window.top != window.self)  //don't run on frames or iframes
 //      By default, sites only show up on movie pages.
 //  - both (optional):
 //      Means that the site will show up on both movie and TV pages
+//  - spaceEncode (optional):
+//      Changes the character used to encode spaces in movie titles
+//      The default is '+'.
 // To create a search URL, there are four parameters
 // you can use inside the URL:
 //  - %tt%:
@@ -623,7 +626,8 @@ icon_sites = [
     'showByDefault': false}
 ];
 
-function replaceSearchUrlParams(search_url, movie_id, movie_title) {
+function replaceSearchUrlParams(site, movie_id, movie_title) {
+    search_url = site['searchUrl']
     // If an array, do a little bit of recursion
     if ($.isArray(search_url)) {
         search_array = [];
@@ -632,7 +636,8 @@ function replaceSearchUrlParams(search_url, movie_id, movie_title) {
         });
         return search_array;
     }
-    var search_string = movie_title.replace(/ +\(.*/, '').replace(/[^a-zA-Z0-9]/g, ' ').replace(/ +/g, '+');
+    var space_replace = ('spaceEncode' in site) ? site['spaceEncode'] : '+'
+    var search_string = movie_title.replace(/ +\(.*/, '').replace(/[^a-zA-Z0-9]/g, ' ').replace(/ +/g, space_replace);
     var movie_year = document.title.replace(/^(.+) \((.*)([0-9]{4})(.*)$/gi, '$3');
     return search_url.replace(/%tt%/g, 'tt' + movie_id)
                      .replace(/%nott%/g, movie_id)
@@ -753,7 +758,7 @@ function perform(elem, movie_id, movie_title, is_tv, is_movie) {
             if ((Boolean(site['TV']) == is_tv ||
                  Boolean(site['both'])) ||
                 (!is_tv && !is_movie)) {
-                searchUrl = replaceSearchUrlParams(site['searchUrl'], movie_id, movie_title);
+                searchUrl = replaceSearchUrlParams(site, movie_id, movie_title);
                 if ((!onSearchPage && GM_config.get('call_http_movie')) ||
                     (onSearchPage && GM_config.get('call_http_search'))) {
                     maybeAddLink(elem, site['name'], searchUrl, site);
@@ -807,8 +812,7 @@ function addIconBar(movie_id, movie_title) {
     }
     $.each(icon_sites, function(index, site) {
         if (site['show']) {
-            var search_url = replaceSearchUrlParams(site['searchUrl'],
-                                                    movie_id, movie_title);
+            var search_url = replaceSearchUrlParams(site, movie_id, movie_title);
             var image = getFavicon(site);
             var html = $('<span />').append($('<a />').attr('href', search_url)
                         .addClass('iconbar_icon').append(image));
