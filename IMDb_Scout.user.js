@@ -264,6 +264,10 @@ if (window.top != window.self) // Don't run on frames or iframes
 //      Most of the time the same URLs that are used for checking are
 //      the ones that are used to actually get to the movie,
 //      but this allows overriding that.
+//  - loggedOutRegex (optional):
+//      If any text on the page matches this regex, the site is treated
+//      as being logged out, rather than mising the movie. This option is
+//      not effected by postiveMatch.
 // To create a search URL, there are four parameters
 // you can use inside the URL:
 //  - %tt%:
@@ -335,10 +339,12 @@ var sites = [
     'matchRegex': /You will be banned for 6 hours after your login attempts run out.|You must specify at least one word to search for. Each word must consist of at least 3 characters and must not contain more than 14 characters excluding wildcards.|Disculpe/},
 {   'name': 'CG',
     'searchUrl': 'https://cinemageddon.net/browse.php?search=%tt%',
-    'matchRegex': /<h2>Nothing found!<\/h2>|<h1>Not logged in!<\/h1>/},
+    'matchRegex': /<h2>Nothing found!<\/h2>/,
+    'loggedOutRegex': 'Not logged in!'},
 {   'name': 'CG-c',
     'searchUrl': 'https://cinemageddon.net/cocks/endoscope.php?what=imdb&q=%tt%',
-    'matchRegex': /<h2>Nothing found!<\/h2>|<h1>Not logged in!<\/h1>/},
+    'matchRegex': /<h2>Nothing found!<\/h2>/,
+    'loggedOutRegex': 'Not logged in!'},
 {   'name': 'Classix',
     'searchUrl': 'http://classix-unlimited.co.uk/torrents-search.php?search=%search_string%',
     'matchRegex': /Nothing Found<\/div>/},
@@ -688,7 +694,7 @@ function addLink(elem, link_text, target, site, state) {
     if (getPageSetting('use_icons')) {
         var icon = getFavicon(site);
         icon.css({'border-width': '3px', 'border-style': 'solid', 'border-radius': '2px'});
-        if (state == 'error') {
+        if (state == 'error' || state == 'logged_out') {
             icon.css('border-color', 'red');
         } else if (state == 'missing') {
             icon.css('border-color', 'yellow');
@@ -697,12 +703,12 @@ function addLink(elem, link_text, target, site, state) {
         }
         link.append(icon);
     } else {
-        if (state == 'missing' || state == 'error') {
+        if (state == 'missing' || state == 'error' or state == 'logged_out') {
             link.append($('<s />').append(link_text));
         } else {
             link.append(link_text);
         }
-        if (state == 'error') {
+        if (state == 'error' || state == 'logged_out') {
             link.css('color', 'red');
         }
     }
@@ -739,6 +745,8 @@ function maybeAddLink(elem, link_text, search_url, site) {
                 if (!getPageSetting('hide_missing')) {
                     addLink(elem, link_text, target, site, 'missing');
                 }
+            } else if (site['loggedOutRegex'] && String(response_details.responseText).match(site['loggedOutRegex'])) {
+                    addLink(elem, link_text, target, site, 'logged_out');
             } else {
                 addLink(elem, link_text, target, site, 'found');
             }
@@ -944,7 +952,7 @@ var config_fields = {
     },
     'one_line': {
         'type': 'checkbox',
-        'label': 'Show torrents on one line?',
+        'label': 'Show results on one line?',
         'default': true
     },
     'call_http_movie': {
