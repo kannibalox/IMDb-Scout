@@ -768,7 +768,7 @@ function perform(elem, movie_id, movie_title, is_tv, is_movie) {
                     (onSearchPage && GM_config.get('call_http_search'))) {
                     maybeAddLink(elem, site['name'], searchUrl, site);
                 } else {
-                    addLink(elem, searchUrl, site['name'], false);
+                    addLink(elem, searchUrl, site['name'], false, false, site);
                 }
             }
         }
