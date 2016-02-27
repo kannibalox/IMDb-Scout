@@ -629,6 +629,14 @@ icon_sites = [
     'showByDefault': false}
 ];
 
+// For internal use (order matters)
+valid_states = [
+    'found',
+    'missing',
+    'logged_out',
+    'error'
+]
+
 function replaceSearchUrlParams(site, movie_id, movie_title) {
     search_url = site['searchUrl']
     // If an array, do a little bit of recursion
@@ -646,6 +654,10 @@ function replaceSearchUrlParams(site, movie_id, movie_title) {
                      .replace(/%nott%/g, movie_id)
                      .replace(/%search_string%/g, search_string)
                      .replace(/%year%/g, movie_year);
+}
+
+function getPageSetting(key) {
+    return (onSearchPage ? GM_config.get(key + '_search') : GM_config.get(key + '_movie'))
 }
 
 // Small utility function to return a site's icon
@@ -667,34 +679,36 @@ function getFavicon(site, hide_on_err) {
 }
 
 // Adds search links to an element
-// category should always be one of the four values:
-// missing, found, error, loggedout
-function addLink(elem, link_text, target, site, category) {
+// state should always be one of the values defined in valid_states
+function addLink(elem, link_text, target, site, state) {
     var link = $('<a />').attr('href', target).attr('target', '_blank');
-    if (onSearchPage ? GM_config.get('use_icons_search') : GM_config.get('use_icons_movie')) {
+    if ($.inArray(state, valid_states) < 0) {
+        console.log("Unknown state " + state);
+    }
+    if (getPageSetting('use_icons')) {
         var icon = getFavicon(site);
         icon.css({'border-width': '3px', 'border-style': 'solid', 'border-radius': '2px'});
-        if (category == 'error') {
+        if (state == 'error') {
             icon.css('border-color', 'red');
-        } else if (category == 'missing') {
+        } else if (state == 'missing') {
             icon.css('border-color', 'yellow');
         } else {
             icon.css('border-color', 'green');
         }
         link.append(icon);
     } else {
-        if (category == 'missing' || category == 'error') {
+        if (state == 'missing' || state == 'error') {
             link.append($('<s />').append(link_text));
         } else {
             link.append(link_text);
         }
-        if (category == 'error') {
+        if (state == 'error') {
             link.css('color', 'red');
         }
     }
 
     if (!onSearchPage) {
-        $('#imdbscout_' + category).append(link).append(' ');
+        $('#imdbscout_' + state).append(link).append(' ');
     } else {
         var result_box = $(elem).find('td.result_box');
         if (result_box.length > 0) {
@@ -716,14 +730,13 @@ function maybeAddLink(elem, link_text, search_url, site) {
         return;
     }
     var target = site['goToUrl'];
-    var search_fail_match = site['matchRegex'];
     var success_match = ('positiveMatch' in site) ? site['positiveMatch'] : false;
     GM_xmlhttpRequest({
         method: 'GET',
         url: search_url,
         onload: function(response_details) {
-            if (String(response_details.responseText).match(search_fail_match) ? !(success_match) : success_match) {
-                if (onSearchPage ? GM_config.get('strikeout_links_search') : GM_config.get('strikeout_links_movie')) {
+            if (String(response_details.responseText).match(site['matchRegex']) ? !(success_match) : success_match) {
+                if (!getPageSetting('hide_missing')) {
                     addLink(elem, link_text, target, site, 'missing');
                 }
             } else {
@@ -759,8 +772,7 @@ function perform(elem, movie_id, movie_title, is_tv, is_movie) {
                 } else {
                     site['goToUrl'] = searchUrl;
                 }
-                if ((!onSearchPage && GM_config.get('call_http_movie')) ||
-                    (onSearchPage && GM_config.get('call_http_search'))) {
+                if (getPageSetting('call_http')) {
                     maybeAddLink(elem, site['name'], searchUrl, site);
                 } else {
                     addLink(elem, searchUrl, site['name'], site, 'found');
@@ -892,10 +904,9 @@ function getLinkArea() {
         return $('#imdbscout_header');
     }
     var p = $('<p />').append(GM_config.get('imdbscout_header_text')).attr('id', 'imdbscout_header').attr('style', 'font-weight:bold; color:black; background-color: lightgray;');
-    p.append($('<span />').attr('id', 'imdbscout_found'));
-    p.append($('<span />').attr('id', 'imdbscout_loggedout'));
-    p.append($('<span />').attr('id', 'imdbscout_missing'));
-    p.append($('<span />').attr('id', 'imdbscout_error'));
+    $.each(valid_states, function(i, name) {
+        p.append($('<span />').attr('id', 'imdbscout_' + name));
+    });
     if ($('h1.header:first').length) {
         $('h1.header:first').parent().append(p);
     } else if ($('#title-overview-widget').length) {
@@ -925,15 +936,15 @@ var config_fields = {
         'label': 'Actually check for torrents?',
         'default': true
     },
-    'load_on_start': {
+    'load_on_start_movie': {
         'type': 'checkbox',
         'label': 'Load on start?',
         'default': true
     },
-    'strikeout_links_movie': {
+    'hide_missing_movie': {
         'type': 'checkbox',
-        'label': 'Strike out links?',
-        'default': true
+        'label': 'Hide missing links?',
+        'default': false
     },
     'use_icons_movie': {
         'type': 'checkbox',
@@ -951,10 +962,10 @@ var config_fields = {
         'label': 'Load on start?',
         'default': true
     },
-    'strikeout_links_search': {
+    'hide_missing_search': {
         'type': 'checkbox',
-        'label': 'Strike out links?',
-        'default': true
+        'label': 'Hide missing links?',
+        'default': false
     },
     'use_icons_search': {
         'type': 'checkbox',
@@ -1030,7 +1041,7 @@ $.each(icon_sites, function(index, icon_site) {
 var onSearchPage = Boolean(location.href.match('search'));
 
 $('title').ready(function() {
-if (!onSearchPage && GM_config.get('load_on_start')) {
+if (!onSearchPage && GM_config.get('load_on_start_movie')) {
         performPage();
 } else if (onSearchPage && GM_config.get('load_on_start_search')) {
         performSearch();
