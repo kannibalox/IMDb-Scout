@@ -463,7 +463,7 @@ var sites = [
     'searchUrl': 'https://www.revolutiontt.me/browse.php?search=%search_string%&cat=0&incldead=1&titleonly=1',
     'matchRegex': /<h2>Nothing found!<\/h2>/,
     'TV': true},
-{   'name': 'RUT',
+{   'name': 'RuT',
     'searchUrl': 'http://rutracker.org/forum/tracker.php?nm=%search_string%+%year%',
     'matchRegex': 'Не найдено',
     'both': true},
