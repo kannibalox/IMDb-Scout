@@ -607,10 +607,12 @@ icon_sites = [
     'searchUrl': 'http://www.amazon.com/s/ref=nb_sb_noss?url=search-alias%3Dmovies-tv&field-keywords=%search_string%',
     'showByDefault': false},
 {   'name': 'Netflix',
+    'icon': 'https://whatimg.com/i/jOa2ac.png',
     'searchUrl': 'http://www.netflix.com/search/%search_string%',
     'showByDefault': false},
 {   'name': 'Blu-ray.com',
-    'searchUrl': 'http://www.blu-ray.com/search/?quicksearch=1&quicksearch_country=all&quicksearch_keyword=%search_string%+&section=bluraymovies'}
+    'searchUrl': 'http://www.blu-ray.com/search/?quicksearch=1&quicksearch_country=all&quicksearch_keyword=%search_string%+&section=bluraymovies',
+    'showByDefault': false}
 ];
 
 function replaceSearchUrlParams(search_url, movie_id, movie_title) {
@@ -628,6 +630,24 @@ function replaceSearchUrlParams(search_url, movie_id, movie_title) {
                      .replace(/%nott%/g, movie_id)
                      .replace(/%search_string%/g, search_string)
                      .replace(/%year%/g, movie_year);
+}
+
+// Small utility function
+function getFavicon(site, hide_on_err) {
+    if (typeof(hide_on_err) === 'undefined') hide_on_err = false;
+    if ('icon' in site) {
+        favicon = site['icon'];
+    } else {
+        url = new URL(site['searchUrl'])
+        favicon = url.origin + '\/favicon.ico';
+    }
+    img = $('<img />').attr({'style': '-moz-opacity: 0.4;',
+                             'width': '16',
+                             'border': '0',
+                             'src': favicon,
+                             'title': site['name']});
+    if (hide_on_err) img.attr('onerror', "this.style.display='none';");
+    return img;
 }
 
 // Adds search links to an element
@@ -767,12 +787,7 @@ function addIconBar(movie_id, movie_title) {
         if (site['show']) {
             var search_url = replaceSearchUrlParams(site['searchUrl'],
                                                     movie_id, movie_title);
-            url = new URL(icon_sites[index].searchUrl);
-            var image = $('<img />').attr({'style': '-moz-opacity: 0.4;',
-                                           'width': '16',
-                                           'border': '0',
-                                           'src': url.origin + '\/favicon.ico',
-                                           'title': site['name']});
+            var image = getFavicon(site);
             var html = $('<span />').append($('<a />').attr('href', search_url)
                         .addClass('iconbar_icon').append(image));
             iconbar.append(html).append(' ');
@@ -945,14 +960,12 @@ GM_config.init({
     {
         'open': function() {
             $('#imdb_scout').contents().find('#imdb_scout_section_0').find('.field_label').each(function(index, label) {
-                url = new URL(sites[index].searchUrl);
                 $(label).append(' ' + '<a class="grey_link" target="_blank" style="color: gray; text-decoration : none" href="' + url.origin + '">'
                 + (/www./.test(url.hostname) ? url.hostname.match(/www.(.*)/)[1] : url.hostname)  + '</a>');
-                $(label).prepend('<img style="-moz-opacity: 0.4;" width="16" border="0" src="' + url.origin + '\/favicon.ico">');
+                $(label).prepend(getFavicon(sites[index], true));
             });
             $('#imdb_scout').contents().find('#imdb_scout_section_1').find('.field_label').each(function(index, label) {
-                url = new URL(icon_sites[index].searchUrl);
-                $(label).prepend('<img style="-moz-opacity: 0.4;" width="16" border="0" src="' + url.origin + '\/favicon.ico">');
+                $(label).prepend(getFavicon(icon_sites[index], true));
             });
         }
     }
