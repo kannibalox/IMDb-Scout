@@ -3,7 +3,7 @@ Add links in IMDb pages to torrent sites -- easy downloading from IMDb
 
 ## Contributing
 
-The [Github repository](https://github.com/kannibalox/IMDb-Scout) is the best place to report bugs and submit changes, however I will still make an effort to check the GreasyFork site or any other relevant places.
+The [Github repository](https://github.com/kannibalox/IMDb-Scout) is the best place to report bugs and submit changes, however I will still make an effort to check the [GreasyFork](https://greasyfork.org/en/scripts/3967-imdb-scout) page or any other relevant places.
 
 ## Adding new sites
 
