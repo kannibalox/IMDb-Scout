@@ -7,7 +7,7 @@
 // @require     https://greasyfork.org/libraries/GM_config/20131122/GM_config.js
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js
 //
-// @version        3.5.1
+// @version        4.0
 // @include        http://*.imdb.com/title/tt*
 // @include        http://*.imdb.de/title/tt*
 // @include        http://*.imdb.es/title/tt*
@@ -229,6 +229,12 @@
         -    Fix preferences in Chrome, sort sites properly
 
 3.5.1   -    Remove DHive, Fix AHD
+
+4.0     -    Bring in UI changes courtesy of janot
+        -    Add spaceEncode and goToUrl to site options
+        -    Add option to show results as links instead of text
+        -    Differentiate between missing and logged out
+        -    General refactoring
 
 --------------------------------------------------------*/
 
