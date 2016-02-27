@@ -891,33 +891,35 @@ var config_fields = {
         'default': 'Pirate this film: '
     },
     'call_http_movie': {
+        'section': 'Movie Page:',
         'type': 'checkbox',
-        'label': 'Actually check for torrents on movie page?',
-        'default': true
-    },
-    'call_http_search': {
-        'type': 'checkbox',
-        'label': 'Actually check for torrents on search page?',
+        'label': 'Actually check for torrents?',
         'default': true
     },
     'load_on_start': {
         'type': 'checkbox',
-        'label': 'Load on start on movie page?',
-        'default': true
-    },
-    'load_on_start_search': {
-        'type': 'checkbox',
-        'label': 'Load on start on search page?',
-        'default': true
-    },
-    'strikeout_links_search': {
-        'type': 'checkbox',
-        'label': 'Strike out links on search page?',
+        'label': 'Load on start?',
         'default': true
     },
     'strikeout_links_movie': {
         'type': 'checkbox',
-        'label': 'Strike out links on movie page?',
+        'label': 'Strike out links?',
+        'default': true
+    },
+    'call_http_search': {
+        'section': 'Search Page:',
+        'type': 'checkbox',
+        'label': 'Actually check for torrents?',
+        'default': true
+    },
+    'load_on_start_search': {
+        'type': 'checkbox',
+        'label': 'Load on start?',
+        'default': true
+    },
+    'strikeout_links_search': {
+        'type': 'checkbox',
+        'label': 'Strike out links?',
         'default': true
     }
 };
@@ -959,12 +961,12 @@ GM_config.init({
     'events':
     {
         'open': function() {
-            $('#imdb_scout').contents().find('#imdb_scout_section_0').find('.field_label').each(function(index, label) {
+            $('#imdb_scout').contents().find('#imdb_scout_section_2').find('.field_label').each(function(index, label) {
                 $(label).append(' ' + '<a class="grey_link" target="_blank" style="color: gray; text-decoration : none" href="' + url.origin + '">'
                 + (/www./.test(url.hostname) ? url.hostname.match(/www.(.*)/)[1] : url.hostname)  + '</a>');
                 $(label).prepend(getFavicon(sites[index], true));
             });
-            $('#imdb_scout').contents().find('#imdb_scout_section_1').find('.field_label').each(function(index, label) {
+            $('#imdb_scout').contents().find('#imdb_scout_section_3').find('.field_label').each(function(index, label) {
                 $(label).prepend(getFavicon(icon_sites[index], true));
             });
         }
