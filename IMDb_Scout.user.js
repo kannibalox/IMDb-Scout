@@ -7,7 +7,7 @@
 // @require     https://greasyfork.org/libraries/GM_config/20131122/GM_config.js
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js
 //
-// @version        4.0
+// @version        4.1
 // @include        http://*.imdb.com/title/tt*
 // @include        http://*.imdb.de/title/tt*
 // @include        http://*.imdb.es/title/tt*
@@ -235,6 +235,8 @@
         -    Add option to show results as links instead of text
         -    Differentiate between missing and logged out
         -    General refactoring
+
+4.1     -    Add RARAT
 
 --------------------------------------------------------*/
 
@@ -483,6 +485,11 @@ var sites = [
 {   'name': 'PxHD',
     'searchUrl': 'https://pixelhd.me/torrents.php?groupname=&year=&tmdbover=&tmdbunder=&tmdbid=&imdbover=&imdbunder=&imdbid=%tt%&order_by=time&order_way=desc&taglist=&tags_type=1&filterTorrentsButton=Filter+Torrents',
     'matchRegex': /<h2>Your search did not match anything.<\/h2>/},
+{   'name': 'RARAT',
+    'searchUrl': 'https://rarat.org/api/v1/torrents?extendedSearch=false&hideOld=false&index=0&limit=15&order=asc&page=search&searchText=%tt%&sort=n#https://rarat.org/search?search=%tt%',
+    'goToUrl': 'https://rarat.org/search?search=%tt%',
+    'matchRegex': /^$/,
+    'both': true},
 {   'name': 'RARBG',
     'searchUrl': 'https://rarbg.to/torrents.php?imdb=%tt%',
     'matchRegex': '//dyncdn.me/static/20/images/imdb_thumb.gif',
