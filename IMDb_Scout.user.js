@@ -7,19 +7,9 @@
 // @require     https://greasyfork.org/libraries/GM_config/20131122/GM_config.js
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js
 //
-// @version        4.1
-// @include        http://*.imdb.com/title/tt*
-// @include        http://*.imdb.de/title/tt*
-// @include        http://*.imdb.es/title/tt*
-// @include        http://*.imdb.fr/title/tt*
-// @include        http://*.imdb.it/title/tt*
-// @include        http://*.imdb.pt/title/tt*
-// @include        http://*.imdb.com/search/title*
-// @include        http://*.imdb.de/search/title*
-// @include        http://*.imdb.es/search/title*
-// @include        http://*.imdb.fr/search/title*
-// @include        http://*.imdb.it/search/title*
-// @include        http://*.imdb.pt/search/title*
+// @version        4.2
+// @include        http://*.imdb.tld/title/tt*
+// @include        http://*.imdb.tld/search/title*
 //
 // @grant        GM_log
 // @grant        GM_getValue
@@ -237,6 +227,9 @@
         -    General refactoring
 
 4.1     -    Add RARAT
+
+4.2     -    Fix t411
+        -    Use magic .tld domain in @include
 
 --------------------------------------------------------*/
 
@@ -549,7 +542,7 @@ var sites = [
     'searchUrl': 'http://www.surrealmoviez.info/advanced_search.php?simdb=%tt%',
     'matchRegex': /0 Movies found matching search criteria|You need to be logged in to view this page/},
 {   'name': 't411',
-    'searchUrl': 'http://www.t411.in/torrents/search/?name=%search_string%&description=&file=&user=&cat=210&subcat=&search=%40name+%search_string%+&submit=Recherche',
+    'searchUrl': 'http://www.t411.ch/torrents/search/?name=%search_string%&description=&file=&user=&cat=210&subcat=&search=%40name+%search_string%+&submit=Recherche',
     'matchRegex': /sultat Aucun/,
     'both': true},
 {   'name': 'TD',
