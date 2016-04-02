@@ -7,10 +7,11 @@
 // @require     https://greasyfork.org/libraries/GM_config/20131122/GM_config.js
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js
 //
-// @version        4.2
+// @version        4.3
 // @include        http://*.imdb.tld/title/tt*
 // @include        http://*.imdb.tld/search/title*
 //
+// @connect      *
 // @grant        GM_log
 // @grant        GM_getValue
 // @grant        GM_setValue
@@ -230,6 +231,8 @@
 
 4.2     -    Fix t411
         -    Use magic .tld domain in @include
+        
+4.3     -    Set @connect in metadata block
 
 --------------------------------------------------------*/
 
