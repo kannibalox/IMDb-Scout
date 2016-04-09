@@ -7,7 +7,7 @@
 // @require     https://greasyfork.org/libraries/GM_config/20131122/GM_config.js
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js
 //
-// @version        4.3
+// @version        4.3.1
 // @include        http://*.imdb.tld/title/tt*
 // @include        http://*.imdb.tld/search/title*
 //
@@ -233,6 +233,8 @@
         -    Use magic .tld domain in @include
         
 4.3     -    Set @connect in metadata block
+
+4.3.1   -    Fix THC
 
 --------------------------------------------------------*/
 
@@ -564,8 +566,8 @@ var sites = [
     'matchRegex': /Try again with a refined search string|<h1>You need cookies enabled to log in.<\/h1>/,
     'both': true},
 {   'name': 'THC',
-    'searchUrl': 'https://horrorcharnel.kicks-ass.org/more_details.php?mid=%nott%',
-    'matchRegex': /<h1>Not logged in!<\/h1>|not currently on <span style="font-weight: bold;">The Horror Charnel<\/span>\./},
+    'searchUrl': 'https://horrorcharnel.org/browse.php?search=%nott%&cat=0&incldead=1',
+    'matchRegex': /<h1>Not logged in!<\/h1>|<h2>Nothing found!<\/h2>/},
 {   'name': 'Tik',
     'searchUrl': 'http://cinematik.net/browse.php?srchdtls=1&incldead=1&search=%tt%',
     'matchRegex': /The page you tried to view can only be used when you're logged in|<h2>Nothing found!<\/h2>/},
