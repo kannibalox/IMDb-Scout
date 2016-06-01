@@ -464,7 +464,7 @@ var sites = [
     'matchRegex': 'Нет активных раздач, приносим извинения. Пожалуйста, уточните параметры поиска',
     'TV': true},
 {   'name': 'M-T',
-    'searchUrl': 'https://tp.m-team.cc/movie.php?incldead=1&spstate=0&inclbookmarked=0&search=%tt%&search_area=4&search_mode=2'
+    'searchUrl': 'https://tp.m-team.cc/movie.php?incldead=1&spstate=0&inclbookmarked=0&search=%tt%&search_area=4&search_mode=2',
     'matchRegex': /Nothing here!|Try again with a refined search string./},
 {   'name': 'MS',
     'searchUrl': 'http://www.myspleen.org/browse.php?search=%search_string%&title=1&cat=0',
