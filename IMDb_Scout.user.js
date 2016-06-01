@@ -7,7 +7,7 @@
 // @require     https://greasyfork.org/libraries/GM_config/20131122/GM_config.js
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js
 //
-// @version        4.3.1
+// @version        4.3.2
 // @include        http://*.imdb.tld/title/tt*
 // @include        http://*.imdb.tld/search/title*
 //
@@ -236,6 +236,10 @@
 
 4.3.1   -    Fix THC
 
+4.3.2   -    Add AR, TtN
+        -    Add year and "trailer" to youtube search
+        -    Fix M-team
+
 --------------------------------------------------------*/
 
 
@@ -296,6 +300,13 @@ var sites = [
     'searchUrl': 'https://awesome-hd.me/torrents.php?id=%tt%',
     'matchRegex': /Your search did not match anything.|<h2>Error 404<\/h2>/,
     'both': true},
+{   'name': 'AR',
+    'searchUrl': 'https://alpharatio.cc/torrents.php?searchstr=%search_string%+%year%&filter_cat[6]=1&filter_cat[7]=1&filter_cat[8]=1&filter_cat[9]=1',
+    'matchRegex': /Your search did not match anything/},
+{   'name': 'AR',
+    'searchUrl': 'https://alpharatio.cc/torrents.php?searchstr=%search_string%&filter_cat[1]=1&filter_cat[2]=1&filter_cat[3]=1&filter_cat[4]=1&filter_cat[5]=1',
+    'matchRegex': /Your search did not match anything/,
+    'TV': true},
 {   'name': 'AT',
     'searchUrl': 'https://avistaz.to/torrents?in=0&search=%tt%',
     'matchRegex': 'No torrents found!',
@@ -453,7 +464,7 @@ var sites = [
     'matchRegex': 'Нет активных раздач, приносим извинения. Пожалуйста, уточните параметры поиска',
     'TV': true},
 {   'name': 'M-T',
-    'searchUrl': 'https://tp.m-team.cc/torrents.php?incldead=0&spstate=0&inclbookmarked=0&search=%tt%&search_area=4&search_mode=2',
+    'searchUrl': 'https://tp.m-team.cc/movie.php?incldead=1&spstate=0&inclbookmarked=0&search=%tt%&search_area=4&search_mode=2'
     'matchRegex': /Nothing here!|Try again with a refined search string./},
 {   'name': 'MS',
     'searchUrl': 'http://www.myspleen.org/browse.php?search=%search_string%&title=1&cat=0',
@@ -585,6 +596,10 @@ var sites = [
 {   'name': 'TSH',
     'searchUrl': 'https://torrentshack.me/torrents.php?searchstr=%search_string%&action=advanced&torrentname=&description=&filelist=&extrainfo=&hasnfo=&nuked=&nukedtext=&release_type=both&searchtags=&tags_type=0&order_by=s3&order_way=desc&torrent_preset=all&filter_cat%5B960%5D=1&filter_cat%5B300%5D=1&filter_cat%5B320%5D=1&filter_cat%5B400%5D=1&filter_cat%5B970%5D=1&filter_cat%5B350%5D=1&filter_cat%5B982%5D=1&filter_cat%5B983%5D=1',
     'matchRegex': /Your search did not match anything./},
+{   'name': 'TtN',
+    'searchUrl': 'https://transmithe.net/torrents.php?order_by=time&order_way=desc&searchtext=%search_string%&search_type=0&taglist=&tags_type=0',
+    'matchRegex': /Your search did not match anything/,
+    'TV': true},
 {   'name': 'TVV',
     'searchUrl': 'http://tv-vault.me/torrents.php?searchstr=%search_string%',
     'matchRegex': /Nothing found<\/h2>/,
@@ -601,7 +616,7 @@ var icon_sites = [
 {   'name': 'OpenSubtitles',
     'searchUrl': 'http://www.opensubtitles.org/en/search/imdbid-%tt%'},
 {   'name': 'YouTube.com',
-    'searchUrl': 'https://www.youtube.com/results?search_query="%search_string%"'},
+    'searchUrl': 'https://www.youtube.com/results?search_query="%search_string%"+%year%+trailer'},
 {   'name': 'Rotten Tomatoes',
     'searchUrl': 'https://www.rottentomatoes.com/search/?search=%search_string%'},
 {   'name': 'Criticker',
