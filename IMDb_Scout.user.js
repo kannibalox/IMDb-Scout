@@ -7,7 +7,7 @@
 // @require     https://greasyfork.org/libraries/GM_config/20131122/GM_config.js
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js
 //
-// @version        4.3.2
+// @version        4.3.3
 // @include        http://*.imdb.tld/title/tt*
 // @include        http://*.imdb.tld/search/title*
 //
@@ -240,6 +240,8 @@
         -    Add year and "trailer" to youtube search
         -    Fix M-team
 
+4.3.3   -    Fix BitHQ, PTP-Req, SCC
+
 --------------------------------------------------------*/
 
 
@@ -333,7 +335,7 @@ var sites = [
     'searchUrl': 'http://www.bit-hdtv.com/torrents.php?cat=0&search=%tt%',
     'matchRegex': /<h2>No match!<\/h2>/},
 {   'name': 'BitHQ',
-    'searchUrl': 'https://www.bithq.org/search.php?search=%search_string%&options=AND&in=original&incldead=1',
+    'searchUrl': 'http://www.bithq.org/search.php?search=%search_string%&options=AND&in=original&incldead=1',
     'matchRegex': /Try again with a refined search string|<h1>Not logged in!<\/h1>/},
 {   'name': 'BMTV',
     'searchUrl': 'https://www.bitmetv.org/browse.php?search=%search_string%',
@@ -490,7 +492,7 @@ var sites = [
     'matchRegex': /<h2>Your search did not match anything.<\/h2>/},
 {   'name': 'PTP-Req',
     'searchUrl': 'https://tls.passthepopcorn.me/requests.php?submit=true&search=%tt%',
-    'matchRegex': /Nothing found!|<h1>Keep me logged in.<\/h1>/},
+    'matchRegex': /Your search did not match anything.|<h1>Keep me logged in.<\/h1>/},
 {   'name': 'PxHD',
     'searchUrl': 'https://pixelhd.me/torrents.php?groupname=&year=&tmdbover=&tmdbunder=&tmdbid=&imdbover=&imdbunder=&imdbid=%tt%&order_by=time&order_way=desc&taglist=&tags_type=1&filterTorrentsButton=Filter+Torrents',
     'matchRegex': /<h2>Your search did not match anything.<\/h2>/},
@@ -528,25 +530,13 @@ var sites = [
     'matchRegex': /Your search returned no hits\.|You do not have permission to view these forums\./,
     'both': true},
 {   'name': 'SCC',
-    'searchUrl': 'https://sceneaccess.org/browse?method=3&search=%tt%',
-    'matchRegex': /Try again with a refined search string.|<h1>Note: Three (3) failed login attempts will result in a temporary security lockout.<\/h1>/},
+    'searchUrl': 'https://sceneaccess.eu/all?method=3&search=%tt%',
+    'matchRegex': /Try again with a refined search string./,
+    'loggedOutRegex': /<h1>Note: Three (3) failed login attempts will result in a temporary security lockout.<\/h1>/},
 {   'name': 'SCC',
-    'searchUrl': 'https://sceneaccess.org/browse?search=%search_string%&method=2',
-    'matchRegex': /Try again with a refined search string.|<h1>Note: Three (3) failed login attempts will result in a temporary security lockout.<\/h1>/,
-    'TV': true},
-{   'name': 'SCC-ARC',
-    'searchUrl': 'https://sceneaccess.org/archive?=&method=3&search=%tt%',
-    'matchRegex': /Try again with a refined search string.|<h1>Note: Three (3) failed login attempts will result in a temporary security lockout.<\/h1>/},
-{   'name': 'SCC-ARC',
-    'searchUrl': 'https://sceneaccess.org/archive?search=%search_string%&method=1',
-    'matchRegex': /Try again with a refined search string.|<h1>Note: Three (3) failed login attempts will result in a temporary security lockout.<\/h1>/,
-    'TV': true},
-{   'name': 'SCC-NS',
-    'searchUrl': 'https://sceneaccess.org/nonscene?=&method=3&search=%tt%',
-    'matchRegex': /Try again with a refined search string.|<h1>Note: Three (3) failed login attempts will result in a temporary security lockout.<\/h1>/},
-{   'name': 'SCC-NS',
-    'searchUrl': 'https://sceneaccess.org/nonscene?search=%search_string%&method=2',
-    'matchRegex': /Try again with a refined search string.|<h1>Note: Three (3) failed login attempts will result in a temporary security lockout.<\/h1>/,
+    'searchUrl': 'https://sceneaccess.eu/all?method=2&c27=27&c17=17&c11=11&c26=26&c44=44&c45=44&search=%search_string%',
+    'matchRegex': /Try again with a refined search string./,
+    'loggedOutRegex': /<h1>Note: Three (3) failed login attempts will result in a temporary security lockout.<\/h1>/,
     'TV': true},
 {   'name': 'SDBits',
     'searchUrl': 'http://sdbits.org/browse.php?c6=1&c3=1&c1=1&c4=1&c5=1&c2=1&m1=1&incldead=0&from=&to=&imdbgt=0&imdblt=10&uppedby=&imdb=&search=%tt%',
