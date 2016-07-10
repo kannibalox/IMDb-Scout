@@ -7,7 +7,7 @@
 // @require     https://greasyfork.org/libraries/GM_config/20131122/GM_config.js
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js
 //
-// @version        4.3.3
+// @version        4.3.4
 // @include        http://*.imdb.tld/title/tt*
 // @include        http://*.imdb.tld/search/title*
 //
@@ -242,6 +242,9 @@
 
 4.3.3   -    Fix BitHQ, PTP-Req, SCC
 
+4.3.4   -    Fix M-team, myspleen, avistaz, eutorrents
+        -    Removed KAT
+
 --------------------------------------------------------*/
 
 
@@ -310,9 +313,14 @@ var sites = [
     'matchRegex': /Your search did not match anything/,
     'TV': true},
 {   'name': 'AT',
-    'searchUrl': 'https://avistaz.to/torrents?in=0&search=%tt%',
-    'matchRegex': 'No torrents found!',
-    'both': true},
+    'searchUrl': 'https://avistaz.to/movies?search=%tt%&genres=&countries=&languages=&casts=',
+    'matchRegex': /class="thumbnail"/,
+    'positiveMatch': true},
+{   'name': 'AT',
+    'searchUrl': 'https://avistaz.to/tv-shows?search=%tt%&genres=&countries=&languages=&casts=',
+    'matchRegex': /class="thumbnail"/,
+    'positiveMatch': true,
+    'TV': true},
 {   'name': 'bB',
     'searchUrl': 'https://baconbits.org/torrents.php?action=basic&filter_cat[9]=1&searchstr=%search_string%+%year%',
     'matchRegex': /Your search was way too l33t|You will be banned for 6 hours after your login attempts run out/},
@@ -375,8 +383,14 @@ var sites = [
     'searchUrl': 'http://www.dvdseed.eu/browse2.php?search=%tt%&wheresearch=2&incldead=1&polish=0&nuke=0&rodzaj=0',
     'matchRegex': /Nic tutaj nie ma!<\/h2>/},
 {   'name': 'ET',
-    'searchUrl': 'http://eutorrents.to/index.php?page=torrents&options=3&active=0&search=%tt%',
-    'matchRegex': /No torrents found!/},
+    'searchUrl': 'https://eutorrents.to/movies?search=%tt%&genres=&countries=&languages=&casts=',
+    'matchRegex': /class="thumbnail"/,
+    'positiveMatch': true},
+{   'name': 'ET',
+    'searchUrl': 'https://eutorrents.to/tv-shows?search=%tt%&genres=&countries=&languages=&casts=',
+    'matchRegex': /class="thumbnail"/,
+    'positiveMatch': true,
+    'TV': true},
 {   'name': 'eThor',
     'searchUrl': 'http://ethor.net/browse.php?stype=b&c23=1&c20=1&c42=1&c5=1&c19=1&c25=1&c6=1&c37=1&c43=1&c7=1&c9=1&advcat=0&incldead=0&includedesc=1&search=%tt%',
     'matchRegex': /Try again with a refined search string.|<h1>Note: Vous devez activer vos 'cookies' pour pouvoir vous identifier.<\/h1>/},
@@ -448,13 +462,6 @@ var sites = [
     'searchUrl': 'https://www.iptorrents.com/torrents/?q=%search_string%',
     'matchRegex': /<h2>Nothing found!<\/h2>|( 0 torrents )/,
     'TV': true},
-{   'name': 'KASS',
-    'searchUrl': 'https://kat.cr/usearch/imdb%3A%nott%',
-    'matchRegex': /<h2>Nothing found!<\/h2>/},
-{   'name': 'KASS',
-    'searchUrl': 'https://kat.cr/usearch/%search_string%',
-    'matchRegex': /<h2>Nothing found!<\/h2>/,
-    'TV': true},
 {   'name': 'KG',
     'searchUrl': 'https://www.karagarga.in/browse.php?search_type=imdb&search=%nott%',
     'matchRegex': /<h2>No torrents found|<h1>If you want the love<\/h1>/},
@@ -469,7 +476,7 @@ var sites = [
     'searchUrl': 'https://tp.m-team.cc/movie.php?incldead=1&spstate=0&inclbookmarked=0&search=%tt%&search_area=4&search_mode=2',
     'matchRegex': /Nothing here!|Try again with a refined search string./},
 {   'name': 'MS',
-    'searchUrl': 'http://www.myspleen.org/browse.php?search=%search_string%&title=1&cat=0',
+    'searchUrl': 'http://www.myspleen.org/browse.php?search=%search_string%&title=0&cat=0',
     'matchRegex': /<p>Try again with a refined search string.<\/p>|<title>MySpleen :: Login<\/title>/,
     'both': true},
 {   'name': 'MTV',
