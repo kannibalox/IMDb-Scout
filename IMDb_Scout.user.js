@@ -7,7 +7,7 @@
 // @require     https://greasyfork.org/libraries/GM_config/20131122/GM_config.js
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js
 //
-// @version        4.3.4
+// @version        4.3.5
 // @include        http://*.imdb.tld/title/tt*
 // @include        http://*.imdb.tld/search/title*
 //
@@ -245,6 +245,9 @@
 4.3.4   -    Fix M-team, myspleen, avistaz, eutorrents
         -    Removed KAT
 
+4.3.5   -    Fix IPT, Freshon
+        -    Add ExtraTorrent
+
 --------------------------------------------------------*/
 
 
@@ -394,13 +397,16 @@ var sites = [
 {   'name': 'eThor',
     'searchUrl': 'http://ethor.net/browse.php?stype=b&c23=1&c20=1&c42=1&c5=1&c19=1&c25=1&c6=1&c37=1&c43=1&c7=1&c9=1&advcat=0&incldead=0&includedesc=1&search=%tt%',
     'matchRegex': /Try again with a refined search string.|<h1>Note: Vous devez activer vos 'cookies' pour pouvoir vous identifier.<\/h1>/},
+{   'name': 'ExtraTorrent',
+    'searchUrl': 'https://extratorrent.cc/search/?search=%search_string%+%year%',
+    'matchRegex': /total <b>0<\/b> torrents found/},
 {   'name': 'FL',
     'searchUrl': 'https://filelist.ro/browse.php?search=%tt%',
     'matchRegex': /Broblem \?|Nu s-a gasit nimic!/,
     'both': true},
 {   'name': 'Fresh',
     'searchUrl': 'http://freshon.tv/browse.php?search=%search_string%',
-    'matchRegex': /Nothing found!<\/h2>/,
+    'matchRegex': /<strong>Nothing found/,
     'TV': true},
 {   'name': 'FSS',
     'searchUrl': 'http://fss.omnilounge.co.uk/browse.php?blah=2&cat=0&incldead=1&search=%tt%',
@@ -457,10 +463,10 @@ var sites = [
     'matchRegex': /Try again with a refined search string|<h1>Not logged in!<\/h1>/},
 {   'name': 'IPT',
     'searchUrl': 'https://www.iptorrents.com/torrents/?q=%tt%',
-    'matchRegex': /<h2>Nothing found!<\/h2>|( 0 torrents )/},
+    'matchRegex': /<h1 style="color:yellow">No Torrents Found!/},
 {   'name': 'IPT',
     'searchUrl': 'https://www.iptorrents.com/torrents/?q=%search_string%',
-    'matchRegex': /<h2>Nothing found!<\/h2>|( 0 torrents )/,
+    'matchRegex': /<h1 style="color:yellow">No Torrents Found!/,
     'TV': true},
 {   'name': 'KG',
     'searchUrl': 'https://www.karagarga.in/browse.php?search_type=imdb&search=%nott%',
