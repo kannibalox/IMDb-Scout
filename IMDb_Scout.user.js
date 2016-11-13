@@ -7,7 +7,7 @@
 // @require     https://greasyfork.org/libraries/GM_config/20131122/GM_config.js
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js
 //
-// @version        4.3.5
+// @version        4.3.6
 // @include        http://*.imdb.tld/title/tt*
 // @include        http://*.imdb.tld/search/title*
 //
@@ -379,19 +379,19 @@ var sites = [
     'searchUrl': 'http://classix-unlimited.co.uk/torrents-search.php?search=%search_string%',
     'matchRegex': /Nothing Found<\/div>/},
 {   'name': 'D-noid',
-    'searchUrl': 'http://www.demonoid.pw/files/?query=%tt%',
+    'searchUrl': 'http://www.dnoid.me/files/?query=%tt%',
     'matchRegex': /<b>No torrents found<\/b>|We are currently performing the daily site maintenance.<br>/,
     'both': true},
 {   'name': 'DVDSeed',
     'searchUrl': 'http://www.dvdseed.eu/browse2.php?search=%tt%&wheresearch=2&incldead=1&polish=0&nuke=0&rodzaj=0',
     'matchRegex': /Nic tutaj nie ma!<\/h2>/},
 {   'name': 'ET',
-    'searchUrl': 'https://eutorrents.to/movies?search=%tt%&genres=&countries=&languages=&casts=',
-    'matchRegex': /class="thumbnail"/,
+    'searchUrl': 'https://cinemaz.to/movies?search=&imdb=%tt%',
+    'matchRegex': /class="overlay-container"/,
     'positiveMatch': true},
 {   'name': 'ET',
-    'searchUrl': 'https://eutorrents.to/tv-shows?search=%tt%&genres=&countries=&languages=&casts=',
-    'matchRegex': /class="thumbnail"/,
+    'searchUrl': 'https://cinemaz.to/tv-shows?search=&imdb=%tt%',
+    'matchRegex': /class="overlay-container"/,
     'positiveMatch': true,
     'TV': true},
 {   'name': 'eThor',
@@ -812,7 +812,7 @@ function perform(elem, movie_id, movie_title, is_tv, is_movie) {
                 if (getPageSetting('call_http')) {
                     maybeAddLink(elem, site['name'], searchUrl, site);
                 } else {
-                    addLink(elem, searchUrl, site['name'], site, 'found');
+                    addLink(elem, site['name'], searchUrl, site, 'found');
                 }
             }
         }
