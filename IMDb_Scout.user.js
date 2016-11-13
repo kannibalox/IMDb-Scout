@@ -247,6 +247,10 @@
 
 4.3.5   -    Fix IPT, Freshon
         -    Add ExtraTorrent
+	
+4.3.6   -    Fix Demonoid, EuTorrents (now CinemaZ)
+        -    Fix "Actually search for torrents" option
+        -    Add PrivateHD for movies and tv
 
 --------------------------------------------------------*/
 
@@ -500,6 +504,15 @@ var sites = [
     'searchUrl': 'https://norbits.net/browse.php?incldead=1&fullsearch=0&scenerelease=0&imdbsearch=%tt%&imdb_from=0&imdb_to=0&search=',
     'matchRegex': /<h3>Ingenting her!<\/h3>/,
     'both': true},
+{   'name': 'PHD',
+    'searchUrl': 'https://privatehd.to/movies?search=&imdb=%tt%',
+    'matchRegex': /class="overlay-container"/,
+    'positiveMatch': true},
+{   'name': 'PHD',
+    'searchUrl': 'https://privatehd.to/tv-shows?search=&imdb=%tt%',
+    'matchRegex': /class="overlay-container"/,
+    'positiveMatch': true,
+    'TV': true},
 {   'name': 'PTP',
     'searchUrl': 'https://tls.passthepopcorn.me/torrents.php?imdb=%tt%',
     'matchRegex': /<h2>Your search did not match anything.<\/h2>/},
