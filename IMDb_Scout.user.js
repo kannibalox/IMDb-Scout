@@ -231,7 +231,7 @@
 
 4.2     -    Fix t411
         -    Use magic .tld domain in @include
-        
+
 4.3     -    Set @connect in metadata block
 
 4.3.1   -    Fix THC
@@ -247,7 +247,7 @@
 
 4.3.5   -    Fix IPT, Freshon
         -    Add ExtraTorrent
-	
+
 4.3.6   -    Fix Demonoid, EuTorrents (now CinemaZ)
         -    Fix "Actually search for torrents" option
         -    Add PrivateHD for movies and tv

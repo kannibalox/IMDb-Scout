@@ -15,17 +15,17 @@ Each site is a dictionary with the following attributes:
   - `postiveMatch` (optional): Changes the test to return true if the searchUrl *does* return a result that matches matchRegex
   - `TV` (optional): If true, it means that this site will only show up on TV pages. By default, sites only show up on movie pages
   - `both` (optional): Means that the site will show up on both movie and TV pages
-    
+
 To create a search URL, there are four parameters you can use inside the URL:
   - %tt%: The IMDb id with the tt prefix (e.g. tt0055630)
   - %nott%: The IMDb id without the tt prefix (e.g. 0055630)
   - %search_string%: The movie title (e.g. Yojimbo)
   - %year%: The movie year (e.g. 1961)
-  
+
 See the script for examples.
 
 ## Versioning
 Follows a bastardization of the [semver](http://semver.org/) standard:
 * Patch versions will not change behavior, only the URL/settings for trackers.
 * Minor versions will definitely change code, although behavior may in fact remain the same.
-* Major versions will definitely change behavior, although it will only be increased at the discretion of the current maintainer. 
+* Major versions will definitely change behavior, although it will only be increased at the discretion of the current maintainer.
