@@ -7,7 +7,7 @@
 // @require     https://greasyfork.org/libraries/GM_config/20131122/GM_config.js
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js
 //
-// @version        4.3.6
+// @version        4.3.7
 // @include        http://*.imdb.tld/title/tt*
 // @include        http://*.imdb.tld/search/title*
 //
@@ -252,6 +252,8 @@
         -    Fix "Actually search for torrents" option
         -    Add PrivateHD for movies and tv
 
+4.3.7   -    Apply CinemaZ fixes to AvistaZ as well
+
 --------------------------------------------------------*/
 
 
@@ -320,12 +322,12 @@ var sites = [
     'matchRegex': /Your search did not match anything/,
     'TV': true},
 {   'name': 'AT',
-    'searchUrl': 'https://avistaz.to/movies?search=%tt%&genres=&countries=&languages=&casts=',
-    'matchRegex': /class="thumbnail"/,
+    'searchUrl': 'https://avistaz.to/movies?search=&imdb=%tt%',
+    'matchRegex': /class="overlay-container"/,
     'positiveMatch': true},
 {   'name': 'AT',
-    'searchUrl': 'https://avistaz.to/tv-shows?search=%tt%&genres=&countries=&languages=&casts=',
-    'matchRegex': /class="thumbnail"/,
+    'searchUrl': 'https://avistaz.to/tv-shows?search=&imdb=%tt%',
+    'matchRegex': /class="overlay-container"/,
     'positiveMatch': true,
     'TV': true},
 {   'name': 'bB',
