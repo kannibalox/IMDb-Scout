@@ -7,7 +7,7 @@
 // @require     https://greasyfork.org/libraries/GM_config/20131122/GM_config.js
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js
 //
-// @version        4.3.7
+// @version        4.3.8
 // @include        http://*.imdb.tld/title/tt*
 // @include        http://*.imdb.tld/search/title*
 //
@@ -254,6 +254,8 @@
 
 4.3.7   -    Apply CinemaZ fixes to AvistaZ as well
 
+4.3.8   -    Fix SurrealMoviez and MySpleen, switch to new PTP url
+
 --------------------------------------------------------*/
 
 
@@ -489,7 +491,7 @@ var sites = [
     'matchRegex': /Nothing here!|Try again with a refined search string./},
 {   'name': 'MS',
     'searchUrl': 'http://www.myspleen.org/browse.php?search=%search_string%&title=0&cat=0',
-    'matchRegex': /<p>Try again with a refined search string.<\/p>|<title>MySpleen :: Login<\/title>/,
+    'matchRegex': /<strong>Nothing found!<\/strong>|<title>MySpleen :: Login<\/title>/,
     'both': true},
 {   'name': 'MTV',
     'searchUrl': 'https://www.morethan.tv/torrents.php?description=%tt%&tags_type=1&order_by=time&order_way=desc&group_results=1&filter_cat%5B1%5D=1&action=advanced&searchsubmit=1',
@@ -516,10 +518,10 @@ var sites = [
     'positiveMatch': true,
     'TV': true},
 {   'name': 'PTP',
-    'searchUrl': 'https://tls.passthepopcorn.me/torrents.php?imdb=%tt%',
+    'searchUrl': 'https://www.passthepopcorn.me/torrents.php?imdb=%tt%',
     'matchRegex': /<h2>Your search did not match anything.<\/h2>/},
 {   'name': 'PTP-Req',
-    'searchUrl': 'https://tls.passthepopcorn.me/requests.php?submit=true&search=%tt%',
+    'searchUrl': 'https://www.passthepopcorn.me/requests.php?submit=true&search=%tt%',
     'matchRegex': /Your search did not match anything.|<h1>Keep me logged in.<\/h1>/},
 {   'name': 'PxHD',
     'searchUrl': 'https://pixelhd.me/torrents.php?groupname=&year=&tmdbover=&tmdbunder=&tmdbid=&imdbover=&imdbunder=&imdbid=%tt%&order_by=time&order_way=desc&taglist=&tags_type=1&filterTorrentsButton=Filter+Torrents',
@@ -573,7 +575,7 @@ var sites = [
     'searchUrl': 'https://scenehd.org/browse.php?search=%tt%',
     'matchRegex': /<h2>No torrents found!<\/h2>/},
 {   'name': 'SM',
-    'searchUrl': 'http://www.surrealmoviez.info/advanced_search.php?simdb=%tt%',
+    'searchUrl': 'https://surrealmoviez.info/search.php?stext=%tt%',
     'matchRegex': /0 Movies found matching search criteria|You need to be logged in to view this page/},
 {   'name': 't411',
     'searchUrl': 'http://www.t411.ch/torrents/search/?name=%search_string%&description=&file=&user=&cat=210&subcat=&search=%40name+%search_string%+&submit=Recherche',
