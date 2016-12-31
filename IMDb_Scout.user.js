@@ -7,7 +7,7 @@
 // @require     https://greasyfork.org/libraries/GM_config/20131122/GM_config.js
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js
 //
-// @version        4.3.8
+// @version        4.3.9
 // @include        http://*.imdb.tld/title/tt*
 // @include        http://*.imdb.tld/search/title*
 //
@@ -256,6 +256,8 @@
 
 4.3.8   -    Fix SurrealMoviez and MySpleen, switch to new PTP url
 
+4.3.9   -    Fix criticker, add CN
+
 --------------------------------------------------------*/
 
 
@@ -386,6 +388,9 @@ var sites = [
 {   'name': 'Classix',
     'searchUrl': 'http://classix-unlimited.co.uk/torrents-search.php?search=%search_string%',
     'matchRegex': /Nothing Found<\/div>/},
+{   'name': 'CN',
+    'searchUrl': 'https://cosanostra.me/browse.php?filename=&title=&search3=&search4=&search5=&search6=&search7=&search8=&search9=&search10=&search11=&imdbid=%tt%&sort=4&type=desc&svs_selection=&svs_name=#filter-panel',
+    'matchRegex': /<h2>Nothing here!<\/h2>/},
 {   'name': 'D-noid',
     'searchUrl': 'http://www.dnoid.me/files/?query=%tt%',
     'matchRegex': /<b>No torrents found<\/b>|We are currently performing the daily site maintenance.<br>/,
@@ -640,7 +645,7 @@ var icon_sites = [
 {   'name': 'Rotten Tomatoes',
     'searchUrl': 'https://www.rottentomatoes.com/search/?search=%search_string%'},
 {   'name': 'Criticker',
-    'searchUrl': 'http://www.criticker.com/?st=movies&h=%search_string%&g=Go'},
+    'searchUrl': 'https://www.criticker.com/?search=%search_string%&type=films'},
 {   'name': 'iCheckMovies',
     'searchUrl': 'https://www.icheckmovies.com/search/movies/?query=%tt%'},
 {   'name': 'Letterboxd',
