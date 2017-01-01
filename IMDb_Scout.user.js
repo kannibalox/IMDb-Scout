@@ -7,7 +7,7 @@
 // @require     https://greasyfork.org/libraries/GM_config/20131122/GM_config.js
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js
 //
-// @version        4.3.9
+// @version        4.3.10
 // @include        http://*.imdb.tld/title/tt*
 // @include        http://*.imdb.tld/search/title*
 //
@@ -258,6 +258,7 @@
 
 4.3.9   -    Fix criticker, add CN
 
+4.3.10  -    Fix Netflix, MTV
 --------------------------------------------------------*/
 
 
@@ -499,10 +500,10 @@ var sites = [
     'matchRegex': /<strong>Nothing found!<\/strong>|<title>MySpleen :: Login<\/title>/,
     'both': true},
 {   'name': 'MTV',
-    'searchUrl': 'https://www.morethan.tv/torrents.php?description=%tt%&tags_type=1&order_by=time&order_way=desc&group_results=1&filter_cat%5B1%5D=1&action=advanced&searchsubmit=1',
+    'searchUrl': 'https://www.morethan.tv/torrents.php?searchstr=%search_string%+%year%&tags_type=1&order_by=time&order_way=desc&group_results=1&filter_cat%5B1%5D=1&action=basic&searchsubmit=1',
     'matchRegex': /<h2>Your search did not match anything.<\/h2>/},
 {   'name': 'MTV',
-    'searchUrl': 'https://www.morethan.tv/torrents.php?description=%tt%&tags_type=1&order_by=time&order_way=desc&group_results=1&filter_cat%5B2%5D=1&action=advanced&searchsubmit=1',
+    'searchUrl': 'https://www.morethan.tv/torrents.php?searchstr=%search_string%&tags_type=1&order_by=time&order_way=desc&group_results=1&filter_cat%5B2%5D=1&action=basic&searchsubmit=1',
     'matchRegex': /<h2>Your search did not match anything.<\/h2>/,
     'TV': true},
 {   'name': 'NNM',
@@ -678,7 +679,6 @@ var icon_sites = [
     'searchUrl': 'http://www.amazon.com/s/ref=nb_sb_noss?url=search-alias%3Dmovies-tv&field-keywords=%search_string%',
     'showByDefault': false},
 {   'name': 'Netflix',
-    'icon': 'https://whatimg.com/i/jOa2ac.png',
     'searchUrl': 'http://www.netflix.com/search/%search_string%',
     'showByDefault': false},
 {   'name': 'Blu-ray.com',
