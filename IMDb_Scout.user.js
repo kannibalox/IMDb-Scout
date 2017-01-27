@@ -7,7 +7,7 @@
 // @require     https://greasyfork.org/libraries/GM_config/20131122/GM_config.js
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js
 //
-// @version        4.3.10
+// @version        4.3.11
 // @include        http://*.imdb.tld/title/tt*
 // @include        http://*.imdb.tld/search/title*
 //
@@ -259,6 +259,8 @@
 4.3.9   -    Fix criticker, add CN
 
 4.3.10  -    Fix Netflix, MTV
+
+4.3.11  -    Add CHD back
 --------------------------------------------------------*/
 
 
@@ -386,6 +388,9 @@ var sites = [
     'searchUrl': 'https://cinemageddon.net/cocks/endoscope.php?what=imdb&q=%tt%',
     'matchRegex': /<h2>Nothing found!<\/h2>/,
     'loggedOutRegex': 'Not logged in!'},
+{   'name': 'CHD',
+    'searchUrl': 'https://chdbits.co/torrents.php?incldead=1&spstate=0&inclbookmarked=0&search_area=4&search_mode=0&search=%tt%'
+    'matchRegex': /Nothing found/},
 {   'name': 'Classix',
     'searchUrl': 'http://classix-unlimited.co.uk/torrents-search.php?search=%search_string%',
     'matchRegex': /Nothing Found<\/div>/},
