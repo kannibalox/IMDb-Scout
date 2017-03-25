@@ -7,7 +7,7 @@
 // @require     https://greasyfork.org/libraries/GM_config/20131122/GM_config.js
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js
 //
-// @version        4.3.12
+// @version        4.4
 // @include        http://*.imdb.tld/title/tt*
 // @include        http://*.imdb.tld/search/title*
 //
@@ -263,6 +263,9 @@
 4.3.11  -    Add CHD back
 
 4.3.12  -    Fix typo
+
+4.4     -    Fix BeyondHD
+        -    Allow unicode when searching by name
 --------------------------------------------------------*/
 
 
@@ -351,10 +354,10 @@ var sites = [
     'matchRegex': /Nothing found|Ничего не найдено/,
     'both': true},
 {   'name': 'BHD',
-    'searchUrl': 'https://beyondhd.me/browse.php?search=%tt%&searchin=title&incldead=1',
+    'searchUrl': 'https://beyondhd.xyz/browse.php?search=%tt%&searchin=title&incldead=1',
     'matchRegex': /Nothing found!|Please login or Register a personal account to access our user area and great community/},
 {   'name': 'BHD',
-    'searchUrl': 'https://beyondhd.me/browse.php?c40=1&c44=1&c48=1&c89=1&c46=1&c45=1&search=%search_string%&searchin=title&incldead=0',
+    'searchUrl': 'https://beyondhd.xyz/browse.php?c40=1&c44=1&c48=1&c89=1&c46=1&c45=1&search=%search_string%&searchin=title&incldead=0',
     'matchRegex': /Nothing found!|Please login or Register a personal account to access our user area and great community/,
     'TV': true},
 {   'name': 'BitHD',
@@ -712,7 +715,7 @@ function replaceSearchUrlParams(site, movie_id, movie_title) {
         return search_array;
     }
     var space_replace = ('spaceEncode' in site) ? site['spaceEncode'] : '+'
-    var search_string = movie_title.replace(/ +\(.*/, '').replace(/[^a-zA-Z0-9]/g, ' ').replace(/ +/g, space_replace);
+    var search_string = movie_title.replace(/ +\(.*/, '').replace(/\s+/g, space_replace);
     var movie_year = document.title.replace(/^(.+) \((.*)([0-9]{4})(.*)$/gi, '$3');
     return search_url.replace(/%tt%/g, 'tt' + movie_id)
                      .replace(/%nott%/g, movie_id)
