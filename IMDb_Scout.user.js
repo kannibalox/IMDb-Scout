@@ -697,6 +697,7 @@ var icon_sites = [
     'searchUrl': 'http://www.blu-ray.com/search/?quicksearch=1&quicksearch_country=all&quicksearch_keyword=%search_string%+&section=bluraymovies',
     'showByDefault': false},
 {   'name': 'trakt.tv',
+    'icon': 'https://ptpimg.me/olv8m5.png',
     'searchUrl': 'https://trakt.tv/search?query=%search_string%',
     'showByDefault': false}
 ];
