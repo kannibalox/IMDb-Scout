@@ -7,7 +7,7 @@
 // @require     https://greasyfork.org/libraries/GM_config/20131122/GM_config.js
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js
 //
-// @version        4.4
+// @version        4.4.1
 // @include        http://*.imdb.tld/title/tt*
 // @include        http://*.imdb.tld/search/title*
 //
@@ -266,6 +266,8 @@
 
 4.4     -    Fix BeyondHD
         -    Allow unicode when searching by name
+
+4.4.1   -    Add trakt.tv
 --------------------------------------------------------*/
 
 
@@ -693,6 +695,9 @@ var icon_sites = [
     'showByDefault': false},
 {   'name': 'Blu-ray.com',
     'searchUrl': 'http://www.blu-ray.com/search/?quicksearch=1&quicksearch_country=all&quicksearch_keyword=%search_string%+&section=bluraymovies',
+    'showByDefault': false},
+{   'name': 'trakt.tv',
+    'searchUrl': 'https://trakt.tv/search?query=%search_string%',
     'showByDefault': false}
 ];
 
