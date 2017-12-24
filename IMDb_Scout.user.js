@@ -7,7 +7,7 @@
 // @require     https://greasyfork.org/libraries/GM_config/20131122/GM_config.js
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js
 //
-// @version        4.4.1
+// @version        4.4.2
 // @include        http://*.imdb.tld/title/tt*
 // @include        http://*.imdb.tld/search/title*
 //
@@ -268,6 +268,8 @@
         -    Allow unicode when searching by name
 
 4.4.1   -    Add trakt.tv
+
+4.4.2  -     Fix SC
 --------------------------------------------------------*/
 
 
@@ -580,12 +582,12 @@ var sites = [
     'matchRegex': 'Результатов поиска 0',
     'both': true},
 {   'name': 'SC',
-    'searchUrl': 'http://www.secret-cinema.net/browse.php?search=%search_string%',
-    'matchRegex': /Try again with a refined search string\.|There was a problem executing the query/,
+    'searchUrl': 'https://secret-cinema.pw/torrents.php?searchstr=%search_string%',
+    'matchRegex': /Your search did not match anything\.|There was a problem executing the query/,
     'both': true},
 {   'name': 'SC-F',
-    'searchUrl': 'http://www.secret-cinema.net/search.php?action=search&show_as=topics&keywords=%tt%',
-    'matchRegex': /Your search returned no hits\.|You do not have permission to view these forums\./,
+    'searchUrl': 'https://secret-cinema.pw/forums.php?action=search&search=%tt%',
+    'matchRegex': /Nothing found!|You do not have permission to view these forums\./,
     'both': true},
 {   'name': 'SDBits',
     'searchUrl': 'http://sdbits.org/browse.php?c6=1&c3=1&c1=1&c4=1&c5=1&c2=1&m1=1&incldead=0&from=&to=&imdbgt=0&imdblt=10&uppedby=&imdb=&search=%tt%',
