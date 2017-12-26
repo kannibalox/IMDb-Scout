@@ -7,7 +7,7 @@
 // @require     https://greasyfork.org/libraries/GM_config/20131122/GM_config.js
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js
 //
-// @version        4.5.2
+// @version        4.5.3
 // @include        http://*.imdb.tld/title/tt*
 // @include        http://*.imdb.tld/search/title*
 // @include        http://*.imdb.com/title/tt*
@@ -288,6 +288,9 @@
 
 4.5.2   -    Fixed filelist.ro, Tik, TD
         -    Added HDHome, HDU, OurBits
+
+4.5.3   -    Fixed TG, TE, HDSpace
+        -    Added XS
 --------------------------------------------------------*/
 
 
@@ -486,6 +489,7 @@ var sites = [
   {   'name': 'HDSpace',
       'icon': 'http://www.favicon.by/ico/5991df36e3635.ico',
       'searchUrl': 'https://hd-space.org/index.php?page=torrents&active=0&options=2&search=%nott%',
+      'matchRegex': /<td colspan="2" align="center"> <\/td>|You’re not authorized to view the Torrents!<br \/>/,
       'both': true},
   {   'name': 'HDT',
       'icon': 'https://hdts.ru/favicon.ico',
@@ -615,11 +619,11 @@ var sites = [
       'matchRegex': /No Torrents Found!/,
       'both': true},
   {   'name': 'TE',
-      'searchUrl': 'http://theempire.bz/browse.php?incldead=0&country=&nonboolean=1&search=%tt%',
+      'searchUrl': 'http://theempire.click/browse.php?incldead=0&country=&nonboolean=1&search=%tt%',
       'matchRegex': /Try again with a refined search string|<h1>You need cookies enabled to log in.<\/h1>/,
       'both': true},
   {   'name': 'TG',
-      'searchUrl': 'https://thegeeks.bz/browse.php?incldead=0&country=&nonboolean=1&search=%tt%',
+      'searchUrl': 'https://thegeeks.click/browse.php?incldead=0&country=&nonboolean=1&search=%tt%',
       'matchRegex': /Try again with a refined search string|<h1>You need cookies enabled to log in.<\/h1>/,
       'both': true},
   {   'name': 'THC',
@@ -648,7 +652,10 @@ var sites = [
       'matchRegex': /Your search did not match anything./},
   {   'name': 'x264',
       'searchUrl': 'http://x264.me/browse.php?incldead=0&xtype=0&stype=3&search=%tt%',
-      'matchRegex': /Try again with a refined search string.|<h1>Forgot your password?<\/h1>/}
+      'matchRegex': /Try again with a refined search string.|<h1>Forgot your password?<\/h1>/},
+  {   'name': 'XS',
+      'searchUrl': 'https://www.xspeeds.eu/browse.php?do=search&keywords=%search_string%&search_type=t_name&category=0&include_dead_torrents=yes',
+      'matchRegex': /<b>Nothing Found<\/b>/}
 ];
 
 var icon_sites = [
