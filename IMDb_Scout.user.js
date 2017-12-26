@@ -7,7 +7,7 @@
 // @require     https://greasyfork.org/libraries/GM_config/20131122/GM_config.js
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js
 //
-// @version        4.5.3
+// @version        4.5.4
 // @include        http://*.imdb.tld/title/tt*
 // @include        http://*.imdb.tld/search/title*
 // @include        http://*.imdb.com/title/tt*
@@ -291,6 +291,8 @@
 
 4.5.3   -    Fixed TG, TE, HDSpace
         -    Added XS
+
+4.5.4   -    Fixed HDU
 --------------------------------------------------------*/
 
 
@@ -497,7 +499,7 @@ var sites = [
       'matchRegex': /No torrents here.../,
       'both': true},
   {   'name': 'HDU',
-      'searchUrl': 'https://pt.upxin.net/torrents.php?search_area=4&search=tt0068646',
+      'searchUrl': 'https://pt.upxin.net/torrents.php?search_area=4&search=%tt%',
       'matchRegex': /Nothing found! Try again with a refined search string/},
   {   'name': 'HDVN',
       'searchUrl': 'http://torviet.com/torrents.php?search=%tt%&search_area=4&search_mode=0',
