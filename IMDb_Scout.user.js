@@ -10,6 +10,8 @@
 // @version        4.4.2
 // @include        http://*.imdb.tld/title/tt*
 // @include        http://*.imdb.tld/search/title*
+// @include        http://*.imdb.com/title/tt*
+// @include        http://*.imdb.com/search/title*
 //
 // @connect      *
 // @grant        GM_log
@@ -269,7 +271,11 @@
 
 4.4.1   -    Add trakt.tv
 
-4.4.2  -     Fix SC
+4.4.2   -    Added XS, HD-S, PTN, TBD, Blutopia
+        -    Removed Freshon, CN, ExT, t411, SCC
+        -    Fixed SC, TE, TG, Tik
+        -    Add .com for script runners that don't support .tld
+
 --------------------------------------------------------*/
 
 
@@ -406,7 +412,7 @@ var sites = [
 {   'name': 'Classix',
     'searchUrl': 'http://classix-unlimited.co.uk/torrents-search.php?search=%search_string%',
     'matchRegex': /Nothing Found<\/div>/},
-{   'name': 'Demnoid',
+{   'name': 'D-noid',
     'searchUrl': 'http://www.demonoid.pw/files/?query=%tt%',
     'matchRegex': /<b>No torrents found<\/b>|We are currently performing the daily site maintenance.<br>/,
     'both': true},
@@ -608,21 +614,21 @@ var sites = [
     'matchRegex': /Nothing found!/,
     'both': true},
 {   'name': 'TE',
-    'searchUrl': 'http://theempire.bz/browse.php?incldead=0&country=&nonboolean=1&search=%tt%',
+    'searchUrl': 'http://theempire.click/browse.php?incldead=0&country=&nonboolean=1&search=%tt%',
     'matchRegex': /Try again with a refined search string|<h1>You need cookies enabled to log in.<\/h1>/,
     'both': true},
 {   'name': 'TehC',
     'searchUrl': 'https://tehconnection.eu/torrents.php?action=basic&searchstr=%tt%',
     'matchRegex': /You will be banned for 6 hours after your login attempts run out.|<h2>No Search Results, try reducing your search options./},
 {   'name': 'TG',
-    'searchUrl': 'https://thegeeks.bz/browse.php?incldead=0&country=&nonboolean=1&search=%tt%',
+    'searchUrl': 'https://thegeeks.click/browse.php?incldead=0&country=&nonboolean=1&search=%tt%',
     'matchRegex': /Try again with a refined search string|<h1>You need cookies enabled to log in.<\/h1>/,
     'both': true},
 {   'name': 'THC',
     'searchUrl': 'https://horrorcharnel.org/browse.php?search=%nott%&cat=0&incldead=1',
     'matchRegex': /<h1>Not logged in!<\/h1>|<h2>Nothing found!<\/h2>/},
 {   'name': 'Tik',
-    'searchUrl': 'http://cinematik.net/browse.php?srchdtls=1&incldead=1&search=%tt%',
+    'searchUrl': 'https://cinematik.net/browse.php?srchdtls=1&incldead=1&search=%tt%',
     'matchRegex': /The page you tried to view can only be used when you're logged in|<h2>Nothing found!<\/h2>/},
 {   'name': 'TL',
     'searchUrl': 'http://www.torrentleech.org/torrents/browse/index/query/%search_string%+%year%/categories/1,8,9,10,11,12,13,14,15,29',
@@ -644,7 +650,10 @@ var sites = [
     'matchRegex': /Your search did not match anything./},
 {   'name': 'x264',
     'searchUrl': 'http://x264.me/browse.php?incldead=0&xtype=0&stype=3&search=%tt%',
-    'matchRegex': /Try again with a refined search string.|<h1>Forgot your password?<\/h1>/}
+    'matchRegex': /Try again with a refined search string.|<h1>Forgot your password?<\/h1>/},
+{   'name': 'XS',
+    'searchUrl': 'https://www.xspeeds.eu/browse.php?do=search&keywords=%search_string%&search_type=t_name&category=0&include_dead_torrents=yes',
+    'matchRegex': /Nothing Found<\/b>/}
 ];
 
 var icon_sites = [
