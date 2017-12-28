@@ -7,7 +7,7 @@
 // @require     https://greasyfork.org/libraries/GM_config/20131122/GM_config.js
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js
 //
-// @version        4.5.4
+// @version        4.5.5
 // @include        http://*.imdb.tld/title/tt*
 // @include        http://*.imdb.tld/search/title*
 // @include        http://*.imdb.com/title/tt*
@@ -293,6 +293,8 @@
         -    Added XS
 
 4.5.4   -    Fixed HDU
+
+4.5.5   -    Fixed BHD
 --------------------------------------------------------*/
 
 
@@ -384,10 +386,10 @@ var sites = [
       'matchRegex': /Nothing found|Ничего не найдено/,
       'both': true},
   {   'name': 'BHD',
-      'searchUrl': 'https://beyondhd.xyz/browse.php?search=%tt%&searchin=title&incldead=1',
+      'searchUrl': 'https://beyond-hd.me/browse.php?search=%tt%&searchin=title&incldead=1',
       'matchRegex': /Nothing found!|Please login or Register a personal account to access our user area and great community/},
   {   'name': 'BHD',
-      'searchUrl': 'https://beyondhd.xyz/browse.php?c40=1&c44=1&c48=1&c89=1&c46=1&c45=1&search=%search_string%&searchin=title&incldead=0',
+      'searchUrl': 'https://beyond-hd.me/browse.php?c40=1&c44=1&c48=1&c89=1&c46=1&c45=1&search=%search_string%&searchin=title&incldead=0',
       'matchRegex': /Nothing found!|Please login or Register a personal account to access our user area and great community/,
       'TV': true},
   {   'name': 'BitHD',
