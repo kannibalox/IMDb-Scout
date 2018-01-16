@@ -7,7 +7,7 @@
 // @require     https://greasyfork.org/libraries/GM_config/20131122/GM_config.js
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js
 //
-// @version        4.7
+// @version        4.7.1
 // @include        http://*.imdb.tld/title/tt*
 // @include        http://*.imdb.tld/search/title*
 // @include        http://*.imdb.com/title/tt*
@@ -299,6 +299,8 @@
 4.6     -    Option to highlight if the movie is missing from PTP
 
 4.7     -    Added option to ignore the movie/tv distinction
+
+4.7.1   -    Fix blutopia, hdchina, indenting
 --------------------------------------------------------*/
 
 
@@ -376,7 +378,7 @@ var sites = [
       'positiveMatch': true,
       'TV': true},
   {   'name': 'Blutopia',
-      'searchUrl': 'https://blutopia.xyz/search?name=%search_string%',
+      'searchUrl': 'https://blutopia.xyz/search??imdb=%nott%',
       'both': true},
   {   'name': 'bB',
       'searchUrl': 'https://baconbits.org/torrents.php?action=basic&filter_cat[9]=1&searchstr=%search_string%+%year%',
@@ -397,7 +399,7 @@ var sites = [
       'matchRegex': /Nothing found!|Please login or Register a personal account to access our user area and great community/,
       'TV': true},
   {   'name': 'BitHD',
-   'searchUrl': 'http://www.bit-hdtv.com/torrents.php?cat=0&search=%tt%',
+      'searchUrl': 'http://www.bit-hdtv.com/torrents.php?cat=0&search=%tt%',
       'matchRegex': /<h2>No match!<\/h2>/},
   {   'name': 'BMTV',
       'searchUrl': 'https://www.bitmetv.org/browse.php?search=%search_string%',
@@ -471,7 +473,7 @@ var sites = [
       'matchRegex': /Nothing here!|You need cookies enabled to log in/,
       'both': true},
   {   'name': 'HDC',
-      'searchUrl': 'https://hdchina.club/torrents.php?incldead=0&spstate=0&inclbookmarked=0&boardid=0&seeders=&search=%tt%&search_area=4&search_mode=2',
+      'searchUrl': 'https://hdchina.org/torrents.php?incldead=0&spstate=0&inclbookmarked=0&boardid=0&seeders=&search=%tt%&search_area=4&search_mode=2',
       'matchRegex': /Nothing found! Try again with a refined search string./},
   {   'name': 'HDClub',
       'searchUrl': 'http://hdclub.org/browse.php?webdl=0&3d=0&search=&incldead=0&dsearch=%tt%',
