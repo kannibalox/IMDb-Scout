@@ -7,7 +7,7 @@
 // @require     https://greasyfork.org/libraries/GM_config/20131122/GM_config.js
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js
 //
-// @version        4.5.5
+// @version        4.7
 // @include        http://*.imdb.tld/title/tt*
 // @include        http://*.imdb.tld/search/title*
 // @include        http://*.imdb.com/title/tt*
@@ -295,6 +295,10 @@
 4.5.4   -    Fixed HDU
 
 4.5.5   -    Fixed BHD
+
+4.6     -    Option to highlight if the movie is missing from PTP
+
+4.7     -    Added option to ignore the movie/tv distinction
 --------------------------------------------------------*/
 
 
@@ -842,6 +846,10 @@ function maybeAddLink(elem, link_text, search_url, site) {
     url: search_url,
     onload: function(response_details) {
       if (String(response_details.responseText).match(site['matchRegex']) ? !(success_match) : success_match) {
+        if(getPageSetting('highlight_missing_ptp') && site['name'] === 'PTP') {
+          if(elem.style)
+            elem.parentNode.style.background='rgba(255,0,0,0.7)';
+        }
         if (!getPageSetting('hide_missing')) {
           addLink(elem, link_text, target, site, 'missing');
         }
@@ -869,7 +877,7 @@ function perform(elem, movie_id, movie_title, is_tv, is_movie) {
       // If we're on a TV page, only show TV links.
       if ((Boolean(site['TV']) == is_tv ||
            Boolean(site['both'])) ||
-          (!is_tv && !is_movie)) {
+          (!is_tv && !is_movie) || getPageSetting('ignore_type')) {
         searchUrl = replaceSearchUrlParams(site, movie_id, movie_title);
         if(site.goToUrl)
           site.goToUrl=replaceSearchUrlParams({
@@ -1099,6 +1107,16 @@ var config_fields = {
     'label': 'Show results on one line?',
     'default': true
   },
+  'highlight_missing_ptp_movie': {
+    'type': 'checkbox',
+    'label': 'Highlight if movie isn\'t on PTP?',
+    'default': false
+  },
+  'ignore_type_movie': {
+    'type': 'checkbox',
+    'label': 'Search all sites, ignoring movie/tv distinction?',
+    'default': false
+  },
   'call_http_search': {
     'section': 'Search Page:',
     'type': 'checkbox',
@@ -1118,6 +1136,16 @@ var config_fields = {
   'use_icons_search': {
     'type': 'checkbox',
     'label': 'Use icons instead of text?',
+    'default': false
+  },
+  'highlight_missing_ptp_search': {
+    'type': 'checkbox',
+    'label': 'Highlight if movie isn\'t on PTP?',
+    'default': false
+  },
+  'ignore_type_search': {
+    'type': 'checkbox',
+    'label': 'Search all sites, ignoring movie/tv distinction?',
     'default': false
   },
   'load_on_ILC_requests': {
