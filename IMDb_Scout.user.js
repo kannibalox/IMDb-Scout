@@ -7,7 +7,7 @@
 // @require     https://greasyfork.org/libraries/GM_config/20131122/GM_config.js
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js
 //
-// @version        4.7.1
+// @version        4.7.2
 // @include        http://*.imdb.tld/title/tt*
 // @include        http://*.imdb.tld/search/title*
 // @include        http://*.imdb.com/title/tt*
@@ -301,6 +301,9 @@
 4.7     -    Added option to ignore the movie/tv distinction
 
 4.7.1   -    Fix blutopia, hdchina, indenting
+
+4.7.2   -    Fix SDBits, M-T
+        -    Add TTG
 --------------------------------------------------------*/
 
 
@@ -534,8 +537,9 @@ var sites = [
       'matchRegex': 'Нет активных раздач, приносим извинения. Пожалуйста, уточните параметры поиска',
       'TV': true},
   {   'name': 'M-T',
-      'searchUrl': 'https://tp.m-team.cc/movie.php?incldead=1&spstate=0&inclbookmarked=0&search=%tt%&search_area=4&search_mode=2',
-      'matchRegex': /Nothing here!|Try again with a refined search string./},
+      'searchUrl': 'https://tp.m-team.cc/torrents.php?incldead=1&spstate=0&inclbookmarked=0&search=%tt%&search_area=4&search_mode=0',
+      'matchRegex': /Nothing here!|Try again with a refined search string./,
+      'both': true},
   {   'name': 'MS',
       'searchUrl': 'http://www.myspleen.org/browse.php?search=%search_string%&title=0&cat=0',
       'matchRegex': /<strong>Nothing found!<\/strong>|<title>MySpleen :: Login<\/title>/,
@@ -611,7 +615,7 @@ var sites = [
       'matchRegex': 'Результатов поиска 0',
       'both': true},
   {   'name': 'SDBits',
-      'searchUrl': 'http://sdbits.org/browse.php?c6=1&c3=1&c1=1&c4=1&c5=1&c2=1&m1=1&incldead=0&from=&to=&imdbgt=0&imdblt=10&uppedby=&imdb=&search=%tt%',
+      'searchUrl': 'https://sdbits.org/browse.php?c6=1&c3=1&c1=1&c4=1&c5=1&c2=1&m1=1&incldead=0&from=&to=&imdbgt=0&imdblt=10&uppedby=&imdb=&search=%tt%',
       'matchRegex': /Nothing found!|<h1>You need cookies enabled to log in.<\/h1>/},
   {   'name': 'sHD',
       'searchUrl': 'https://scenehd.org/browse.php?search=%tt%',
@@ -653,6 +657,9 @@ var sites = [
       'searchUrl': 'https://thepiratebay.org/search/%tt%',
       'matchRegex': /No hits. Try adding an asterisk in you search phrase.<\/h2>/,
       'both': true},
+  {   'name': 'TTG',
+      'searchUrl': 'https://totheglory.im/browse.php?c=M&search_field=imdb%nott%',
+      'matchRegex': /Didn't match any titles/},
   {   'name': 'TVV',
       'searchUrl': 'http://tv-vault.me/torrents.php?searchstr=%search_string%',
       'matchRegex': /Nothing found<\/h2>/,
