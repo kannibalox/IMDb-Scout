@@ -7,11 +7,11 @@
 // @require     https://greasyfork.org/libraries/GM_config/20131122/GM_config.js
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js
 //
-// @version        4.7.2
-// @include        http://*.imdb.tld/title/tt*
-// @include        http://*.imdb.tld/search/title*
-// @include        http://*.imdb.com/title/tt*
-// @include        http://*.imdb.com/search/title*
+// @version        4.7.3
+// @include        http*://*.imdb.tld/title/tt*
+// @include        http*://*.imdb.tld/search/title*
+// @include        http*://*.imdb.com/title/tt*
+// @include        http*://*.imdb.com/search/title*
 // @include        http*://*iloveclassics.com/viewrequests.php?*
 //
 // @connect      *
@@ -303,7 +303,9 @@
 4.7.1   -    Fix blutopia, hdchina, indenting
 
 4.7.2   -    Fix SDBits, M-T
-        -    Add TTG
+        -    Add TTGg
+
+4.7.3   -    Enable on https versions of imdb sites
 --------------------------------------------------------*/
 
 
