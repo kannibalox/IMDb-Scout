@@ -951,16 +951,18 @@ function addIconBar(movie_id, movie_title) {
     if (site['show']) {
       var search_url = replaceSearchUrlParams(site, movie_id, movie_title);
       var image = getFavicon(site);
-      var html = $('<span />').append($('<a />').attr('href', search_url)
-                                      .addClass('iconbar_icon').append(image));
-      iconbar.append(html).append(' ');
+      var html = $('<span />').append("&nbsp;").attr('style', 'font-size: 11px;').append(
+        $('<a />').attr('href', search_url)
+          .addClass('iconbar_icon').append(image));
+      iconbar.append(html).append();
     }
   });
   //If we have access to the openInTab function, add an Open All feature
   if (GM_openInTab) {
     var aopenall = $('<a />').text('Open All')
-    .attr('href', 'javascript:;')
-    .attr('style', 'font-weight:bold;font-size:10px;font-family: Calibri, Verdana, Arial, Helvetica, sans-serif;');
+        .prepend("&nbsp;")
+        .attr('href', 'javascript:;')
+        .attr('style', 'font-weight:bold;font-size:11px;font-family: Calibri, Verdana, Arial, Helvetica, sans-serif;');
     aopenall.click(function() {
       $('.iconbar_icon').each(function() {
         GM_openInTab($(this).attr('href'));
