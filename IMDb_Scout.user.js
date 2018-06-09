@@ -7,7 +7,7 @@
 // @require     https://greasyfork.org/libraries/GM_config/20131122/GM_config.js
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js
 //
-// @version        4.7.3
+// @version        4.8.0
 // @include        http*://*.imdb.tld/title/tt*
 // @include        http*://*.imdb.tld/search/title*
 // @include        http*://*.imdb.com/title/tt*
@@ -303,9 +303,20 @@
 4.7.1   -    Fix blutopia, hdchina, indenting
 
 4.7.2   -    Fix SDBits, M-T
+<<<<<<< HEAD
         -    Add TTGg
 
 4.7.3   -    Enable on https versions of imdb sites
+=======
+        -    Add TTG
+
+4.8.0   -    Add FinVip, JoyHD, TO, TP, TS, TVCK
+        -    Fix TE, HDH, CZ, Subscene
+        -    Remove SubtitleSeeker
+        -    Rip out all site-specific code
+        -    Fix up minor code smells
+        -    Allow config name to be different from site name
+>>>>>>> Bump minor version
 --------------------------------------------------------*/
 
 if (window.top != window.self) // Don't run on frames or iframes
