@@ -831,15 +831,15 @@ function maybeAddLink(elem, link_text, search_url, site) {
     return;
   }
 
-  var domain=search_url.split('/')[2];
-  var now=(new Date())*1;
-  var lastLoaded=window.localStorage[domain+'_lastLoaded'];
-  if(!lastLoaded) {
-    lastLoaded=now-5000;
+  var domain = search_url.split('/')[2];
+  var now = (new Date())*1;
+  var lastLoaded = window.localStorage[domain+'_lastLoaded'];
+  if (!lastLoaded) {
+    lastLoaded = now - 5000;
   } else {
-    lastLoaded=parseInt(lastLoaded);
+    lastLoaded = parseInt(lastLoaded);
   }
-  if(now-lastLoaded < 1000) {
+  if (now-lastLoaded < 1000) {
     window.setTimeout(maybeAddLink.bind(undefined, elem, site['name'], search_url, site), 1000);
     return;
   }
