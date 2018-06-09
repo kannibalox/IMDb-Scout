@@ -325,7 +325,7 @@ if (window.top != window.self) // Don't run on frames or iframes
 //      to tailor the string to a site
 //  - matchRegex:
 //      The string which appears if the searchUrl *doesn't* return a result
-//  - postiveMatch:
+//  - postiveMatch (optional):
 //      Changes the test to return true if the searchUrl *does* return
 //      a result that matches matchRegex
 //  - TV (optional):
@@ -344,6 +344,8 @@ if (window.top != window.self) // Don't run on frames or iframes
 //      If any text on the page matches this regex, the site is treated
 //      as being logged out, rather than mising the movie. This option is
 //      not effected by postiveMatch.
+//  - configName (optional):
+//      Use this to allow changing names without breaking existing users.
 // To create a search URL, there are four parameters
 // you can use inside the URL:
 //  - %tt%:
