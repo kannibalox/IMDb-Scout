@@ -371,8 +371,8 @@ var sites = [
       'matchRegex': /Your search did not match anything/},
   {   'name': 'AR',
       'searchUrl': 'https://alpharatio.cc/torrents.php?searchstr=%search_string%&filter_cat[1]=1&filter_cat[2]=1&filter_cat[3]=1&filter_cat[4]=1&filter_cat[5]=1',
-   'matchRegex': /Your search did not match anything/,
-   'TV': true},
+      'matchRegex': /Your search did not match anything/,
+      'TV': true},
   {   'name': 'AT',
       'searchUrl': 'https://avistaz.to/movies?search=&imdb=%tt%',
       'matchRegex': /class="overlay-container"/,
@@ -408,7 +408,7 @@ var sites = [
       'matchRegex': /<h2>No match!<\/h2>/},
   {   'name': 'BMTV',
       'searchUrl': 'https://www.bitmetv.org/browse.php?search=%search_string%',
-   'matchRegex': /Nothing found!<\/h2>/,
+      'matchRegex': /Nothing found!<\/h2>/,
       'TV': true},
   {   'name': 'BTN',
       'searchUrl': 'https://broadcasthe.net/torrents.php?imdb=%tt%',
@@ -465,14 +465,14 @@ var sites = [
   {   'name': 'GFT',
       'searchUrl': 'https://www.thegft.org/browse.php?view=0&search=%search_string%',
       'matchRegex': /Nothing found!<\/h2>/,
-   'TV': true},
+      'TV': true},
   {   'name': 'GFT-Gems',
       'searchUrl': 'https://www.thegft.org/browse.php?view=1&search=%tt%&searchtype=0',
       'matchRegex': /Nothing found!<\/h2>/},
   {   'name': 'HD',
       'searchUrl': 'http://hounddawgs.org/torrents.php?type=&userid=&searchstr=&searchimdb=%tt%&searchlang=&searchtags=&order_by=s3&order_way=desc&showOnly=#results',
       'matchRegex': /<h2>Din søgning gav intet resultat.<\/h2>/,
-   'both': true},
+      'both': true},
   {   'name': 'HDb',
       'searchUrl': 'https://hdbits.org/browse.php?c3=1&c1=1&c4=1&c2=1&imdb=%tt%',
       'matchRegex': /Nothing here!|You need cookies enabled to log in/,
@@ -701,7 +701,7 @@ var icon_sites = [
       'showByDefault': false},
   {   'name': 'Metacritic',
       'searchUrl': 'http://www.metacritic.com/search/all/%search_string%/results?cats[movie]=1&cats[tv]=1&search_type=advanced&sort=relevancy',
-   'showByDefault': false},
+      'showByDefault': false},
   {   'name': 'Can I Stream.It? (Movie)',
       'searchUrl': 'http://www.canistream.it/search/movie/%search_string%',
       'showByDefault': false},
@@ -735,10 +735,10 @@ var valid_states = [
   'missing',
   'logged_out',
   'error'
-]
+];
 
 function replaceSearchUrlParams(site, movie_id, movie_title) {
-  var search_url = site['searchUrl']
+  var search_url = site['searchUrl'];
   // If an array, do a little bit of recursion
   if ($.isArray(search_url)) {
     var search_array = [];
@@ -747,10 +747,10 @@ function replaceSearchUrlParams(site, movie_id, movie_title) {
     });
     return search_array;
   }
-  var space_replace = ('spaceEncode' in site) ? site['spaceEncode'] : '+'
+  var space_replace = ('spaceEncode' in site) ? site['spaceEncode'] : '+';
   var search_string = movie_title.replace(/ +\(.*/, '').replace(/\s+/g, space_replace);
   var movie_year = document.title.replace(/^(.+) \((.*)([0-9]{4})(.*)$/gi, '$3');
-  var s= search_url.replace(/%tt%/g, 'tt' + movie_id)
+  var s = search_url.replace(/%tt%/g, 'tt' + movie_id)
     .replace(/%nott%/g, movie_id)
     .replace(/%search_string%/g, search_string)
     .replace(/%year%/g, movie_year);
@@ -758,16 +758,16 @@ function replaceSearchUrlParams(site, movie_id, movie_title) {
 }
 
 function getPageSetting(key) {
-  return (onSearchPage ? GM_config.get(key + '_search') : GM_config.get(key + '_movie'))
+  return (onSearchPage ? GM_config.get(key + '_search') : GM_config.get(key + '_movie'));
 }
 
 // Small utility function to return a site's icon
 function getFavicon(site, hide_on_err) {
-  if (typeof(hide_on_err) === 'undefined') hide_on_err = false;
+  if (typeof(hide_on_err) === 'undefined') { hide_on_err = false };
   if ('icon' in site) {
     var favicon = site['icon'];
   } else {
-    var url = new URL(site['searchUrl'])
+    var url = new URL(site['searchUrl']);
     var favicon = url.origin + '\/favicon.ico';
   }
   var img = $('<img />').attr({'style': '-moz-opacity: 0.4; border: 0; vertical-align: text-top',
@@ -775,7 +775,7 @@ function getFavicon(site, hide_on_err) {
                                'src': favicon,
                                'title': site['name'],
                                'alt': site['name']});
-  if (hide_on_err) img.attr('onerror', "this.style.display='none';");
+  if (hide_on_err) { img.attr('onerror', "this.style.display='none';") };
   return img;
 }
 
@@ -890,8 +890,8 @@ function perform(elem, movie_id, movie_title, is_tv, is_movie) {
            Boolean(site['both'])) ||
           (!is_tv && !is_movie) || getPageSetting('ignore_type')) {
         searchUrl = replaceSearchUrlParams(site, movie_id, movie_title);
-        if(site.goToUrl)
-          site.goToUrl=replaceSearchUrlParams({
+        if (site.goToUrl)
+          site.goToUrl = replaceSearchUrlParams({
             'searchUrl': site['goToUrl'],
             'spaceEncode': ('spaceEncode' in site) ? site['spaceEncode'] : '+'
           }, movie_id, movie_title);
@@ -1002,8 +1002,8 @@ function performSearch() {
     });
   } else {
     // Chameleon code, in a different style
-    var titleDivs=document.getElementsByClassName('col-title');
-    var compact=true;
+    var titleDivs = document.getElementsByClassName('col-title');
+    var compact = true;
     if(titleDivs.length === 0)
     {
       titleDivs=document.getElementsByClassName('lister-item-header');
@@ -1011,16 +1011,16 @@ function performSearch() {
     }
     for(var i=0; i<titleDivs.length; i++)
     {
-      var t=titleDivs[i];
-      var link=t.getElementsByTagName('a')[0];
-      var is_tv=link.nextElementSibling.textContent.indexOf('-')!==-1;
-      var is_movie=!is_tv;
-      var movie_title=link.textContent;
-      var movie_id=link.href.split("/title/tt")[1].split("/")[0];
+      var t = titleDivs[i];
+      var link = t.getElementsByTagName('a')[0];
+      var is_tv = link.nextElementSibling.textContent.indexOf('-')!==-1;
+      var is_movie = !is_tv;
+      var movie_title = link.textContent;
+      var movie_id = link.href.split("/title/tt")[1].split("/")[0];
 
-      var elem=t.parentNode.parentNode;
+      var elem = t.parentNode.parentNode;
       if(!compact)
-        elem=t.parentNode;
+        elem = t.parentNode;
       perform(elem, movie_id, movie_title, is_tv, is_movie);
     }
   }
