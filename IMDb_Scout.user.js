@@ -308,7 +308,6 @@
 4.7.3   -    Enable on https versions of imdb sites
 --------------------------------------------------------*/
 
-
 if (window.top != window.self) // Don't run on frames or iframes
 {
   return;
@@ -851,17 +850,21 @@ function maybeAddLink(elem, link_text, search_url, site) {
   }
 
   var target = search_url;
-  if(site.goToUrl)
-    target=site.goToUrl;
+  if (site.goToUrl) {
+    target = site.goToUrl;
+  }
   var success_match = ('positiveMatch' in site) ? site['positiveMatch'] : false;
   GM_xmlhttpRequest({
     method: 'GET',
     url: search_url,
     onload: function(response_details) {
       if (String(response_details.responseText).match(site['matchRegex']) ? !(success_match) : success_match) {
-        if(getPageSetting('highlight_missing_ptp') && site['name'] === 'PTP') {
-          if(elem.style)
-            elem.parentNode.style.background='rgba(255,0,0,0.7)';
+        if (getPageSetting('highlight_missing').split(',').includes(site['name'])) {
+          if (elem.style) {
+            elem.parentNode.style.background = 'rgba(255,104,104,0.7)';
+          } else {
+            document.querySelector('#imdbscout_missing').style.background = 'rgba(255,104,104,0.7)';
+          }
         }
         if (!getPageSetting('hide_missing')) {
           addLink(elem, link_text, target, site, 'missing');
@@ -1133,15 +1136,15 @@ var config_fields = {
     'label': 'Show results on one line?',
     'default': true
   },
-  'highlight_missing_ptp_movie': {
-    'type': 'checkbox',
-    'label': 'Highlight if movie isn\'t on PTP?',
-    'default': false
-  },
   'ignore_type_movie': {
     'type': 'checkbox',
     'label': 'Search all sites, ignoring movie/tv distinction?',
     'default': false
+  },
+  'highlight_missing_movie': {
+    'label': 'Highlight when not on:',
+    'type': 'text',
+    'default': ''
   },
   'call_http_search': {
     'section': 'Search Page:',
@@ -1164,21 +1167,15 @@ var config_fields = {
     'label': 'Use icons instead of text?',
     'default': false
   },
-  'highlight_missing_ptp_search': {
-    'type': 'checkbox',
-    'label': 'Highlight if movie isn\'t on PTP?',
-    'default': false
-  },
   'ignore_type_search': {
     'type': 'checkbox',
     'label': 'Search all sites, ignoring movie/tv distinction?',
     'default': false
   },
-  'load_on_ILC_requests': {
-    'section': 'Extra pages to run on:',
-    'type': 'checkbox',
-    'label': 'ILC Requests',
-    'default': false
+  'highlight_missing_search': {
+    'label': 'Highlight when not on:',
+    'type': 'text',
+    'default': ''
   }
 };
 
@@ -1219,13 +1216,13 @@ font-weight: normal !important;}',
   'events':
   {
     'open': function() {
-      $('#imdb_scout').contents().find('#imdb_scout_section_3').find('.field_label').each(function(index, label) {
+      $('#imdb_scout').contents().find('#imdb_scout_section_2').find('.field_label').each(function(index, label) {
         url = new URL(sites[index].searchUrl);
         $(label).append(' ' + '<a class="grey_link" target="_blank" style="color: gray; text-decoration : none" href="' + url.origin + '">'
                         + (/www./.test(url.hostname) ? url.hostname.match(/www.(.*)/)[1] : url.hostname)  + '</a>');
         $(label).prepend(getFavicon(sites[index], true));
       });
-      $('#imdb_scout').contents().find('#imdb_scout_section_4').find('.field_label').each(function(index, label) {
+      $('#imdb_scout').contents().find('#imdb_scout_section_3').find('.field_label').each(function(index, label) {
   $(label).prepend(getFavicon(icon_sites[index], true));
       });
     }
@@ -1249,11 +1246,6 @@ $.each(icon_sites, function(index, icon_site) {
 var onSearchPage = Boolean(location.href.match('search'));
 
 $('title').ready(function() {
-  if(window.location.href.indexOf('iloveclassics.com') !== -1 && GM_config.get('load_on_ILC_requests'))
-  {
-    iloveclassics();
-    return;
-  }
   if (!onSearchPage && GM_config.get('load_on_start_movie')) {
     performPage();
   } else if (onSearchPage && GM_config.get('load_on_start_search')) {
@@ -1262,34 +1254,3 @@ $('title').ready(function() {
     displayButton();
   }
 });
-
-function iloveclassics()
-{
-  var movie_id=document.body.textContent.split('imdb.com/title/tt');
-  if(movie_id.length < 2)
-    return;
-
-  var tr=document.createElement('tr');
-  tr.setAttribute('style', 'background-color: rgb(59,59,59); background-image: url("http://www.iloveclassics.com/themes/NB-iSkin/images/NB_col1.gif"); background-position: 50% 0%; background-repeat: repeat-x; empty-cells: show;');
-  var e=document.getElementsByClassName('clearalt6')[0].parentNode;
-  e.parentNode.insertBefore(tr, e);
-
-  var td=document.createElement('td');
-  td.style.textAlign='right';
-  tr.appendChild(td);
-  td.innerHTML=GM_config.get('imdbscout_header_text');
-
-  var td=document.createElement('td');
-  td.setAttribute('id', 'imdbscout_found');
-  tr.appendChild(td);
-
-
-  var movie_title = document.getElementsByClassName('table_head')[0].textContent;
-  var movie_id = parseInt(movie_id[1]);
-  while(movie_id.length < 7)
-    movie_id='0'+movie_id;
-  var is_tv_page = false;
-  var is_movie_page = true;
-  perform(td, movie_id, movie_title,
-          is_tv_page, is_movie_page);
-}
