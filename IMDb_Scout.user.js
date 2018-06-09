@@ -1080,6 +1080,17 @@ function getLinkArea() {
 }
 
 //------------------------------------------------------
+// Create the config name
+//------------------------------------------------------
+
+function configName(site) {
+  if ('configName' in site) {
+    return 'show_' + site['configName'] + (site['TV'] ? '_TV' : '');
+  } else {
+    return 'show_' + site['name'] + (site['TV'] ? '_TV' : '');
+  }
+}
+//------------------------------------------------------
 // Code being run (main)
 //------------------------------------------------------
 
@@ -1170,7 +1181,7 @@ var config_fields = {
 // Add each site to a GM_config dictionary schema
 // The GM_config default for checkboxes is false
 $.each(sites, function(index, site) {
-  config_fields['show_' + site['name'] + (site['TV'] ? '_TV' : '')] = {
+  config_fields[configName(site)] = {
     'section': (index == 0) ? ['Torrents:'] : '',
     'type': 'checkbox',
     'label': ' ' + site['name'] + (site['TV'] ? ' (TV)' : '')
@@ -1216,12 +1227,12 @@ font-weight: normal !important;}',
     }
   }
 });
+
 GM_registerMenuCommand('IMDb Scout Preferences', function() {GM_config.open()});
 
 // Fetch per-site values from GM_config
 $.each(sites, function(index, site) {
-  site['show'] = GM_config.get('show_' + site['name'] +
-                               (site['TV'] ? '_TV' : ''));
+  site['show'] = GM_config.get(configName(site));
 });
 
 $.each(icon_sites, function(index, icon_site) {
