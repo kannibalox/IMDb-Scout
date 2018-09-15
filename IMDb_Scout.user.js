@@ -303,11 +303,9 @@
 4.7.1   -    Fix blutopia, hdchina, indenting
 
 4.7.2   -    Fix SDBits, M-T
-<<<<<<< HEAD
         -    Add TTGg
 
 4.7.3   -    Enable on https versions of imdb sites
-=======
         -    Add TTG
 
 4.8.0   -    Add FinVip, JoyHD, TO, TP, TS, TVCK
@@ -316,7 +314,6 @@
         -    Rip out all site-specific code
         -    Fix up minor code smells
         -    Allow config name to be different from site name
->>>>>>> Bump minor version
 --------------------------------------------------------*/
 
 if (window.top != window.self) // Don't run on frames or iframes
