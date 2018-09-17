@@ -7,7 +7,7 @@
 // @require     https://greasyfork.org/libraries/GM_config/20131122/GM_config.js
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js
 //
-// @version        4.8.1
+// @version        4.8.2
 // @include        http*://*.imdb.tld/title/tt*
 // @include        http*://*.imdb.tld/search/title*
 // @include        http*://*.imdb.com/title/tt*
@@ -316,7 +316,9 @@
         -    Allow config name to be different from site name
 
 4.8.1   -    Add SP
---------------------------------------------------------*/
+
+4.8.2   -    Add TMDB
+-------------------------------------------------------*/
 
 if (window.top != window.self) // Don't run on frames or iframes
 {
@@ -717,6 +719,8 @@ var sites = [
 ];
 
 var icon_sites = [
+  {   'name': 'TMDB',
+      'searchUrl': 'https://www.themoviedb.org/search?query=%search_string%'}, 
   {   'name': 'OpenSubtitles',
       'searchUrl': 'http://www.opensubtitles.org/en/search/imdbid-%tt%'},
   {   'name': 'YouTube.com',
