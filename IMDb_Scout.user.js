@@ -379,6 +379,9 @@ var sites = [
       'searchUrl': 'https://awesome-hd.me/torrents.php?id=%tt%',
       'matchRegex': /Your search did not match anything.|<h2>Error 404<\/h2>/,
       'both': true},
+  {   'name': 'ANT',
+      'searchUrl': 'https://anthelion.me/torrents.php?searchstr=%search_string%&order_by=time&order_way=desc&group_results=1&action=basic&searchsubmit=1',
+      'matchRegex': /Your search did not match anything/},
   {   'name': 'AR',
       'searchUrl': 'https://alpharatio.cc/torrents.php?searchstr=%search_string%+%year%&filter_cat[6]=1&filter_cat[7]=1&filter_cat[8]=1&filter_cat[9]=1',
       'matchRegex': /Your search did not match anything/},
@@ -601,7 +604,7 @@ var sites = [
       'TV': true},
   {   'name': 'PTF',
       'searchUrl': 'https://ptfiles.net/browse.php?search=%search_string%&incldead=0&title=0',
-      'matchRegex': /<h2>Nothing found<\/h2>/},
+      'matchRegex': /<h2>Nothing found!<\/h2>/},
   {   'name': 'PTN',
       'icon': 'https://piratethenet.org/pic/favicon.ico',
       'searchUrl': 'https://piratethenet.org/browseold.php?incldead=1&_by=3&search=%tt%',
@@ -725,6 +728,10 @@ var sites = [
 ];
 
 var icon_sites = [
+  {   'name': 'Google',
+      'searchUrl': 'https://www.google.com/search?q=%search_string%'},
+  {   'name': 'TMDB',
+      'searchUrl': 'https://www.themoviedb.org/search?query=%search_string%'},
   {   'name': 'TMDB',
       'searchUrl': 'https://www.themoviedb.org/search?query=%search_string%'}, 
   {   'name': 'OpenSubtitles',
