@@ -7,12 +7,11 @@
 // @require     https://greasyfork.org/libraries/GM_config/20131122/GM_config.js
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js
 //
-// @version        4.8.2
+// @version        4.8.3
 // @include        http*://*.imdb.tld/title/tt*
 // @include        http*://*.imdb.tld/search/title*
 // @include        http*://*.imdb.com/title/tt*
 // @include        http*://*.imdb.com/search/title*
-// @include        http*://*iloveclassics.com/viewrequests.php?*
 //
 // @connect      *
 // @grant        GM_log
@@ -318,6 +317,10 @@
 4.8.1   -    Add SP
 
 4.8.2   -    Add TMDB
+
+4.8.3   -    Add TGx
+        -    Fix TTG, JoyHD, HDH
+        -    Remove duplicate TMDB
 -------------------------------------------------------*/
 
 if (window.top != window.self) // Don't run on frames or iframes
@@ -489,7 +492,7 @@ var sites = [
       'matchRegex': /Nothing found! Try again with a refined search string./},
   {   'name': 'HDH',
       'configName': 'HDHome',
-      'searchUrl': 'http://hdhome.org/torrents.php?search_area=4&search=%tt%',
+      'searchUrl': 'https://hdhome.org/torrents.php?search_area=4&search=%tt%',
       'matchRegex': /Nothing found! Try again with a refined search string/},
   {   'name': 'HDME',
       'searchUrl': 'https://hdme.eu/browse.php?blah=2&cat=0&incldead=1&search=%tt%',
@@ -533,7 +536,7 @@ var sites = [
       'matchRegex': /<h1 style="color:yellow">No Torrents Found!/,
       'TV': true},
   {   'name': 'JoyHD',
-      'searchUrl': 'http://www.joyhd.org/torrents.php?search_area=4&search=%tt%',
+      'searchUrl': 'https://www.joyhd.net/torrents.php?search_area=4&search=%tt%',
       'matchRegex': /Nothing found! Try again with a refined search string/},
   {   'name': 'KG',
       'searchUrl': 'https://www.karagarga.in/browse.php?search_type=imdb&search=%nott%',
@@ -689,8 +692,11 @@ var sites = [
       'matchRegex': /No hits. Try adding an asterisk in you search phrase.<\/h2>/,
       'both': true},
   {   'name': 'TTG',
-      'searchUrl': 'https://totheglory.im/browse.php?c=M&search_field=imdb%nott%',
+      'searchUrl': 'https://totheglory.im/browse.php?c=M&search_field=imdb%nott%+%2Bincdead',
       'matchRegex': /Didn't match any titles/},
+  {   'name': 'TGx',
+      'searchUrl': 'https://torrentgalaxy.org/torrents.php?search=%tt%',
+      'matchRegex': /No results found/},
   {   'name': 'TVCK',
       'searchUrl': 'https://www.tvchaosuk.com/browse.php?do=search&search_type=t_name&keywords=%search_string%',
       'matchRegex': /<b>Nothing Found<\/b>/},
@@ -715,8 +721,6 @@ var icon_sites = [
       'searchUrl': 'https://www.thetvdb.com/search?q=%search_string%'},
   {   'name': 'BCDB',
       'searchUrl': 'https://www.bcdb.com/bcdb/search.cgi?query=%search_string%'},
-  {   'name': 'TMDB',
-      'searchUrl': 'https://www.themoviedb.org/search?query=%search_string%'},
   {   'name': 'OpenSubtitles',
       'searchUrl': 'http://www.opensubtitles.org/en/search/imdbid-%tt%'},
   {   'name': 'YouTube.com',
