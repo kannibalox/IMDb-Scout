@@ -7,11 +7,13 @@
 // @require     https://greasyfork.org/libraries/GM_config/20131122/GM_config.js
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js
 //
-// @version        4.8.3
+// @version        4.9.0
 // @include        http*://*.imdb.tld/title/tt*
 // @include        http*://*.imdb.tld/search/title*
+// @include        http*://*.imdb.tld/user/*/watchlist*
 // @include        http*://*.imdb.com/title/tt*
 // @include        http*://*.imdb.com/search/title*
+// @include        http*://*.imdb.com/user/*/watchlist*
 //
 // @connect      *
 // @grant        GM_log
@@ -321,6 +323,8 @@
 4.8.3   -    Add TGx
         -    Fix TTG, JoyHD, HDH
         -    Remove duplicate TMDB
+
+4.9.0   -    Add support for reference view
 -------------------------------------------------------*/
 
 if (window.top != window.self) // Don't run on frames or iframes
@@ -988,6 +992,8 @@ function addIconBar(movie_id, movie_title) {
     var iconbar = $('h1.header:first').append($('<br/>'));
   } else if ($('.title_wrapper h1')) {
     var iconbar = $('.title_wrapper h1').append($('<br/>'));
+  } else if ($('.titlereference-header').length) {
+    var iconbar = $('.titlereference-header').append($('<br/>'));
   } else {
     var iconbar = $('#tn15title .title-extra');
   }
@@ -1075,11 +1081,39 @@ function performSearch() {
 }
 
 //------------------------------------------------------
+// Watchlist page code
+//------------------------------------------------------
+
+function performWatchlist() {
+  //Add css for the new table cells we're going to add
+  var styles = '.result_box {width: 335px}';
+  styles += ' .result_box a { margin-right: 5px; color: #444;} ';
+  styles += ' .result_box a:visited { color: #551A8B; }';
+  styles += ' #content-2-wide #main, #content-2-wide';
+  styles += ' .maindetails_center {margin-left: 5px; width: 1001px;} ';
+  GM_addStyle(styles);
+  if($('div .lister-list.mode-detail').children().length !== 0) {
+    $('div .lister-list.mode-detail').children().each(function() {
+      var link = $(this).find('.lister-item-header>a');
+      var is_tv = Boolean($(this).find('.lister-item-details').html()
+                          .match('TV Series'));
+      var is_movie = Boolean($(this).find('.lister-item-year').html()
+                             .match(/^([0-9]*)$/));
+      var movie_title = link.html();
+      var movie_id = link.attr('href').match(/tt([0-9]*)\/?.*/)[1];
+      console.log(movie_title);
+      console.log(link.attr('href'));
+      perform($(this), movie_id, movie_title, is_tv, is_movie);
+    });
+  }
+}
+
+//------------------------------------------------------
 // TV/movie page code
 //------------------------------------------------------
 
 function performPage() {
-  var movie_title = $('title').text().match(/^(.*?) \(/)[1];
+  var movie_title = $('title_wrapper>h1').text();
   var movie_id = document.URL.match(/\/tt([0-9]+)\//)[1].trim('tt');
   var is_tv_page = Boolean($('title').text().match('TV Series')) ||
       Boolean($('.tv-extra').length);
@@ -1213,6 +1247,11 @@ var config_fields = {
     'label': 'Search all sites, ignoring movie/tv distinction?',
     'default': false
   },
+  'watchlist_as_search': {
+    'type': 'checkbox',
+    'label': 'Treat the watchlist a a search page?',
+    'default': false
+  },
   'highlight_missing_search': {
     'label': 'Highlight when not on:',
     'type': 'text',
@@ -1284,13 +1323,18 @@ $.each(icon_sites, function(index, icon_site) {
 // Are we on a search page?
 // This variable is camelCased to show it's global
 // Hopefully it can be factored out of the global scope in the future
-var onSearchPage = Boolean(location.href.match('search'));
+var onSearchPage = Boolean(location.href.match('search')) || Boolean(location.href.match('watchlist'));
 
 $('title').ready(function() {
   if (!onSearchPage && GM_config.get('load_on_start_movie')) {
     performPage();
   } else if (onSearchPage && GM_config.get('load_on_start_search')) {
-    performSearch();
+    if (Boolean(location.href.match('watchlist')) && GM_config.get('watchlist_as_search')) {
+      performWatchlist();
+    } else {
+      performSearch();
+    }
+
   } else {
     displayButton();
   }
