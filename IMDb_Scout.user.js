@@ -7,7 +7,7 @@
 // @require     https://greasyfork.org/libraries/GM_config/20131122/GM_config.js
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js
 //
-// @version        4.9.0
+// @version        4.10.0
 // @include        http*://*.imdb.tld/title/tt*
 // @include        http*://*.imdb.tld/search/title*
 // @include        http*://*.imdb.tld/user/*/watchlist*
@@ -325,6 +325,10 @@
         -    Remove duplicate TMDB
 
 4.9.0   -    Add support for a user's watchlist
+
+4.10.0  -    Add support for icon sites on the reference view
+        -    Add HTTPS for icon sites that support it
+
 -------------------------------------------------------*/
 
 if (window.top != window.self) // Don't run on frames or iframes
@@ -726,7 +730,7 @@ var icon_sites = [
   {   'name': 'BCDB',
       'searchUrl': 'https://www.bcdb.com/bcdb/search.cgi?query=%search_string%'},
   {   'name': 'OpenSubtitles',
-      'searchUrl': 'http://www.opensubtitles.org/en/search/imdbid-%tt%'},
+      'searchUrl': 'https://www.opensubtitles.org/en/search/imdbid-%tt%'},
   {   'name': 'YouTube.com',
       'searchUrl': 'https://www.youtube.com/results?search_query="%search_string%"+%year%+trailer'},
   {   'name': 'Rotten Tomatoes',
@@ -736,17 +740,17 @@ var icon_sites = [
   {   'name': 'iCheckMovies',
       'searchUrl': 'https://www.icheckmovies.com/search/movies/?query=%tt%'},
   {   'name': 'Letterboxd',
-      'searchUrl': 'http://letterboxd.com/imdb/%nott%'},
+      'searchUrl': 'https://letterboxd.com/imdb/%nott%'},
   {   'name': 'Subscene',
       'icon': 'https://subscene.com/favicon.ico',
       'searchUrl': 'https://subscene.com/subtitles/title?q=%search_string%'},
   {   'name': 'Wikipedia',
       'searchUrl': 'https://en.wikipedia.org/w/index.php?search=%search_string%&go=Go'},
   {   'name': 'FilmAffinity',
-      'searchUrl': 'http://www.filmaffinity.com/en/advsearch.php?stext=%search_string%&stype[]=title&fromyear=%year%&toyear=%year%',
+      'searchUrl': 'https://www.filmaffinity.com/en/advsearch.php?stext=%search_string%&stype[]=title&fromyear=%year%&toyear=%year%',
       'showByDefault': false},
   {   'name': 'Metacritic',
-      'searchUrl': 'http://www.metacritic.com/search/all/%search_string%/results?cats[movie]=1&cats[tv]=1&search_type=advanced&sort=relevancy',
+      'searchUrl': 'https://www.metacritic.com/search/all/%search_string%/results?cats[movie]=1&cats[tv]=1&search_type=advanced&sort=relevancy',
       'showByDefault': false},
   {   'name': 'Can I Stream.It? (Movie)',
       'searchUrl': 'http://www.canistream.it/search/movie/%search_string%',
@@ -755,19 +759,19 @@ var icon_sites = [
       'searchUrl': 'http://www.canistream.it/search/tv/%search_string%',
       'showByDefault': false},
   {   'name': 'AllMovie',
-      'searchUrl': 'http://www.allmovie.com/search/movies/%search_string%',
+      'searchUrl': 'https://www.allmovie.com/search/movies/%search_string%',
       'showByDefault': false},
   {   'name': 'Facebook',
       'searchUrl': 'https://www.facebook.com/search/str/%search_string%/keywords_pages',
       'showByDefault': false},
   {   'name': 'Amazon',
-      'searchUrl': 'http://www.amazon.com/s/ref=nb_sb_noss?url=search-alias%3Dmovies-tv&field-keywords=%search_string%',
+      'searchUrl': 'https://www.amazon.com/s/ref=nb_sb_noss?url=search-alias%3Dmovies-tv&field-keywords=%search_string%',
       'showByDefault': false},
   {   'name': 'Netflix',
-      'searchUrl': 'http://www.netflix.com/search/%search_string%',
+      'searchUrl': 'https://www.netflix.com/search/%search_string%',
       'showByDefault': false},
   {   'name': 'Blu-ray.com',
-      'searchUrl': 'http://www.blu-ray.com/search/?quicksearch=1&quicksearch_country=all&quicksearch_keyword=%search_string%+&section=bluraymovies',
+      'searchUrl': 'https://www.blu-ray.com/search/?quicksearch=1&quicksearch_country=all&quicksearch_keyword=%search_string%+&section=bluraymovies',
       'showByDefault': false},
   {   'name': 'trakt.tv',
       'icon': 'https://walter.trakt.tv/hotlink-ok/public/favicon.ico',
@@ -798,7 +802,7 @@ function replaceSearchUrlParams(site, movie_id, movie_title) {
   var movie_year = document.title.replace(/^(.+) \((.*)([0-9]{4})(.*)$/gi, '$3');
   var s = search_url.replace(/%tt%/g, 'tt' + movie_id)
     .replace(/%nott%/g, movie_id)
-    .replace(/%search_string%/g, search_string)
+    .replace(/%search_string%/g, search_string.trim())
     .replace(/%year%/g, movie_year);
   return s;
 }
@@ -990,10 +994,10 @@ function displayButton() {
 function addIconBar(movie_id, movie_title) {
   if ($('h1.header:first').length) {
     var iconbar = $('h1.header:first').append($('<br/>'));
-  } else if ($('.title_wrapper h1')) {
+  } else if ($('.title_wrapper h1').length) {
     var iconbar = $('.title_wrapper h1').append($('<br/>'));
-  } else if ($('.titlereference-header').length) {
-    var iconbar = $('.titlereference-header').append($('<br/>'));
+  } else if ($('h3[itemprop="name"]').length) {
+    var iconbar = $('h3[itemprop="name"]').append($('<br/>'));
   } else {
     var iconbar = $('#tn15title .title-extra');
   }
@@ -1114,6 +1118,9 @@ function performWatchlist() {
 
 function performPage() {
   var movie_title = $('title_wrapper>h1').text();
+  if (movie_title === "") {
+    movie_title = $('h3[itemprop="name"]').text().trim();
+  }
   var movie_id = document.URL.match(/\/tt([0-9]+)\//)[1].trim('tt');
   var is_tv_page = Boolean($('title').text().match('TV Series')) ||
       Boolean($('.tv-extra').length);
