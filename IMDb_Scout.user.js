@@ -324,7 +324,7 @@
         -    Fix TTG, JoyHD, HDH
         -    Remove duplicate TMDB
 
-4.9.0   -    Add support for reference view
+4.9.0   -    Add support for a user's watchlist
 -------------------------------------------------------*/
 
 if (window.top != window.self) // Don't run on frames or iframes
