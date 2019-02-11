@@ -802,7 +802,7 @@ function replaceSearchUrlParams(site, movie_id, movie_title) {
   var movie_year = document.title.replace(/^(.+) \((.*)([0-9]{4})(.*)$/gi, '$3');
   var s = search_url.replace(/%tt%/g, 'tt' + movie_id)
     .replace(/%nott%/g, movie_id)
-    .replace(/%search_string%/g, search_string.trim())
+    .replace(/%search_string%/g, search_string)
     .replace(/%year%/g, movie_year);
   return s;
 }
@@ -1105,8 +1105,6 @@ function performWatchlist() {
                              .match(/^([0-9]*)$/));
       var movie_title = link.html();
       var movie_id = link.attr('href').match(/tt([0-9]*)\/?.*/)[1];
-      console.log(movie_title);
-      console.log(link.attr('href'));
       perform($(this), movie_id, movie_title, is_tv, is_movie);
     });
   }
@@ -1117,7 +1115,7 @@ function performWatchlist() {
 //------------------------------------------------------
 
 function performPage() {
-  var movie_title = $('title_wrapper>h1').text();
+  var movie_title = $('.title_wrapper>h1').clone().children().remove().end().text();
   if (movie_title === "") {
     movie_title = $('h3[itemprop="name"]').text().trim();
   }
@@ -1346,3 +1344,4 @@ $('title').ready(function() {
     displayButton();
   }
 });
+
