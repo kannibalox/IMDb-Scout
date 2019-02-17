@@ -7,7 +7,7 @@
 // @require     https://greasyfork.org/libraries/GM_config/20131122/GM_config.js
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js
 //
-// @version        4.11.0
+// @version        4.11.1
 // @include        http*://*.imdb.tld/title/tt*
 // @include        http*://*.imdb.tld/search/title*
 // @include        http*://*.imdb.tld/user/*/watchlist*
@@ -331,6 +331,9 @@
 
 4.11.0  -    Fix search_string
 
+4.11.1  -    Remove Blutopia
+             Fix IPT
+
 -------------------------------------------------------*/
 
 if (window.top != window.self) // Don't run on frames or iframes
@@ -411,9 +414,6 @@ var sites = [
       'matchRegex': /class="overlay-container"/,
       'positiveMatch': true,
       'TV': true},
-  {   'name': 'Blutopia',
-      'searchUrl': 'https://blutopia.xyz/search??imdb=%nott%',
-      'both': true},
   {   'name': 'bB',
       'searchUrl': 'https://baconbits.org/torrents.php?action=basic&filter_cat[9]=1&searchstr=%search_string%+%year%',
       'matchRegex': /Your search was way too l33t|You will be banned for 6 hours after your login attempts run out/},
@@ -539,7 +539,7 @@ var sites = [
       'searchUrl': 'http://www.iloveclassics.com/browse.php?incldead=1&searchin=2&search=%tt%',
       'matchRegex': /Try again with a refined search string|<h1>Not logged in!<\/h1>/},
   {   'name': 'IPT',
-      'searchUrl': 'https://www.iptorrents.com/torrents/?q=%tt%',
+      'searchUrl': 'https://www.iptorrents.com/t?q=%tt%',
       'matchRegex': /<h1 style="color:yellow">No Torrents Found!/},
   {   'name': 'IPT',
       'searchUrl': 'https://www.iptorrents.com/torrents/?q=%search_string%',
