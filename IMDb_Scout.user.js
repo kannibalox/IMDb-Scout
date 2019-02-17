@@ -7,7 +7,7 @@
 // @require     https://greasyfork.org/libraries/GM_config/20131122/GM_config.js
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js
 //
-// @version        4.10.0
+// @version        4.11.0
 // @include        http*://*.imdb.tld/title/tt*
 // @include        http*://*.imdb.tld/search/title*
 // @include        http*://*.imdb.tld/user/*/watchlist*
@@ -328,6 +328,8 @@
 
 4.10.0  -    Add support for icon sites on the reference view
         -    Add HTTPS for icon sites that support it
+
+4.11.0  -    Fix search_string
 
 -------------------------------------------------------*/
 
@@ -798,7 +800,7 @@ function replaceSearchUrlParams(site, movie_id, movie_title) {
     return search_array;
   }
   var space_replace = ('spaceEncode' in site) ? site['spaceEncode'] : '+';
-  var search_string = movie_title.replace(/ +\(.*/, '').replace(/\s+/g, space_replace);
+  var search_string = movie_title.trim().replace(/ +\(.*/, '').replace(/\s+/g, space_replace);
   var movie_year = document.title.replace(/^(.+) \((.*)([0-9]{4})(.*)$/gi, '$3');
   var s = search_url.replace(/%tt%/g, 'tt' + movie_id)
     .replace(/%nott%/g, movie_id)
