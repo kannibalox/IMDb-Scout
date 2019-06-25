@@ -781,7 +781,7 @@ var icon_sites = [
       'showByDefault': false},
   {   'name': 'trakt.tv',
       'icon': 'https://walter.trakt.tv/hotlink-ok/public/favicon.ico',
-      'searchUrl': 'https://trakt.tv/search?query=%search_string%',
+      'searchUrl': 'https://trakt.tv/search/imdb?query=%tt%',
       'showByDefault': false}
 ];
 
