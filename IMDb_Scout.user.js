@@ -7,7 +7,7 @@
 // @require     https://greasyfork.org/libraries/GM_config/20131122/GM_config.js
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js
 //
-// @version        4.11.1
+// @version        4.11.2
 // @include        http*://*.imdb.tld/title/tt*
 // @include        http*://*.imdb.tld/search/title*
 // @include        http*://*.imdb.tld/user/*/watchlist*
@@ -333,6 +333,8 @@
 
 4.11.1  -    Remove Blutopia
              Fix IPT
+
+4.11.2  -    Add unogs
 
 -------------------------------------------------------*/
 
@@ -782,6 +784,9 @@ var icon_sites = [
   {   'name': 'trakt.tv',
       'icon': 'https://walter.trakt.tv/hotlink-ok/public/favicon.ico',
       'searchUrl': 'https://trakt.tv/search/imdb?query=%tt%',
+      'showByDefault': false},
+  {   'name': 'unogs',
+      'searchUrl': 'https://unogs.com/?q=%tt%',
       'showByDefault': false}
 ];
 
