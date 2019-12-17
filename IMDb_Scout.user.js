@@ -7,7 +7,7 @@
 // @require     https://greasyfork.org/libraries/GM_config/20131122/GM_config.js
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js
 //
-// @version        4.11.2
+// @version        4.11.3
 // @include        http*://*.imdb.tld/title/tt*
 // @include        http*://*.imdb.tld/search/title*
 // @include        http*://*.imdb.tld/user/*/watchlist*
@@ -335,6 +335,8 @@
              Fix IPT
 
 4.11.2  -    Add unogs
+
+4.11.2  -    Fix TVDB
 
 -------------------------------------------------------*/
 
@@ -734,7 +736,7 @@ var icon_sites = [
   {   'name': 'TMDB',
       'searchUrl': 'https://www.themoviedb.org/search?query=%search_string%'},
   {   'name': 'TVDB',
-      'searchUrl': 'https://www.thetvdb.com/search?q=%search_string%'},
+      'searchUrl': 'https://www.thetvdb.com/search?query=%search_string%'},
   {   'name': 'BCDB',
       'searchUrl': 'https://www.bcdb.com/bcdb/search.cgi?query=%search_string%'},
   {   'name': 'OpenSubtitles',
