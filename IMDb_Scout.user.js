@@ -7,7 +7,7 @@
 // @require     https://greasyfork.org/libraries/GM_config/20131122/GM_config.js
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js
 //
-// @version        4.11.3
+// @version        4.11.4
 // @include        http*://*.imdb.tld/title/tt*
 // @include        http*://*.imdb.tld/search/title*
 // @include        http*://*.imdb.tld/user/*/watchlist*
@@ -336,7 +336,10 @@
 
 4.11.2  -    Add unogs
 
-4.11.2  -    Fix TVDB
+4.11.3  -    Fix TVDB
+
+4.11.4  -    Add AB, remove ADC
+        -    Fix BHD, Demonoid, TPB, M-T, U2, BTN, BitHD
 
 -------------------------------------------------------*/
 
@@ -391,14 +394,13 @@ if (window.top != window.self) // Don't run on frames or iframes
 //------------------------------------------------------
 
 var sites = [
-  {   'name': 'ADC',
-      'searchUrl': 'https://asiandvdclub.org/browse.php?descr=1&btnSubmit=Submit&search=%tt%',
-      'matchRegex': /Your search returned zero results|<h1>You need cookies enabled to log in.<\/h1>/,
-      'both': true},
   {   'name': 'AHD',
       'searchUrl': 'https://awesome-hd.me/torrents.php?id=%tt%',
       'matchRegex': /Your search did not match anything.|<h2>Error 404<\/h2>/,
       'both': true},
+  {   'name': 'AB',
+      'searchUrl': 'https://animebytes.tv/torrents.php?searchstr=%search_string%&action=advanced&search_type=title&tags=-lolicon+-shotacon+&sort=relevance&way=desc&hentai=0&showhidden=1&anime%5Btv_series%5D=1&anime%5Btv_special%5D=1&anime%5Bmovie%5D=1&anime%5Bova%5D=1&anime%5Bona%5D=1&anime%5Bdvd_special%5D=1&anime%5Bbd_special%5D=1&airing=2',
+      'matchRegex': /Translation: No search results/,
   {   'name': 'ANT',
       'searchUrl': 'https://anthelion.me/torrents.php?searchstr=%search_string%&order_by=time&order_way=desc&group_results=1&action=basic&searchsubmit=1',
       'matchRegex': /Your search did not match anything/},
@@ -430,19 +432,16 @@ var sites = [
       'matchRegex': /Nothing found|Ничего не найдено/,
       'both': true},
   {   'name': 'BHD',
-      'searchUrl': 'https://beyond-hd.me/browse.php?search=%tt%&searchin=title&incldead=1',
-      'matchRegex': /Nothing found!|Please login or Register a personal account to access our user area and great community/},
-  {   'name': 'BHD',
-      'searchUrl': 'https://beyond-hd.me/browse.php?c40=1&c44=1&c48=1&c89=1&c46=1&c45=1&search=%search_string%&searchin=title&incldead=0',
-      'matchRegex': /Nothing found!|Please login or Register a personal account to access our user area and great community/,
+      'searchUrl': 'https://beyond-hd.me/torrents/all?search=&doSearch=Search&imdb=%nott%',
+      'matchRegex': /<h5 class="text-bold text-danger">N\/A<\/h5>|Please login or Register a personal account to access our user area and great community/},
       'TV': true},
   {   'name': 'BitHD',
-      'searchUrl': 'http://www.bit-hdtv.com/torrents.php?cat=0&search=%tt%',
+      'searchUrl': 'https://www.bit-hdtv.com/torrents.php?search=%tt%&options=4',
       'matchRegex': /<h2>No match!<\/h2>/},
   {   'name': 'BTN',
       'searchUrl': 'https://broadcasthe.net/torrents.php?imdb=%tt%',
       'matchRegex': /Error 404|Lost your password\?/,
-      'TV': true},
+      'both': true},
   {   'name': 'BTN-Req',
       'searchUrl':  'https://broadcasthe.net/requests.php?search=%search_string%',
       'matchRegex': /Nothing found|Lost your password\?/,
@@ -477,7 +476,7 @@ var sites = [
       'positiveMatch': true,
       'TV': true},
   {   'name': 'Demnoid',
-      'searchUrl': 'http://www.demonoid.pw/files/?query=%tt%',
+      'searchUrl': 'http://www.demonoid.is/files/?query=%tt%',
       'matchRegex': /<b>No torrents found<\/b>|We are currently performing the daily site maintenance.<br>/,
       'both': true},
   {   'name': 'DVDSeed',
@@ -563,7 +562,7 @@ var sites = [
       'matchRegex': 'Нет активных раздач, приносим извинения. Пожалуйста, уточните параметры поиска',
       'TV': true},
   {   'name': 'M-T',
-      'searchUrl': 'https://tp.m-team.cc/torrents.php?incldead=1&spstate=0&inclbookmarked=0&search=%tt%&search_area=4&search_mode=0',
+      'searchUrl': 'https://pt.m-team.cc/torrents.php?incldead=1&spstate=0&inclbookmarked=0&search=%tt%&search_area=4&search_mode=0',
       'matchRegex': /Nothing here!|Try again with a refined search string./,
       'both': true},
   {   'name': 'MS',
@@ -706,7 +705,7 @@ var sites = [
       'matchRegex': /Signup With Invite|Please refine your search./,
       'TV': true},
   {   'name': 'TPB',
-      'searchUrl': 'https://thepiratebay.org/search/%tt%',
+      'searchUrl': 'https://thepiratebay.blog/search/%tt%',
       'matchRegex': /No hits. Try adding an asterisk in you search phrase.<\/h2>/,
       'both': true},
   {   'name': 'TTG',
@@ -722,6 +721,9 @@ var sites = [
       'searchUrl': 'https://tv-vault.me/torrents.php?action=advanced&imdbid=%tt%&order_by=s3&order_way=desc',
       'matchRegex': /Nothing found<\/h2>/,
       'TV': true},
+  {   'name': 'U2',
+      'searchUrl': 'https://u2.dmhy.org/torrents.php?incldead=1&spstate=0&inclbookmarked=0&search=%tt%&search_area=1&search_mode=0',
+      'matchRegex': /Nothing found/},
   {   'name': 'UHDB',
       'searchUrl': 'https://uhdbits.org/torrents.php?action=advanced&groupname=%tt%',
       'matchRegex': /Your search did not match anything./},
