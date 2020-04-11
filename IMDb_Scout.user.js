@@ -7,7 +7,7 @@
 // @require     https://greasyfork.org/libraries/GM_config/20131122/GM_config.js
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js
 //
-// @version        4.11.4
+// @version        4.11.5
 // @include        http*://*.imdb.tld/title/tt*
 // @include        http*://*.imdb.tld/search/title*
 // @include        http*://*.imdb.tld/user/*/watchlist*
@@ -340,6 +340,8 @@
 
 4.11.4  -    Add AB, remove ADC
         -    Fix BHD, Demonoid, TPB, M-T, U2, BTN, BitHD
+
+4.11.5  -    Fix conditional check
 
 -------------------------------------------------------*/
 
@@ -1340,7 +1342,7 @@ $.each(icon_sites, function(index, icon_site) {
 var onSearchPage = Boolean(location.href.match('search')) || Boolean(location.href.match('watchlist'));
 
 $('title').ready(function() {
-  if (window.top != window.self) { // Don't run on frames or iframes
+  if (window.top == window.self) {
     if (!onSearchPage && GM_config.get('load_on_start_movie')) {
       performPage();
     } else if (onSearchPage && GM_config.get('load_on_start_search')) {
