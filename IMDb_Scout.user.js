@@ -343,11 +343,6 @@
 
 -------------------------------------------------------*/
 
-if (window.top != window.self) // Don't run on frames or iframes
-{
-  return;
-}
-
 //------------------------------------------------------
 // A list of all the sites, and the data necessary to
 // check IMDb against them.
@@ -400,7 +395,7 @@ var sites = [
       'both': true},
   {   'name': 'AB',
       'searchUrl': 'https://animebytes.tv/torrents.php?searchstr=%search_string%&action=advanced&search_type=title&tags=-lolicon+-shotacon+&sort=relevance&way=desc&hentai=0&showhidden=1&anime%5Btv_series%5D=1&anime%5Btv_special%5D=1&anime%5Bmovie%5D=1&anime%5Bova%5D=1&anime%5Bona%5D=1&anime%5Bdvd_special%5D=1&anime%5Bbd_special%5D=1&airing=2',
-      'matchRegex': /Translation: No search results/,
+      'matchRegex': /Translation: No search results/},
   {   'name': 'ANT',
       'searchUrl': 'https://anthelion.me/torrents.php?searchstr=%search_string%&order_by=time&order_way=desc&group_results=1&action=basic&searchsubmit=1',
       'matchRegex': /Your search did not match anything/},
@@ -434,7 +429,6 @@ var sites = [
   {   'name': 'BHD',
       'searchUrl': 'https://beyond-hd.me/torrents/all?search=&doSearch=Search&imdb=%nott%',
       'matchRegex': /<h5 class="text-bold text-danger">N\/A<\/h5>|Please login or Register a personal account to access our user area and great community/},
-      'TV': true},
   {   'name': 'BitHD',
       'searchUrl': 'https://www.bit-hdtv.com/torrents.php?search=%tt%&options=4',
       'matchRegex': /<h2>No match!<\/h2>/},
@@ -1306,13 +1300,13 @@ GM_config.init({
   'id': 'imdb_scout',
   'title': 'IMDb Scout Preferences',
   'fields': config_fields,
-  'css':  '.section_header { \
-background: white   !important; \
-color:  black       !important; \
-border: 0px         !important; \
-text-align: left    !important;} \
-.field_label { \
-font-weight: normal !important;}',
+  'css': '.section_header { \
+            background: white   !important; \
+            color:  black       !important; \
+            border: 0px         !important; \
+            text-align: left    !important;} \
+          .field_label { \
+            font-weight: normal !important;}',
   'events':
   {
     'open': function() {
@@ -1346,17 +1340,19 @@ $.each(icon_sites, function(index, icon_site) {
 var onSearchPage = Boolean(location.href.match('search')) || Boolean(location.href.match('watchlist'));
 
 $('title').ready(function() {
-  if (!onSearchPage && GM_config.get('load_on_start_movie')) {
-    performPage();
-  } else if (onSearchPage && GM_config.get('load_on_start_search')) {
-    if (Boolean(location.href.match('watchlist')) && GM_config.get('watchlist_as_search')) {
-      performWatchlist();
-    } else {
-      performSearch();
-    }
+  if (window.top != window.self) { // Don't run on frames or iframes
+    if (!onSearchPage && GM_config.get('load_on_start_movie')) {
+      performPage();
+    } else if (onSearchPage && GM_config.get('load_on_start_search')) {
+      if (Boolean(location.href.match('watchlist')) && GM_config.get('watchlist_as_search')) {
+        performWatchlist();
+      } else {
+        performSearch();
+      }
 
-  } else {
-    displayButton();
+    } else {
+      displayButton();
+    }
   }
 });
 
