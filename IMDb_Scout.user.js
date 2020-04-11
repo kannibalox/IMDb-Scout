@@ -7,7 +7,7 @@
 // @require     https://greasyfork.org/libraries/GM_config/20131122/GM_config.js
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js
 //
-// @version        4.11.5
+// @version        4.12
 // @include        http*://*.imdb.tld/title/tt*
 // @include        http*://*.imdb.tld/search/title*
 // @include        http*://*.imdb.tld/user/*/watchlist*
@@ -343,6 +343,9 @@
 
 4.11.5  -    Fix conditional check
 
+4.12    -    Update SDBits, BTN, PTP, TMDB
+        -    Apply some correctness changes
+
 -------------------------------------------------------*/
 
 //------------------------------------------------------
@@ -436,7 +439,8 @@ var sites = [
       'matchRegex': /<h2>No match!<\/h2>/},
   {   'name': 'BTN',
       'searchUrl': 'https://broadcasthe.net/torrents.php?imdb=%tt%',
-      'matchRegex': /Error 404|Lost your password\?/,
+      'matchRegex': /Error 404/,
+      'loggedOutRegex': /Lost your password\?/,
       'both': true},
   {   'name': 'BTN-Req',
       'searchUrl':  'https://broadcasthe.net/requests.php?search=%search_string%',
@@ -606,10 +610,12 @@ var sites = [
       'both': true},
   {   'name': 'PTP',
       'searchUrl': 'https://passthepopcorn.me/torrents.php?imdb=%tt%',
+      'loggedOutRegex': /<h1>Keep me logged in.<\/h1>/,
       'matchRegex': /<h2>Your search did not match anything.<\/h2>/},
   {   'name': 'PTP-Req',
       'searchUrl': 'https://passthepopcorn.me/requests.php?submit=true&search=%tt%',
-      'matchRegex': /Your search did not match anything.|<h1>Keep me logged in.<\/h1>/},
+      'loggedOutRegex': /<h1>Keep me logged in.<\/h1>/,
+      'matchRegex': /Your search did not match anything./},
   {   'name': 'PxHD',
       'searchUrl': 'https://pixelhd.me/torrents.php?groupname=&year=&tmdbover=&tmdbunder=&tmdbid=&imdbover=&imdbunder=&imdbid=%tt%&order_by=time&order_way=desc&taglist=&tags_type=1&filterTorrentsButton=Filter+Torrents',
       'matchRegex': /<h2>Your search did not match anything.<\/h2>/},
@@ -642,7 +648,7 @@ var sites = [
       'searchUrl': 'https://secret-cinema.pw/torrents.php?action=advanced&searchsubmit=1&filter_cat=1&cataloguenumber=%tt%&order_by=time&order_way=desc&tags_type=0',
       'matchRegex': /Your search did not match anything./},
   {   'name': 'SDBits',
-      'searchUrl': 'https://sdbits.org/browse.php?c6=1&c3=1&c1=1&c4=1&c5=1&c2=1&m1=1&incldead=0&from=&to=&imdbgt=0&imdblt=10&uppedby=&imdb=&search=%tt%',
+      'searchUrl': 'https://sdbits.org/browse.php?incldead=1&imdb=%tt%',
       'matchRegex': /Nothing found!|<h1>You need cookies enabled to log in.<\/h1>/},
   {   'name': 'sHD',
       'searchUrl': 'https://scenehd.org/browse.php?search=%tt%',
@@ -732,6 +738,7 @@ var icon_sites = [
   {   'name': 'Google',
       'searchUrl': 'https://www.google.com/search?q=%search_string%'},
   {   'name': 'TMDB',
+      'icon': 'https://www.themoviedb.org/assets/2/favicon-16x16-b362d267873ce9c5a39f686a11fe67fec2a72ed25fa8396c11b71aa43c938b11.png',
       'searchUrl': 'https://www.themoviedb.org/search?query=%search_string%'},
   {   'name': 'TVDB',
       'searchUrl': 'https://www.thetvdb.com/search?query=%search_string%'},
@@ -824,19 +831,20 @@ function getPageSetting(key) {
 
 // Small utility function to return a site's icon
 function getFavicon(site, hide_on_err) {
-  if (typeof(hide_on_err) === 'undefined') { hide_on_err = false };
+    var favicon;
+  if (typeof(hide_on_err) === 'undefined') { hide_on_err = false }
   if ('icon' in site) {
-    var favicon = site['icon'];
+    favicon = site['icon'];
   } else {
     var url = new URL(site['searchUrl']);
-    var favicon = url.origin + '\/favicon.ico';
+    favicon = url.origin + '/favicon.ico';
   }
   var img = $('<img />').attr({'style': '-moz-opacity: 0.4; border: 0; vertical-align: text-top',
                                'width': '16',
                                'src': favicon,
                                'title': site['name'],
                                'alt': site['name']});
-  if (hide_on_err) { img.attr('onerror', "this.style.display='none';") };
+  if (hide_on_err) { img.attr('onerror', "this.style.display='none';") }
   return img;
 }
 
@@ -917,8 +925,8 @@ function maybeAddLink(elem, link_text, search_url, site) {
   GM_xmlhttpRequest({
     method: 'GET',
     url: search_url,
-    onload: function(response_details) {
-      if (String(response_details.responseText).match(site['matchRegex']) ? !(success_match) : success_match) {
+    onload: function(response) {
+      if (String(response.responseText).match(site['matchRegex']) ? !(success_match) : success_match) {
         if (getPageSetting('highlight_missing').split(',').includes(site['name'])) {
           if (elem.style) {
             elem.parentNode.style.background = 'rgba(255,104,104,0.7)';
@@ -929,16 +937,16 @@ function maybeAddLink(elem, link_text, search_url, site) {
         if (!getPageSetting('hide_missing')) {
           addLink(elem, link_text, target, site, 'missing');
         }
-      } else if (site['loggedOutRegex'] && String(response_details.responseText).match(site['loggedOutRegex'])) {
+      } else if (site['loggedOutRegex'] && String(response.responseText).match(site['loggedOutRegex'])) {
         addLink(elem, link_text, target, site, 'logged_out');
       } else {
         addLink(elem, link_text, target, site, 'found');
       }
     },
-    onerror: function(response) {
+    onerror: function() {
       addLink(elem, link_text, target, site, 'error');
     },
-    onabort: function(response) {
+    onabort: function() {
       addLink(elem, link_text, target, site, 'error');
     }
   });
@@ -954,7 +962,7 @@ function perform(elem, movie_id, movie_title, is_tv, is_movie) {
       if ((Boolean(site['TV']) == is_tv ||
            Boolean(site['both'])) ||
           (!is_tv && !is_movie) || getPageSetting('ignore_type')) {
-        searchUrl = replaceSearchUrlParams(site, movie_id, movie_title);
+        var searchUrl = replaceSearchUrlParams(site, movie_id, movie_title);
         if (site.goToUrl)
           site.goToUrl = replaceSearchUrlParams({
             'searchUrl': site['goToUrl'],
@@ -1003,14 +1011,15 @@ function displayButton() {
 // Adds a dictionary of icons to the top of the page.
 // Unlike the other URLs, they aren't checked to see if the movie exists.
 function addIconBar(movie_id, movie_title) {
+  var iconbar;
   if ($('h1.header:first').length) {
-    var iconbar = $('h1.header:first').append($('<br/>'));
+    iconbar = $('h1.header:first').append($('<br/>'));
   } else if ($('.title_wrapper h1').length) {
-    var iconbar = $('.title_wrapper h1').append($('<br/>'));
+    iconbar = $('.title_wrapper h1').append($('<br/>'));
   } else if ($('h3[itemprop="name"]').length) {
-    var iconbar = $('h3[itemprop="name"]').append($('<br/>'));
+    iconbar = $('h3[itemprop="name"]').append($('<br/>'));
   } else {
-    var iconbar = $('#tn15title .title-extra');
+    iconbar = $('#tn15title .title-extra');
   }
   $.each(icon_sites, function(index, site) {
     if (site['show']) {
@@ -1313,7 +1322,7 @@ GM_config.init({
   {
     'open': function() {
       $('#imdb_scout').contents().find('#imdb_scout_section_2').find('.field_label').each(function(index, label) {
-        url = new URL(sites[index].searchUrl);
+        var url = new URL(sites[index].searchUrl);
         $(label).append(' ' + '<a class="grey_link" target="_blank" style="color: gray; text-decoration : none" href="' + url.origin + '">'
                         + (/www./.test(url.hostname) ? url.hostname.match(/www.(.*)/)[1] : url.hostname)  + '</a>');
         $(label).prepend(getFavicon(sites[index], true));

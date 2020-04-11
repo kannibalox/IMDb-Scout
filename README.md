@@ -1,6 +1,12 @@
 # IMDb-Scout
 Add links in IMDb pages to torrent sites -- easy downloading from IMDb
 
+Greasemonkey is currently not supported. Try alternatives such as Violentmonkey or Tampermonkey.
+
+## Usage
+
+Currently the script works on both individual pages (e.g. https://www.imdb.com/title/tt4131188/), and the advanced title search (e.g. https://www.imdb.com/search/title/?title=test)
+
 ## Contributing
 
 The [Github repository](https://github.com/kannibalox/IMDb-Scout) is the best place to report bugs and submit changes, however I will still make an effort to check the [GreasyFork](https://greasyfork.org/en/scripts/3967-imdb-scout) page or any other relevant places.
