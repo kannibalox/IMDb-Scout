@@ -7,7 +7,7 @@
 // @require     https://greasyfork.org/libraries/GM_config/20131122/GM_config.js
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js
 //
-// @version        4.12
+// @version        4.12.1
 // @include        http*://*.imdb.tld/title/tt*
 // @include        http*://*.imdb.tld/search/title*
 // @include        http*://*.imdb.tld/user/*/watchlist*
@@ -346,6 +346,9 @@
 4.12    -    Update SDBits, BTN, PTP, TMDB
         -    Apply some correctness changes
 
+4.12.1  -    Add CCT
+        -    Update CHD, AB, TTG
+
 -------------------------------------------------------*/
 
 //------------------------------------------------------
@@ -400,7 +403,8 @@ var sites = [
       'both': true},
   {   'name': 'AB',
       'searchUrl': 'https://animebytes.tv/torrents.php?searchstr=%search_string%&action=advanced&search_type=title&tags=-lolicon+-shotacon+&sort=relevance&way=desc&hentai=0&showhidden=1&anime%5Btv_series%5D=1&anime%5Btv_special%5D=1&anime%5Bmovie%5D=1&anime%5Bova%5D=1&anime%5Bona%5D=1&anime%5Bdvd_special%5D=1&anime%5Bbd_special%5D=1&airing=2',
-      'matchRegex': /Translation: No search results/},
+      'matchRegex': /Translation: No search results/,
+      'both': true},
   {   'name': 'ANT',
       'searchUrl': 'https://anthelion.me/torrents.php?searchstr=%search_string%&order_by=time&order_way=desc&group_results=1&action=basic&searchsubmit=1',
       'matchRegex': /Your search did not match anything/},
@@ -450,6 +454,11 @@ var sites = [
       'searchUrl': 'http://www.cartoonchaos.org/index.php?page=torrents&search=%search_string%&category=0&options=0&active=0',
       'matchRegex': />Av.<\/td>\s*<\/tr>\s*<\/table>|not authorized to view the Torrents/,
       'both': true},
+  {   'name': 'CCT',
+      'searchUrl': 'https://concertos.live/torrents?imdb=%nott%',
+      'matchRegex': /ago/,
+      'positiveMatch': true,
+      'both': true},
   {   'name': 'CG',
       'searchUrl': 'https://cinemageddon.net/browse.php?search=%tt%',
       'matchRegex': /<h2>Nothing found!<\/h2>/,
@@ -459,7 +468,7 @@ var sites = [
       'matchRegex': /<h2>Nothing found!<\/h2>/,
       'loggedOutRegex': 'Not logged in!'},
   {   'name': 'CHD',
-      'searchUrl': 'https://chdbits.co/torrents.php?incldead=1&spstate=0&inclbookmarked=0&search_area=4&search_mode=0&search=%tt%',
+      'searchUrl': 'https://chdbits.co/torrents.php?incldead=0&spstate=0&inclbookmarked=0&search_area=4&search_mode=0&search=%tt%',
       'matchRegex': /Nothing found/},
   {   'name': 'Classix',
       'searchUrl': 'http://classix-unlimited.co.uk/torrents-search.php?search=%search_string%',
@@ -711,7 +720,7 @@ var sites = [
       'matchRegex': /No hits. Try adding an asterisk in you search phrase.<\/h2>/,
       'both': true},
   {   'name': 'TTG',
-      'searchUrl': 'https://totheglory.im/browse.php?c=M&search_field=imdb%nott%+%2Bincdead',
+      'searchUrl': 'https://totheglory.im/browse.php?c=M&search_field=imdb%nott%',
       'matchRegex': /Didn't match any titles/},
   {   'name': 'TGx',
       'searchUrl': 'https://torrentgalaxy.org/torrents.php?search=%tt%',
@@ -1360,7 +1369,6 @@ $('title').ready(function() {
       } else {
         performSearch();
       }
-
     } else {
       displayButton();
     }
