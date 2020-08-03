@@ -7,7 +7,7 @@
 // @require     https://greasyfork.org/libraries/GM_config/20131122/GM_config.js
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js
 //
-// @version        4.12.1
+// @version        5.3.1
 // @include        http*://*.imdb.tld/title/tt*
 // @include        http*://*.imdb.tld/search/title*
 // @include        http*://*.imdb.tld/user/*/watchlist*
@@ -349,12 +349,76 @@
 4.12.1  -    Add CCT
         -    Update CHD, AB, TTG
 
+
+4.12.1-mod1  -   First public release.  New additions, tweaks, bugfixes.
+
+                 What I can remember:
+             -   Added: Blu, Retroflix, ACM, PTE, KG Requests, SC Requests.
+             -   Tweak: Classix search, and split to Movie/TV.
+             -   Tweak: Bunch of 'loggedOutRegex' added.
+             -   Fixed: Bunch of icons.
+             -   Fixed: TL, TPB.
+             -   Fixed: Bug in 'loggedOutRegex' logic.
+             -   New feature: Distinct icons on Requests.
+
+4.12.1-mod2  -   Removed: Canistream.it
+             -   Fixed: Few icons.
+             -   Fixed: Search bug if ampersand is in the title
+
+4.12.1-mod3  -   Removed: RARAT.
+             -   Added: Rarelust & Zooqle.
+             -   New feature: Sites are split to public & private (config menu).
+
+4.12.1-mod4  -   Added: YGG, CG Requests.
+             -   Tweak: CG-Cocks & CG Request icons.
+             -   Tweak: RuT search, split to TV/Movie.
+             -   Fixed: Filter out filled KG Requests.
+             -   New feature: %search_string_orig% (search by the original titles
+                              on the movie/tv pages), enabled on RuT and YGG.
+
+4.12.1-mod5  -   Fixed: CG Request. Demonoid typo.
+
+4.12.1-mod6  -   Removed: HDVN, HoundDawgs.
+             -   Added: 1337x, ETTV, LimeTor, HDSpain, RlsBB, DB, FF, THR, PTer.
+             -   Fixed: TD, Demonoid, RARBG.
+             -   Tweak: Bold'ed the titles of config menu sections for better visibility.
+             -   Tweak: 'Other titles' sorted in alphabetical order.
+             -   Tweak: Added 'loggedOutRegex' to all private & some public sites.
+             -   Fixed: All borked icons are fixed.
+             -   Fixed: Bug in 'loggedOutRegex' (false negative if site responds with redirect).
+
+4.12.1-mod7  -   Added: BRT.
+             -   Tweak: SDBits, U2.
+
+5.0     -   Fix: @namespace & @name changed to fix updating for plugins.
+
+5.1     -   Tweak: TVV, BB-HD.
+        -   Fixed: Invisible icons on dark background JoyHD, Rarelust, CZ, Zooqle, KG.
+        -   New feature: The new layout (icons are placed at top). Option to turn it off.
+        -   New feature: Option to select background for the new layout.
+
+5.2     -   Tweak: Small tweaks (some preferences will reset to default).
+        -   Fixed: Rarelust icon.
+
+5.2.1   -   Fixed: Rarelust icon (forgot to update it)
+        -   Added: RlsBB-Proxy ('RlsBB' now points to the main domain)
+
+5.3     -   Added: Tik-Req, AHD-Req.
+        -   Tweak: No icon borders if "Show results on one line" is off.
+        -   Fixed: Text color on the new layout.
+        -   New feature: Option to change size of the icons.
+
+5.3.1   -   Added: JPTV.
+        -   Fixed: ACM icon.
+
+
 -------------------------------------------------------*/
 
 //------------------------------------------------------
 // A list of all the sites, and the data necessary to
 // check IMDb against them.
 // Each site is a dictionary with the following attributes:
+//
 //  - name:
 //      The site name, abbreviated
 //  - searchUrl:
@@ -362,7 +426,7 @@
 //      to tailor the string to a site
 //  - matchRegex:
 //      The string which appears if the searchUrl *doesn't* return a result
-//  - postiveMatch (optional):
+//  - positiveMatch (optional):
 //      Changes the test to return true if the searchUrl *does* return
 //      a result that matches matchRegex
 //  - TV (optional):
@@ -380,9 +444,10 @@
 //  - loggedOutRegex (optional):
 //      If any text on the page matches this regex, the site is treated
 //      as being logged out, rather than mising the movie. This option is
-//      not effected by postiveMatch.
+//      not effected by positiveMatch.
 //  - configName (optional):
 //      Use this to allow changing names without breaking existing users.
+//
 // To create a search URL, there are four parameters
 // you can use inside the URL:
 //  - %tt%:
@@ -391,178 +456,32 @@
 //      The IMDb id without the tt prefix (e.g. 0055630)
 //  - %search_string%:
 //      The movie title (e.g. Yojimbo)
+//      Depends on your preferences at www.imdb.com/preferences/general
+//  - %search_string_orig%:
+//      The original movie title (e.g. Yojimbo)
+//      Affects only TV/Movie pages (on Watchlist/Search pages it will switch to %search_string%)
 //  - %year%:
 //      The movie year (e.g. 1961)
 // See below for examples
 //------------------------------------------------------
 
-var sites = [
-  {   'name': 'AHD',
-      'searchUrl': 'https://awesome-hd.me/torrents.php?id=%tt%',
-      'matchRegex': /Your search did not match anything.|<h2>Error 404<\/h2>/,
-      'both': true},
-  {   'name': 'AB',
-      'searchUrl': 'https://animebytes.tv/torrents.php?searchstr=%search_string%&action=advanced&search_type=title&tags=-lolicon+-shotacon+&sort=relevance&way=desc&hentai=0&showhidden=1&anime%5Btv_series%5D=1&anime%5Btv_special%5D=1&anime%5Bmovie%5D=1&anime%5Bova%5D=1&anime%5Bona%5D=1&anime%5Bdvd_special%5D=1&anime%5Bbd_special%5D=1&airing=2',
-      'matchRegex': /Translation: No search results/,
-      'both': true},
-  {   'name': 'ANT',
-      'searchUrl': 'https://anthelion.me/torrents.php?searchstr=%search_string%&order_by=time&order_way=desc&group_results=1&action=basic&searchsubmit=1',
-      'matchRegex': /Your search did not match anything/},
-  {   'name': 'AR',
-      'searchUrl': 'https://alpharatio.cc/torrents.php?searchstr=%search_string%+%year%&filter_cat[6]=1&filter_cat[7]=1&filter_cat[8]=1&filter_cat[9]=1',
-      'matchRegex': /Your search did not match anything/},
-  {   'name': 'AR',
-      'searchUrl': 'https://alpharatio.cc/torrents.php?searchstr=%search_string%&filter_cat[1]=1&filter_cat[2]=1&filter_cat[3]=1&filter_cat[4]=1&filter_cat[5]=1',
-      'matchRegex': /Your search did not match anything/,
+var public_sites = [
+  {   'name': '1337x',
+      'searchUrl': 'https://1337x.unblocker.cc/category-search/%search_string%+%year%/Movies/1/',
+      'matchRegex': /No results were returned/},
+  {   'name': '1337x',
+      'searchUrl': 'https://1337x.unblocker.cc/category-search/%search_string%/TV/1/',
+      'matchRegex': /No results were returned/,
       'TV': true},
-  {   'name': 'AT',
-      'searchUrl': 'https://avistaz.to/movies?search=&imdb=%tt%',
-      'matchRegex': /class="overlay-container"/,
-      'positiveMatch': true},
-  {   'name': 'AT',
-      'searchUrl': 'https://avistaz.to/tv-shows?search=&imdb=%tt%',
-      'matchRegex': /class="overlay-container"/,
-      'positiveMatch': true,
-      'TV': true},
-  {   'name': 'bB',
-      'searchUrl': 'https://baconbits.org/torrents.php?action=basic&filter_cat[9]=1&searchstr=%search_string%+%year%',
-      'matchRegex': /Your search was way too l33t|You will be banned for 6 hours after your login attempts run out/},
-  {   'name': 'bB',
-      'searchUrl': 'https://baconbits.org/torrents.php?action=basic&filter_cat[8]=1&filter_cat[10]=1&searchstr=%search_string%',
-      'matchRegex': /Your search was way too l33t|You will be banned for 6 hours after your login attempts run out/,
-      'TV': true},
-  {   'name': 'BB-HD',
-      'searchUrl': 'https://bluebird-hd.org/browse.php?search=&incldead=0&cat=0&dsearch=%tt%&stype=or',
-      'matchRegex': /Nothing found|Ничего не найдено/,
+  {   'name': 'Demonoid',
+      'searchUrl': 'http://www.dnoid.pw/files/?query=%tt%',
+      'loggedOutRegex': /Error 522|Checking your browser|security check to access|daily site maintenance|page is not available/,
+      'matchRegex': /No torrents found/,
       'both': true},
-  {   'name': 'BHD',
-      'searchUrl': 'https://beyond-hd.me/torrents/all?search=&doSearch=Search&imdb=%nott%',
-      'matchRegex': /<h5 class="text-bold text-danger">N\/A<\/h5>|Please login or Register a personal account to access our user area and great community/},
-  {   'name': 'BitHD',
-      'searchUrl': 'https://www.bit-hdtv.com/torrents.php?search=%tt%&options=4',
-      'matchRegex': /<h2>No match!<\/h2>/},
-  {   'name': 'BTN',
-      'searchUrl': 'https://broadcasthe.net/torrents.php?imdb=%tt%',
-      'matchRegex': /Error 404/,
-      'loggedOutRegex': /Lost your password\?/,
+  {   'name': 'ETTV',
+      'searchUrl': 'https://www.ettvdl.com/torrents-search.php?search=%search_string%+%year%',
+      'matchRegex': /Nothing Found/,
       'both': true},
-  {   'name': 'BTN-Req',
-      'searchUrl':  'https://broadcasthe.net/requests.php?search=%search_string%',
-      'matchRegex': /Nothing found|Lost your password\?/,
-      'TV': true},
-  {   'name': 'CaCh',
-      'searchUrl': 'http://www.cartoonchaos.org/index.php?page=torrents&search=%search_string%&category=0&options=0&active=0',
-      'matchRegex': />Av.<\/td>\s*<\/tr>\s*<\/table>|not authorized to view the Torrents/,
-      'both': true},
-  {   'name': 'CCT',
-      'searchUrl': 'https://concertos.live/torrents?imdb=%nott%',
-      'matchRegex': /ago/,
-      'positiveMatch': true,
-      'both': true},
-  {   'name': 'CG',
-      'searchUrl': 'https://cinemageddon.net/browse.php?search=%tt%',
-      'matchRegex': /<h2>Nothing found!<\/h2>/,
-      'loggedOutRegex': 'Not logged in!'},
-  {   'name': 'CG-c',
-      'searchUrl': 'https://cinemageddon.net/cocks/endoscope.php?what=imdb&q=%tt%',
-      'matchRegex': /<h2>Nothing found!<\/h2>/,
-      'loggedOutRegex': 'Not logged in!'},
-  {   'name': 'CHD',
-      'searchUrl': 'https://chdbits.co/torrents.php?incldead=0&spstate=0&inclbookmarked=0&search_area=4&search_mode=0&search=%tt%',
-      'matchRegex': /Nothing found/},
-  {   'name': 'Classix',
-      'searchUrl': 'http://classix-unlimited.co.uk/torrents-search.php?search=%search_string%',
-      'matchRegex': /Nothing Found<\/div>/},
-  {   'name': 'CZ',
-      'configName': 'ET',
-      'searchUrl': 'https://cinemaz.to/movies?search=&imdb=%tt%',
-      'matchRegex': /class="overlay-container"/,
-      'positiveMatch': true},
-  {   'name': 'CZ',
-      'configName': 'ET',
-      'searchUrl': 'https://cinemaz.to/tv-shows?search=&imdb=%tt%',
-      'matchRegex': /class="overlay-container"/,
-      'positiveMatch': true,
-      'TV': true},
-  {   'name': 'Demnoid',
-      'searchUrl': 'http://www.demonoid.is/files/?query=%tt%',
-      'matchRegex': /<b>No torrents found<\/b>|We are currently performing the daily site maintenance.<br>/,
-      'both': true},
-  {   'name': 'DVDSeed',
-      'searchUrl': 'http://www.dvdseed.eu/browse2.php?search=%tt%&wheresearch=2&incldead=1&polish=0&nuke=0&rodzaj=0',
-      'matchRegex': /Nic tutaj nie ma!<\/h2>/},
-  {   'name': 'eThor',
-      'searchUrl': 'http://ethor.net/browse.php?stype=b&c23=1&c20=1&c42=1&c5=1&c19=1&c25=1&c6=1&c37=1&c43=1&c7=1&c9=1&advcat=0&incldead=0&includedesc=1&search=%tt%',
-      'matchRegex': /Try again with a refined search string.|<h1>Note: Vous devez activer vos 'cookies' pour pouvoir vous identifier.<\/h1>/},
-  {   'name': 'FL',
-      'searchUrl': 'https://filelist.ro/browse.php?search=%nott%',
-      'matchRegex': /<h2>Nu s-a găsit nimic!<\/h2>/,
-      'both': true},
-  {   'name': 'FinVip',
-      'searchUrl': 'https://finvip.org/index.php?page=torrents&search=%tt%&options=1',
-      'matchRegex': /<td colspan="2" align="center"> <\/td>/},
-  {   'name': 'HD',
-      'searchUrl': 'http://hounddawgs.org/torrents.php?type=&userid=&searchstr=&searchimdb=%tt%&searchlang=&searchtags=&order_by=s3&order_way=desc&showOnly=#results',
-      'matchRegex': /<h2>Din søgning gav intet resultat.<\/h2>/,
-      'both': true},
-  {   'name': 'HDb',
-      'searchUrl': 'https://hdbits.org/browse.php?c3=1&c1=1&c4=1&c2=1&imdb=%tt%',
-      'matchRegex': /Nothing here!|You need cookies enabled to log in/,
-      'both': true},
-  {   'name': 'HDC',
-      'searchUrl': 'https://hdchina.org/torrents.php?incldead=0&spstate=0&inclbookmarked=0&boardid=0&seeders=&search=%tt%&search_area=4&search_mode=2',
-      'matchRegex': /Nothing found! Try again with a refined search string./},
-  {   'name': 'HDH',
-      'configName': 'HDHome',
-      'searchUrl': 'https://hdhome.org/torrents.php?search_area=4&search=%tt%',
-      'matchRegex': /Nothing found! Try again with a refined search string/},
-  {   'name': 'HDME',
-      'searchUrl': 'https://hdme.eu/browse.php?blah=2&cat=0&incldead=1&search=%tt%',
-      'matchRegex': /Try again with a refined search string.|<h1>You need cookies enabled to log in.<\/h1>/},
-  {   'name': 'HDME',
-      'searchUrl': 'https://hdme.eu/browse.php?search=%search_string%&blah=0&cat=0&incldead=1',
-      'matchRegex': /Try again with a refined search string.|<h1>You need cookies enabled to log in.<\/h1>/,
-      'TV': true},
-  {   'name': 'HDS',
-      'searchUrl': 'https://hdsky.me/torrents.php?incldead=1&search=%tt%&search_area=4&search_mode=0',
-      'matchRegex': /Nothing found! Try again with a refined search string|Email:hdsky.me@gmail.com/},
-  {   'name': 'HDS',
-      'searchUrl': 'https://hdsky.me/torrents.php?cat402=1&cat403=1&incldead=1&search=%search_string%&search_area=0&search_mode=0',
-      'matchRegex': /Nothing found! Try again with a refined search string|Email:hdsky.me@gmail.com/,
-      'TV': true},
-  {   'name': 'HDSpace',
-      'icon': 'http://www.favicon.by/ico/5991df36e3635.ico',
-      'searchUrl': 'https://hd-space.org/index.php?page=torrents&active=0&options=2&search=%nott%',
-      'matchRegex': /<td colspan="2" align="center"> <\/td>|You’re not authorized to view the Torrents!<br \/>/,
-      'both': true},
-  {   'name': 'HDT',
-      'icon': 'https://hdts.ru/favicon.ico',
-      'searchUrl': 'http://hd-torrents.org/torrents.php?active=0&options=2&search=%tt%',
-      'matchRegex': /No torrents here.../,
-      'both': true},
-  {   'name': 'HDU',
-      'searchUrl': 'https://pt.upxin.net/torrents.php?search_area=4&search=%tt%',
-      'matchRegex': /Nothing found! Try again with a refined search string/},
-  {   'name': 'HDVN',
-      'searchUrl': 'http://torviet.com/torrents.php?search=%tt%&search_area=4&search_mode=0',
-      'matchRegex': /Nothing found! Try again with a refined search string|You need cookies enabled to log in or switch language/,
-      'both': true},
-  {   'name': 'ILC',
-      'searchUrl': 'http://www.iloveclassics.com/browse.php?incldead=1&searchin=2&search=%tt%',
-      'matchRegex': /Try again with a refined search string|<h1>Not logged in!<\/h1>/},
-  {   'name': 'IPT',
-      'searchUrl': 'https://www.iptorrents.com/t?q=%tt%',
-      'matchRegex': /<h1 style="color:yellow">No Torrents Found!/},
-  {   'name': 'IPT',
-      'searchUrl': 'https://www.iptorrents.com/torrents/?q=%search_string%',
-      'matchRegex': /<h1 style="color:yellow">No Torrents Found!/,
-      'TV': true},
-  {   'name': 'JoyHD',
-      'searchUrl': 'https://www.joyhd.net/torrents.php?search_area=4&search=%tt%',
-      'matchRegex': /Nothing found! Try again with a refined search string/},
-  {   'name': 'KG',
-      'searchUrl': 'https://www.karagarga.in/browse.php?search_type=imdb&search=%nott%',
-      'matchRegex': /<h2>No torrents found|<h1>If you want the love<\/h1>/},
   {   'name': 'KZ',
       'searchUrl': 'http://kinozal.tv/browse.php?s=%search_string%+%year%&g=0&c=1002&v=0&d=0&w=0&t=0&f=0',
       'matchRegex': 'Нет активных раздач, приносим извинения. Пожалуйста, уточните параметры поиска'},
@@ -570,51 +489,422 @@ var sites = [
       'searchUrl': 'http://kinozal.tv/browse.php?s=%search_string%+%year%&g=0&c=1001&v=0&d=0&w=0&t=0&f=0',
       'matchRegex': 'Нет активных раздач, приносим извинения. Пожалуйста, уточните параметры поиска',
       'TV': true},
-  {   'name': 'M-T',
-      'searchUrl': 'https://pt.m-team.cc/torrents.php?incldead=1&spstate=0&inclbookmarked=0&search=%tt%&search_area=4&search_mode=0',
-      'matchRegex': /Nothing here!|Try again with a refined search string./,
-      'both': true},
-  {   'name': 'MS',
-      'searchUrl': 'http://www.myspleen.org/browse.php?search=%search_string%&title=0&cat=0',
-      'matchRegex': /<strong>Nothing found!<\/strong>|<title>MySpleen :: Login<\/title>/,
-      'both': true},
-  {   'name': 'MTV',
-      'searchUrl': 'https://www.morethan.tv/torrents.php?searchstr=%search_string%+%year%&tags_type=1&order_by=time&order_way=desc&group_results=1&filter_cat%5B1%5D=1&action=basic&searchsubmit=1',
-      'matchRegex': /<h2>Your search did not match anything.<\/h2>/},
-  {   'name': 'MTV',
-      'searchUrl': 'https://www.morethan.tv/torrents.php?searchstr=%search_string%&tags_type=1&order_by=time&order_way=desc&group_results=1&filter_cat%5B2%5D=1&action=basic&searchsubmit=1',
-      'matchRegex': /<h2>Your search did not match anything.<\/h2>/,
-      'TV': true},
+  {   'name': 'LimeTor',
+      'searchUrl': 'https://limetorrents.unblockit.win/search/movies/%search_string%+%year%/seeds/1/',
+      'matchRegex': /csprite_dl14/,
+      'positiveMatch': true},
   {   'name': 'NNM',
       'searchUrl': 'https://nnm-club.me/forum/tracker.php?nm=%search_string%+%year%',
       'matchRegex': 'Не найдено',
       'both': true},
+  {   'name': 'RARBG',
+      'searchUrl': 'https://rarbgweb.org/torrents.php?imdb=%tt%',
+      'loggedOutRegex': /something wrong|Please wait|enter the captcha/,
+      'matchRegex': '//dyncdn.me/static/20/images/imdb_thumb.gif',
+      'positiveMatch': true,
+      'both': true},
+  {   'name': 'Rarelust',
+      'icon': 'https://i.imgur.com/kaaYhsp.png',
+      'searchUrl': 'https://rarelust.com/?s=%tt%',
+      'matchRegex': 'Nothing Found'},
+  {   'name': 'RlsBB',
+      'icon': 'https://i.imgur.com/Ve3T1rC.png',
+      'searchUrl': 'http://search.rlsbb.ru/Home/GetPost?phrase=%tt%&pindex=1&content=true&type=Simple',
+      'goToUrl': 'http://rlsbb.ru/?serach_mode=light&s=%tt%',
+      'loggedOutRegex': /Error 522|Checking your browser|security check to access/,
+      'matchRegex': /"results":\[\]|Not Found/,
+      'both': true},
+  {   'name': 'RlsBB-Proxy',
+      'icon': 'https://i.imgur.com/Ve3T1rC.png',
+      'searchUrl': 'http://search.proxybb.com/Home/GetPost?phrase=%tt%&pindex=1&content=true&type=Simple',
+      'goToUrl': 'http://search.proxybb.com/?serach_mode=light&s=%tt%',
+      'loggedOutRegex': /Error 522|Checking your browser|security check to access/,
+      'matchRegex': /"results":\[\]|Not Found/,
+      'both': true},
+  {   'name': 'RuT',
+      'searchUrl': 'https://rutracker.org/forum/tracker.php?f=100,101,103,1105,1114,1213,1235,124,1247,1278,1280,1281,1327,1363,1389,1391,140,1453,1457,1467,1468,1469,1475,1543,1576,1577,1666,1670,187,1900,1908,1936,194,1950,2076,208,2082,209,2090,2091,2092,2093,2107,2109,2110,2112,212,2123,2139,2159,2160,2163,2164,2166,2168,2169,2176,2177,2178,2198,2199,22,2200,2201,2220,2221,2258,2323,2339,2343,2365,2380,2459,249,2491,251,2535,2538,2540,294,312,313,33,352,376,4,484,500,505,511,521,539,549,552,56,572,599,656,671,672,7,709,752,821,822,851,863,876,877,893,905,921,93,930,934,941,97,979,98&nm=%search_string_orig%',
+      'loggedOutRegex': /Введите ваше имя/,
+      'matchRegex': 'Не найдено'},
+  {   'name': 'RuT',
+      'searchUrl': 'https://rutracker.org/forum/tracker.php?f=103,1102,1105,1114,1120,1214,1242,1248,1278,1280,1281,1288,1301,1327,1359,1363,1389,1391,1453,1459,1460,1463,1467,1468,1469,1475,1493,1498,1531,1537,1539,1574,1690,1803,193,1938,1939,1940,195,2076,2082,2104,2107,2110,2112,2123,2139,2159,2160,2163,2164,2166,2168,2169,2176,2177,2178,2323,235,2380,2412,242,249,2491,251,2535,2538,266,294,315,325,387,489,500,534,552,56,594,599,607,656,671,672,694,704,717,718,721,752,775,781,815,816,819,821,825,842,851,863,864,876,893,915,97,979,98&nm=%search_string_orig%',
+      'loggedOutRegex': /Введите ваше имя/,
+      'matchRegex': 'Не найдено',
+      'TV': true},
+  {   'name': 'Rutor',
+      'searchUrl': 'http://rutor.info/search/0/0/010/0/%tt%',
+      'loggedOutRegex': /Gateway Time-out/,
+      'matchRegex': 'Результатов поиска 0',
+      'both': true},
+  {   'name': 'TPB',
+      'searchUrl': 'https://proxyproxy.fi/s/?q=%search_string%&video=on&category=0&page=0&orderby=99',
+      'matchRegex': /No hits. Try adding an asterisk in you search phrase./,
+      'both': true},
+  {   'name': 'TGx',
+      'icon': 'https://torrentgalaxy.to/common/favicon/favicon-16x16.png',
+      'searchUrl': 'https://torrentgalaxy.org/torrents.php?search=%tt%',
+      'matchRegex': /No results found/},
+  {   'name': 'YGG',
+      'searchUrl': 'https://www2.yggtorrent.si/engine/search?name=%search_string_orig%&category=2145&sub_category=all&do=search',
+      'matchRegex': 'Aucun résultat !',
+      'both': true},
+  {   'name': 'Zooqle',
+      'icon': 'https://i.imgur.com/jqKceYP.png',
+      'searchUrl': 'https://zooqle.com/search?q=%tt%',
+      'loggedOutRegex': /Error 522|Checking your browser|security check to access/,
+      'matchRegex': 'Sorry, no torrents match',
+      'both': true}
+];
+
+var private_sites = [
+  {   'name': 'AB',
+      'searchUrl': 'https://animebytes.tv/torrents.php?searchstr=%search_string%&action=advanced&search_type=title&tags=-lolicon+-shotacon+&sort=relevance&way=desc&hentai=0&showhidden=1&anime%5Btv_series%5D=1&anime%5Btv_special%5D=1&anime%5Bmovie%5D=1&anime%5Bova%5D=1&anime%5Bona%5D=1&anime%5Bdvd_special%5D=1&anime%5Bbd_special%5D=1&airing=2',
+      'loggedOutRegex': /Forgot your username/,
+      'matchRegex': /Translation: No search results/,
+      'both': true},
+  {   'name': 'ACM',
+      'icon': 'https://i.imgur.com/7jLeQqf.png',
+      'searchUrl': 'https://asiancinema.me/torrents/filter?imdb=%tt%',
+      'loggedOutRegex': /Forgot Your Password/,
+      'matchRegex': /<tbody>\n\ {16}<\/tbody>/,
+      'both': true},
+  {   'name': 'AHD',
+      'searchUrl': 'https://awesome-hd.me/torrents.php?id=%tt%',
+      'loggedOutRegex': /Keep me logged in./,
+      'matchRegex': /Your search did not match anything.|Error 404/,
+      'both': true},
+  {   'name': 'AHD-Req',
+      'icon': 'https://i.imgur.com/wEs3QZL.png',
+      'searchUrl': 'https://awesome-hd.me/requests.php?submit=true&search=%tt%',
+      'loggedOutRegex': /Keep me logged in./,
+      'matchRegex': /Nothing found!|Error 404/,
+      'both': true},
+  {   'name': 'ANT',
+      'icon': 'https://i.imgur.com/hKZo4s2.png',
+      'searchUrl': 'https://anthelion.me/torrents.php?searchstr=%search_string%&order_by=time&order_way=desc&group_results=1&action=basic&searchsubmit=1',
+      'loggedOutRegex': /You appear to have cookies disabled./,
+      'matchRegex': /Your search did not match anything/},
+  {   'name': 'AR',
+      'searchUrl': 'https://alpharatio.cc/torrents.php?searchstr=%search_string%+%year%&tags_type=1&order_by=time&order_way=desc&filter_cat%5B8%5D=1&filter_cat%5B9%5D=1&filter_cat%5B10%5D=1&filter_cat%5B11%5D=1&filter_cat%5B12%5D=1&filter_cat%5B13%5D=1&filter_cat%5B15%5D=1&action=advanced&searchsubmit=1',
+      'loggedOutRegex': /<title>Login :: AlphaRatio/,
+      'matchRegex': /Your search did not match anything/},
+  {   'name': 'AR',
+      'searchUrl': 'https://alpharatio.cc/torrents.php?searchstr=%search_string%&tags_type=1&order_by=time&order_way=desc&filter_cat%5B1%5D=1&filter_cat%5B2%5D=1&filter_cat%5B3%5D=1&filter_cat%5B4%5D=1&filter_cat%5B5%5D=1&filter_cat%5B6%5D=1&filter_cat%5B7%5D=1&action=advanced&searchsubmit=1',
+      'loggedOutRegex': /<title>Login :: AlphaRatio/,
+      'matchRegex': /Your search did not match anything/,
+      'TV': true},
+  {   'name': 'AT',
+      'icon': 'https://i.imgur.com/ON1FGGO.png',
+      'searchUrl': 'https://avistaz.to/movies?search=&imdb=%tt%',
+      'loggedOutRegex': /Forgot Your Password/,
+      'matchRegex': /class="overlay-container"/,
+      'positiveMatch': true},
+  {   'name': 'AT',
+      'icon': 'https://i.imgur.com/ON1FGGO.png',
+      'searchUrl': 'https://avistaz.to/tv-shows?search=&imdb=%tt%',
+      'loggedOutRegex': /Forgot Your Password/,
+      'matchRegex': /class="overlay-container"/,
+      'positiveMatch': true,
+      'TV': true},
+  {   'name': 'bB',
+      'searchUrl': 'https://baconbits.org/torrents.php?action=basic&filter_cat[9]=1&searchstr=%search_string%+%year%',
+      'loggedOutRegex': /Lost your password/,
+      'matchRegex': /Your search was way too l33t/},
+  {   'name': 'bB',
+      'searchUrl': 'https://baconbits.org/torrents.php?action=basic&filter_cat[8]=1&filter_cat[10]=1&searchstr=%search_string%',
+      'loggedOutRegex': /Lost your password/,
+      'matchRegex': /Your search was way too l33t/,
+      'TV': true},
+  {   'name': 'BB-HD',
+      'searchUrl': 'https://bluebird-hd.org/browse.php?search=&incldead=0&cat=0&dsearch=%tt%&stype=or',
+      'loggedOutRegex': /Восстановление пароля|Bad Gateway/,
+      'matchRegex': /Nothing found|Ничего не найдено/,
+      'both': true},
+  {   'name': 'BHD',
+      'searchUrl': 'https://beyond-hd.me/torrents/all?search=&doSearch=Search&imdb=%nott%',
+      'loggedOutRegex': /FORGET PASSWORD/,
+      'matchRegex': /<h5 class="text-bold text-danger">N\/A<\/h5>/,
+      'both': true},
+  {   'name': 'BitHD',
+      'searchUrl': 'https://www.bit-hdtv.com/torrents.php?search=%tt%&options=4',
+      'loggedOutRegex': /Forgot your password/,
+      'matchRegex': /No match!/},
+  {   'name': 'Blu',
+      'searchUrl': 'https://blutopia.xyz/torrents/filter?imdb=%tt%',
+      'loggedOutRegex': /Forgot Your Password/,
+      'matchRegex': /<tbody>\n\ {20}<\/tbody>/,
+      'both': true},
+  {   'name': 'BRT',
+      'icon': 'https://i.imgur.com/KVaHMKi.png',
+      'searchUrl': 'https://brasiltracker.org/torrents.php?searchstr=%tt%',
+      'loggedOutRegex': /Recuperar senha/,
+      'matchRegex': /retornou nenhum resultado/,
+      'both': true},
+  {   'name': 'BTN',
+      'searchUrl': 'https://broadcasthe.net/torrents.php?imdb=%tt%',
+      'loggedOutRegex': /Lost your password\?/,
+      'matchRegex': /Error 404/,
+      'both': true},
+  {   'name': 'BTN-Req',
+      'icon': 'https://i.imgur.com/yj9qrwa.png',
+      'searchUrl':  'https://broadcasthe.net/requests.php?search=%search_string%',
+      'loggedOutRegex': /Lost your password\?/,
+      'matchRegex': /Nothing found/,
+      'TV': true},
+  {   'name': 'CaCh',
+      'searchUrl': 'http://www.cartoonchaos.org/index.php?page=torrents&search=%search_string%&category=0&options=0&active=0',
+      'loggedOutRegex': /not authorized to view the Torrents/,
+      'matchRegex': />Av.<\/td>\s*<\/tr>\s*<\/table>/,
+      'both': true},
+  {   'name': 'CCT',
+      'searchUrl': 'https://concertos.live/torrents?imdb=%nott%',
+      'loggedOutRegex': /Forgot Your Password/,
+      'matchRegex': /ago/,
+      'positiveMatch': true,
+      'both': true},
+  {   'name': 'CG',
+      'searchUrl': 'https://cinemageddon.net/browse.php?search=%tt%',
+      'loggedOutRegex': 'Not logged in!',
+      'matchRegex': /Nothing found!/},
+  {   'name': 'CG-c',
+      'icon': 'https://i.imgur.com/CdCbVW4.png',
+      'searchUrl': 'https://cinemageddon.net/cocks/endoscope.php?what=imdb&q=%tt%',
+      'loggedOutRegex': 'Not logged in!',
+      'matchRegex': /Nothing found!/},
+  {   'name': 'CG-Req',
+      'icon': 'https://i.imgur.com/305SsHL.png',
+      'searchUrl': 'https://cinemageddon.net/viewrequests.php?search=%tt%&incdesc=1&filter=true',
+      'loggedOutRegex': 'Not logged in!',
+      'matchRegex': /Nothing found./},
+  {   'name': 'CHD',
+      'searchUrl': 'https://chdbits.co/torrents.php?incldead=0&spstate=0&inclbookmarked=0&search_area=4&search_mode=0&search=%tt%',
+      'loggedOutRegex': /SSL \(HTTPS\)/,
+      'matchRegex': /Nothing found/},
+  {   'name': 'Classix',
+      'searchUrl': 'http://classix-unlimited.co.uk/torrents-search.php?search="%search_string%"&parent_cat=Movies',
+      'loggedOutRegex': /Sorry this is a private site/,
+      'matchRegex': /Database Error/},
+  {   'name': 'Classix',
+      'searchUrl': 'http://classix-unlimited.co.uk/torrents-search.php?search="%search_string%"&parent_cat=TV',
+      'loggedOutRegex': /Sorry this is a private site/,
+      'matchRegex': /Database Error/,
+      'TV': true},
+  {   'name': 'CZ',
+      'icon': 'https://i.imgur.com/HYNMAuJ.png',
+      'configName': 'ET',
+      'searchUrl': 'https://cinemaz.to/movies?search=&imdb=%tt%',
+      'loggedOutRegex': /Forgot Your Password/,
+      'matchRegex': /class="overlay-container"/,
+      'positiveMatch': true},
+  {   'name': 'CZ',
+      'icon': 'https://i.imgur.com/HYNMAuJ.png',
+      'configName': 'ET',
+      'searchUrl': 'https://cinemaz.to/tv-shows?search=&imdb=%tt%',
+      'loggedOutRegex': /Forgot Your Password/,
+      'matchRegex': /class="overlay-container"/,
+      'positiveMatch': true,
+      'TV': true},
+  {   'name': 'DB',
+      'searchUrl': 'https://danishbits.org/torrents.php?&pre_type=s_imdb&search=%tt%',
+      'loggedOutRegex': /Glemt din kode\?/,
+      'matchRegex': /Your search did not match/,
+      'both': true},
+  {   'name': 'DVDSeed',
+      'searchUrl': 'http://www.dvdseed.eu/browse2.php?search=%tt%&wheresearch=2&incldead=1&polish=0&nuke=0&rodzaj=0',
+      'loggedOutRegex': /Nie masz konta/,
+      'matchRegex': /Nic tutaj nie ma!/},
+  {   'name': 'eThor',
+      'searchUrl': 'http://ethor.net/browse.php?stype=b&c23=1&c20=1&c42=1&c5=1&c19=1&c25=1&c6=1&c37=1&c43=1&c7=1&c9=1&advcat=0&incldead=0&includedesc=1&search=%tt%',
+      'loggedOutRegex': /Vous avez perdu votre mot de passe/,
+      'matchRegex': /Try again with a refined search string./},
+  {   'name': 'FF',
+      'searchUrl': 'https://www.funfile.org/browse.php?search=%search_string%',
+      'loggedOutRegex': /You need cookies enabled to log in/,
+      'matchRegex': /Try again with a refined search/,
+      'both': true},
+  {   'name': 'FL',
+      'searchUrl': 'https://filelist.io/browse.php?search=%nott%&cat=0&searchin=3&sort=2',
+      'loggedOutRegex': /Login on any IP/,
+      'matchRegex': /Nu s-a găsit nimic!/,
+      'both': true},
+  {   'name': 'FinVip',
+      'searchUrl': 'https://finvip.org/index.php?page=torrents&search=%tt%&options=1',
+      'loggedOutRegex': /Sinulla ei ole oikeuksia sivulle/,
+      'matchRegex': /<td colspan="2" align="center"> <\/td>/},
+  {   'name': 'HDb',
+      'searchUrl': 'https://hdbits.org/browse.php?c3=1&c1=1&c4=1&c2=1&imdb=%tt%',
+      'loggedOutRegex': /Make sure your passcode generating/,
+      'matchRegex': /Nothing here!/,
+      'both': true},
+  {   'name': 'HDC',
+      'icon': 'https://i.imgur.com/KkZE390.png',
+      'searchUrl': 'https://hdchina.org/torrents.php?incldead=0&spstate=0&inclbookmarked=0&boardid=0&seeders=&search=%tt%&search_area=4&search_mode=2',
+      'loggedOutRegex': /SSL \(HTTPS\)/,
+      'matchRegex': /Nothing found! Try again with a refined search string./},
+  {   'name': 'HDH',
+      'configName': 'HDHome',
+      'icon': 'https://i.imgur.com/XUd8EfR.png',
+      'searchUrl': 'https://hdhome.org/torrents.php?search_area=4&search=%tt%',
+      'loggedOutRegex': /SSL \(HTTPS\)/,
+      'matchRegex': /Nothing found! Try again with a refined search string/},
+  {   'name': 'HDME',
+      'searchUrl': 'https://hdme.eu/browse.php?blah=2&cat=0&incldead=1&search=%tt%',
+      'loggedOutRegex': /You need cookies enabled/,
+      'matchRegex': /Try again with a refined search string./},
+  {   'name': 'HDME',
+      'searchUrl': 'https://hdme.eu/browse.php?search=%search_string%&blah=0&cat=0&incldead=1',
+      'loggedOutRegex': /You need cookies enabled/,
+      'matchRegex': /Try again with a refined search string./,
+      'TV': true},
+  {   'name': 'HDS',
+      'searchUrl': 'https://hdsky.me/torrents.php?incldead=1&search=%tt%&search_area=4&search_mode=0',
+      'loggedOutRegex': /SSL \(HTTPS\)/,
+      'matchRegex': /Nothing found!/},
+  {   'name': 'HDS',
+      'searchUrl': 'https://hdsky.me/torrents.php?cat402=1&cat403=1&incldead=1&search=%search_string%&search_area=0&search_mode=0',
+      'loggedOutRegex': /SSL \(HTTPS\)/,
+      'matchRegex': /Nothing found!/,
+      'TV': true},
+  {   'name': 'HDSpace',
+      'icon': 'https://i.imgur.com/hQNih7O.png',
+      'searchUrl': 'https://hd-space.org/index.php?page=torrents&active=0&options=2&search=%nott%',
+      'loggedOutRegex': /not authorized to view the Torrents!/,
+      'matchRegex': /<td colspan="2" align="center"> <\/td>/,
+      'both': true},
+  {   'name': 'HDSpain',
+      'searchUrl': 'https://www.hd-spain.com/browse.php?%search_string%',
+      'loggedOutRegex': /Error 404 No encontrado/,
+      'matchRegex': /xxx Change Me xxx/,
+      'both': true},
+  {   'name': 'HDT',
+      'icon': 'https://hdts.ru/favicon.ico',
+      'searchUrl': 'http://hd-torrents.org/torrents.php?active=0&options=2&search=%tt%',
+      'loggedOutRegex': /not authorized to view this Torrents/,
+      'matchRegex': /No torrents here.../,
+      'both': true},
+  {   'name': 'HDU',
+      'searchUrl': 'https://pt.upxin.net/torrents.php?search_area=4&search=%tt%',
+      'loggedOutRegex': /SSL \(HTTPS\)/,
+      'matchRegex': /Nothing found!/},
+  {   'name': 'IPT',
+      'searchUrl': 'https://ip.findnemo.net/t?q=%tt%',
+      'loggedOutRegex': /Error 522|Checking your browser|security check to access|Forgot your password/,
+      'matchRegex': /No Torrents Found!/},
+  {   'name': 'IPT',
+      'searchUrl': 'https://ip.findnemo.net/t?72=&73=&q=%search_string%&qf=ti',
+      'loggedOutRegex': /Error 522|Checking your browser|security check to access|Forgot your password/,
+      'matchRegex': /No Torrents Found!/,
+      'TV': true},
+  {   'name': 'JoyHD',
+      'icon': 'https://i.imgur.com/z5kbxta.png',
+      'searchUrl': 'https://www.joyhd.net/torrents.php?search_area=4&search=%tt%',
+      'loggedOutRegex': /Resend Email Verification/,
+      'matchRegex': /Nothing found! Try again with a refined search string/},
+  {   'name': 'JPTV',
+      'searchUrl': 'https://jptv.club/torrents/filter?imdb=%tt%',
+      'loggedOutRegex': /Forgot Your Password/,
+      'matchRegex': /<tbody>\n\ {20}<\/tbody>/,
+      'both': true},
+  {   'name': 'KG',
+      'icon': 'https://i.imgur.com/0JFxPY5.png',
+      'searchUrl': 'https://www.karagarga.in/browse.php?search_type=imdb&search=%nott%',
+      'loggedOutRegex': /Not logged in!/,
+      'matchRegex': /No torrents found/,
+      'both': true},
+  {   'name': 'KG-Req',
+      'icon': 'https://i.imgur.com/ZQgliKg.png',
+      'searchUrl': 'https://karagarga.in/viewrequests.php?search=%nott%&filter=true',
+      'loggedOutRegex': /Not logged in!/,
+      'matchRegex': /1&nbsp;-/,
+      'positiveMatch': true,
+      'both': true},
+  {   'name': 'LM',
+      'searchUrl': 'https://www.linkomanija.net/browse.php?incldead=1&search=%tt%&searchindesc=1',
+      'loggedOutRegex': /Prisiminti mane/,
+      'matchRegex': /Nieko nerasta./},
+  {   'name': 'LM',
+      'searchUrl': 'https://www.linkomanija.net/browse.php?c30=1&c60=1&c28=1&c62=1&c65=1&c58=1&incldead=0&search="%search_string%"',
+      'loggedOutRegex': /Prisiminti mane/,
+      'matchRegex': /Nieko nerasta./,
+      'TV': true},
+  {   'name': 'LM-5z',
+      'searchUrl': 'https://www.linkomanija.net/torrents.php?cat=0&search="%search_string%"',
+      'loggedOutRegex': /Prisiminti mane/,
+      'matchRegex': /Torrentų nėra./,
+      'both': true},
+  {   'name': 'M-T',
+      'searchUrl': 'https://pt.m-team.cc/torrents.php?incldead=1&spstate=0&inclbookmarked=0&search=%tt%&search_area=4&search_mode=0',
+      'loggedOutRegex': /type="password" name="password"|An error occurred./,
+      'matchRegex': /Nothing here!|Try again with a refined search string./,
+      'both': true},
+  {   'name': 'MS',
+      'searchUrl': 'http://www.myspleen.org/browse.php?search=%search_string%&title=0&cat=0',
+      'loggedOutRegex': /<title>MySpleen :: Login<\/title>/,
+      'matchRegex': /<strong>Nothing found!<\/strong>/,
+      'both': true},
+  {   'name': 'MTV',
+      'searchUrl': 'https://www.morethan.tv/torrents.php?searchstr=%search_string%+%year%&tags_type=1&order_by=time&order_way=desc&group_results=1&filter_cat%5B1%5D=1&action=basic&searchsubmit=1',
+      'loggedOutRegex': /<title>Login :: morethan.tv/,
+      'matchRegex': /<h2>Your search did not match anything.<\/h2>/},
+  {   'name': 'MTV',
+      'searchUrl': 'https://www.morethan.tv/torrents.php?searchstr=%search_string%&tags_type=1&order_by=time&order_way=desc&group_results=1&filter_cat%5B2%5D=1&action=basic&searchsubmit=1',
+      'loggedOutRegex': /<title>Login :: morethan.tv/,
+      'matchRegex': /<h2>Your search did not match anything.<\/h2>/,
+      'TV': true},
   {   'name': 'NB',
+      'icon': 'https://i.imgur.com/OH7fBY4.png',
       'searchUrl': 'https://norbits.net/browse.php?incldead=1&fullsearch=0&scenerelease=0&imdbsearch=%tt%&imdb_from=0&imdb_to=0&search=',
+      'loggedOutRegex': /Ikke innlogget!/,
       'matchRegex': /<h3>Ingenting her!<\/h3>/,
       'both': true},
   {   'name': 'NBL',
       'searchUrl': 'https://nebulance.io/torrents.php?order_by=time&order_way=desc&searchtext=%search_string%&search_type=0&taglist=&tags_type=0',
+      'loggedOutRegex': /have cookies disabled./,
       'matchRegex': /Your search did not match anything/,
       'TV': true},
   {   'name': 'OurBits',
       'searchUrl': 'https://ourbits.club/torrents.php?search_area=4&search=%tt%',
+      'loggedOutRegex': /SSL \(HTTPS\)/,
       'matchRegex': /Nothing found! Try again with a refined search string/},
   {   'name': 'PHD',
+      'icon': 'https://i.imgur.com/MJJGioU.png',
       'searchUrl': 'https://privatehd.to/movies?search=&imdb=%tt%',
+      'loggedOutRegex': /Forgot Your Password/,
       'matchRegex': /class="overlay-container"/,
       'positiveMatch': true},
   {   'name': 'PHD',
+      'icon': 'https://i.imgur.com/MJJGioU.png',
       'searchUrl': 'https://privatehd.to/tv-shows?search=&imdb=%tt%',
+      'loggedOutRegex': /Forgot Your Password/,
       'matchRegex': /class="overlay-container"/,
       'positiveMatch': true,
       'TV': true},
+  {   'name': 'PTE',
+      'icon': 'https://cdn.pte.nu/img/favicon.ico',
+      'searchUrl': 'https://pte.nu/apitorrents?tpage=1&cat[]=6&cat[]=7&cat[]=9&search=%search_string%',
+      'goToUrl': 'https://pte.nu/torrents?cat=["6","7","9"]&search=%search_string%',
+      'loggedOutRegex': /submit">Sign in/,
+      'matchRegex': /"count":0/,
+      'spaceEncode': ' '},
+  {   'name': 'PTE',
+      'icon': 'https://cdn.pte.nu/img/favicon.ico',
+      'searchUrl': 'https://pte.nu/apitorrents?tpage=1&cat[]=11&cat[]=12&search=%search_string%',
+      'goToUrl': 'https://pte.nu/torrents?cat=["11","12"]&search=%search_string%',
+      'loggedOutRegex': /submit">Sign in/,
+      'matchRegex': /"count":0/,
+      'spaceEncode': ' ',
+      'TV': true},
+  {   'name': 'PTer',
+      'searchUrl': 'https://pterclub.com/torrents.php?search=%tt%&search_area=4',
+      'loggedOutRegex': /SSL \(HTTPS\)/,
+      'matchRegex': /Nothing found!/},
   {   'name': 'PTF',
       'searchUrl': 'https://ptfiles.net/browse.php?search=%search_string%&incldead=0&title=0',
-      'matchRegex': /<h2>Nothing found!<\/h2>/},
+      'loggedOutRegex': /Forgot your password/,
+      'matchRegex': /Nothing found!/},
   {   'name': 'PTN',
       'icon': 'https://piratethenet.org/pic/favicon.ico',
       'searchUrl': 'https://piratethenet.org/browseold.php?incldead=1&_by=3&search=%tt%',
+      'loggedOutRegex': /You need to have cookies enabled/,
       'matchRegex': /Nothing found!/,
       'both': true},
   {   'name': 'PTP',
@@ -622,188 +912,223 @@ var sites = [
       'loggedOutRegex': /Keep me logged in/,
       'matchRegex': /Your search did not match anything/},
   {   'name': 'PTP-Req',
+      'icon': 'https://i.imgur.com/EFCRrc9.png',
       'searchUrl': 'https://passthepopcorn.me/requests.php?submit=true&search=%tt%',
       'loggedOutRegex': /Keep me logged in/,
       'matchRegex': /Your search did not match anything/},
   {   'name': 'PxHD',
+      'icon': 'https://i.imgur.com/OA7JJ6x.png',
       'searchUrl': 'https://pixelhd.me/torrents.php?groupname=&year=&tmdbover=&tmdbunder=&tmdbid=&imdbover=&imdbunder=&imdbid=%tt%&order_by=time&order_way=desc&taglist=&tags_type=1&filterTorrentsButton=Filter+Torrents',
-      'matchRegex': /<h2>Your search did not match anything.<\/h2>/},
-  {   'name': 'RARAT',
-      'searchUrl': 'https://rarat.org/api/v1/torrents?extendedSearch=false&hideOld=false&index=0&limit=15&order=asc&page=search&searchText=%tt%&sort=n#https://rarat.org/search?search=%tt%',
-      'goToUrl': 'https://rarat.org/search?search=%tt%',
-      'matchRegex': /^$/,
-      'both': true},
-  {   'name': 'RARBG',
-      'searchUrl': 'https://rarbg.to/torrents.php?imdb=%tt%',
-      'matchRegex': '//dyncdn.me/static/20/images/imdb_thumb.gif',
-      'positiveMatch': true,
-      'both': true},
+      'loggedOutRegex': /You appear to have javascript disabled/,
+      'matchRegex': /Your search did not match anything/},
   {   'name': 'RevTT',
       'searchUrl': 'https://www.revolutiontt.me/browse.php?search=%tt%',
-      'matchRegex': /<h2>Nothing found!<\/h2>/},
+      'loggedOutRegex': /used when you're logged in./,
+      'matchRegex': /Nothing found!/},
   {   'name': 'RevTT',
       'searchUrl': 'https://www.revolutiontt.me/browse.php?search=%search_string%&cat=0&incldead=1&titleonly=1',
-      'matchRegex': /<h2>Nothing found!<\/h2>/,
+      'loggedOutRegex': /used when you're logged in./,
+      'matchRegex': /Nothing found!/,
       'TV': true},
-  {   'name': 'RuT',
-      'searchUrl': 'https://rutracker.org/forum/tracker.php?nm=%search_string%',
-      'matchRegex': 'Не найдено',
-      'both': true},
-  {   'name': 'Rutor',
-      'searchUrl': 'http://rutor.info/search/0/0/010/0/%tt%',
-      'matchRegex': 'Результатов поиска 0',
+  {   'name': 'Retroflix',
+      'searchUrl': 'https://retroflix.club/torrents1.php?incldead=0&spstate=0&inclbookmarked=0&search=%tt%&search_area=4&search_mode=0',
+      'loggedOutRegex': /Restrict session to my IP/,
+      'matchRegex': /Nothing found!/,
       'both': true},
   {   'name': 'SC',
       'searchUrl': 'https://secret-cinema.pw/torrents.php?action=advanced&searchsubmit=1&filter_cat=1&cataloguenumber=%tt%&order_by=time&order_way=desc&tags_type=0',
-      'matchRegex': /Your search did not match anything./},
+      'loggedOutRegex': /<title>Login :: Secret Cinema/,
+      'matchRegex': /Your search did not match anything/,
+      'both': true},
+  {   'name': 'SC-Req',
+      'icon': 'https://i.imgur.com/QHOSsFZ.png',
+      'searchUrl': 'https://secret-cinema.pw/requests.php?submit=true&search=%tt%',
+      'loggedOutRegex': /<title>Login :: Secret Cinema/,
+      'matchRegex': /Nothing found!/,
+      'both': true},
   {   'name': 'SDBits',
       'searchUrl': 'https://sdbits.org/browse.php?incldead=1&imdb=%tt%',
-      'matchRegex': /Nothing found!|<h1>You need cookies enabled to log in.<\/h1>/},
+      'loggedOutRegex': /Not logged in!/,
+      'matchRegex': /Nothing here!|Nothing found!/},
   {   'name': 'sHD',
       'searchUrl': 'https://scenehd.org/browse.php?search=%tt%',
-      'matchRegex': /<h2>No torrents found!<\/h2>/},
-  {   'name': 'SM',
-      'searchUrl': 'https://surrealmoviez.info/search.php?stext=%tt%',
-      'matchRegex': /0 Movies found matching search criteria|You need to be logged in to view this page/},
+      'loggedOutRegex': /If you have forgotten your password/,
+      'matchRegex': /No torrents found!/},
   {   'name': 'Snahp',
       'searchUrl': 'https://forum.snahp.it/search.php?keywords=%search_string%&amp;sf=titleonly',
+      'loggedOutRegex': /register" role/,
       'matchRegex': '/Search found 0 matches/',
       'both': true},
   {   'name': 'SP',
       'searchUrl': 'http://www.scenepalace.info/browse.php?search=%nott%&cat=0&incldead=1',
-      'matchRegex': /<h1>Not logged in!<\/h1>|<h2>Nothing found!<\/h2>/,
+      'loggedOutRegex': /Not logged in!/,
+      'matchRegex': /Nothing found!/,
       'both': true},
   {   'name': 'TBD',
       'icon': 'https://1.bp.blogspot.com/-F2JeKtPCJYI/VgjpVxwMO4I/AAAAAAAAADg/VyNyp-yW9Ac/s1600/TBD.ico',
-      'searchUrl': 'http://www.torrentbd.com/torrent/torrents-search.php?search=%search_string%',
-      'matchRegex': /No torrents were found based on your search criteria./,
+      'searchUrl': 'https://www.torrentbd.me/torrent/movies.php?module=torrents&id=%nott%',
+      'loggedOutRegex': /<title>TorrentBD : Login</,
+      'matchRegex': /This title is not available!/,
       'both': true},
   {   'name': 'TD',
-      'searchUrl': 'https://www.torrentday.com/t?q=%tt%',
+      'searchUrl': 'https://tday.findnemo.net/t?q=%tt%',
+      'loggedOutRegex': /Error 522|Checking your browser|security check to access|Forgot Password\?/,
       'matchRegex': /No Torrents Found!/,
       'both': true},
   {   'name': 'TE',
       'searchUrl': 'https://theempire.click/browse.php?incldead=0&country=&nonboolean=1&search=%tt%',
-      'matchRegex': /Try again with a refined search string|<h1>You need cookies enabled to log in.<\/h1>/,
+      'loggedOutRegex': /404 - Not Found|You need cookies enabled/,
+      'matchRegex': /Try again with a refined search string/,
       'both': true},
   {   'name': 'TG',
       'searchUrl': 'https://thegeeks.click/browse.php?incldead=0&country=&nonboolean=1&search=%tt%',
-      'matchRegex': /Try again with a refined search string|<h1>You need cookies enabled to log in.<\/h1>/,
+      'loggedOutRegex': /404 - Not Found|You need cookies enabled/,
+      'matchRegex': /Try again with a refined search string/,
+      'both': true},
+  {   'name': 'THR',
+      'searchUrl': 'https://www.torrenthr.org/browse.php?search=%search_string%&blah=0&incldead=1',
+      'loggedOutRegex': /registraciju morate imati omogućene cookiese/,
+      'matchRegex': /Ništa nije pronađeno!/,
       'both': true},
   {   'name': 'TO',
       'searchUrl': 'https://theoccult.click/browse.php?incldead=0&country=&nonboolean=1&search=%tt%',
-      'matchRegex': /Try again with a refined search string|<h1>You need cookies enabled to log in.<\/h1>/,
+      'loggedOutRegex': /404 - Not Found|You need cookies enabled/,
+      'matchRegex': /Try again with a refined search string/,
       'both': true},
   {   'name': 'TP',
       'searchUrl': 'https://theplace.click/browse.php?incldead=0&country=&nonboolean=1&search=%tt%',
-      'matchRegex': /Try again with a refined search string|<h1>You need cookies enabled to log in.<\/h1>/,
+      'loggedOutRegex': /not found on this server|You need cookies enabled/,
+      'matchRegex': /Try again with a refined search string/,
       'both': true},
+  {   'name': 'TRL',
+      'searchUrl': 'https://torrent.ai/lt/torrents?in=2&search=%tt%',
+      'loggedOutRegex': /Jums nepavyksta pasijungti/,
+      'matchRegex': /nieko nerasta!/,
+      'both': true},
+  {   'name': 'TRL',
+      'searchUrl': 'https://torrent.ai/lt/torrents?search=%search_string%&cats[]=53&cats[]=56&cats[]=79&cats[]=42&cats[]=58&cats[]=59&cats[]=45&cats[]=69&cats[]=70&cats[]=39&cats[]=28',
+      'loggedOutRegex': /Jums nepavyksta pasijungti/,
+      'matchRegex': /nieko nerasta!/,
+      'TV': true},
   {   'name': 'TS',
       'searchUrl': 'https://theshow.click/browse.php?incldead=0&country=&nonboolean=1&search=%tt%',
-      'matchRegex': /Try again with a refined search string|<h1>You need cookies enabled to log in.<\/h1>/,
+      'loggedOutRegex': /404 - Not Found|You need cookies enabled/,
+      'matchRegex': /Try again with a refined search string/,
       'both': true},
   {   'name': 'THC',
       'searchUrl': 'https://horrorcharnel.org/browse.php?search=%nott%&cat=0&incldead=1',
-      'matchRegex': /<h1>Not logged in!<\/h1>|<h2>Nothing found!<\/h2>/},
+      'loggedOutRegex': /Not logged in!/,
+      'matchRegex': /<h2>Nothing found!<\/h2>/},
   {   'name': 'Tik',
-      'searchUrl': 'https://www.cinematik.net/browse.php?&cat=0&incldead=1&sort=1&type=asc&srchdtls=1&search=%tt%',
-      'matchRegex': /The page you tried to view can only be used when you're logged in|Nothing found!/},
-  {   'name': 'TL',
-      'searchUrl': 'http://www.torrentleech.org/torrents/browse/index/query/%search_string%+%year%/categories/1,8,9,10,11,12,13,14,15,29',
-      'matchRegex': /Signup With Invite|Please refine your search./},
-  {   'name': 'TL',
-      'searchUrl': 'http://www.torrentleech.org/torrents/browse/index/query/%search_string%/categories/2,26,27,32',
-      'matchRegex': /Signup With Invite|Please refine your search./,
-      'TV': true},
-  {   'name': 'TPB',
-      'searchUrl': 'https://thepiratebay.blog/search/%tt%',
-      'matchRegex': /No hits. Try adding an asterisk in you search phrase.<\/h2>/,
+      'searchUrl': 'https://www.cinematik.net/browse.php?cat=0&incldead=1&srchdtls=1&search=%tt%',
+      'loggedOutRegex': /Not logged in!/,
+      'matchRegex': /Nothing found!/,
       'both': true},
+  {   'name': 'Tik-Req',
+      'icon': 'https://i.imgur.com/bM8D1m2.png',
+      'searchUrl': 'https://www.cinematik.net/viewrequests.php?search=%search_string%&filter=1',
+      'loggedOutRegex': /Not logged in!/,
+      'matchRegex': /No requests found!/,
+      'both': true},
+  {   'name': 'TL',
+      'searchUrl': 'https://www.torrentleech.org/torrents/browse/list/categories/8,9,11,12,13,14,15,29/query/%search_string% %year%',
+      'goToUrl': 'http://www.torrentleech.org/torrents/browse/index/query/%search_string% %year%/categories/1,8,9,10,11,12,13,14,15,29',
+      'loggedOutRegex': /Signup With Invite/,
+      'matchRegex': /"numFound":0/,
+      'spaceEncode': ' '},
+  {   'name': 'TL',
+      'searchUrl': 'https://www.torrentleech.org/torrents/browse/list/categories/26,27,32/query/%search_string%',
+      'goToUrl': 'http://www.torrentleech.org/torrents/browse/index/query/%search_string%/categories/2,26,27,32',
+      'loggedOutRegex': /Signup With Invite/,
+      'matchRegex': /"numFound":0/,
+      'spaceEncode': ' ',
+      'TV': true},
   {   'name': 'TTG',
       'searchUrl': 'https://totheglory.im/browse.php?c=M&search_field=imdb%nott%',
+      'loggedOutRegex': /Forget your password/,
       'matchRegex': /Didn't match any titles/},
-  {   'name': 'TGx',
-      'searchUrl': 'https://torrentgalaxy.org/torrents.php?search=%tt%',
-      'matchRegex': /No results found/},
   {   'name': 'TVCK',
       'searchUrl': 'https://www.tvchaosuk.com/browse.php?do=search&search_type=t_name&keywords=%search_string%',
+      'loggedOutRegex': /404 Not Found/,
       'matchRegex': /<b>Nothing Found<\/b>/},
   {   'name': 'TVV',
       'searchUrl': 'https://tv-vault.me/torrents.php?action=advanced&imdbid=%tt%&order_by=s3&order_way=desc',
+      'loggedOutRegex': /Lost your password\?|Browse quota exceeded/,
       'matchRegex': /Nothing found<\/h2>/,
       'TV': true},
   {   'name': 'U2',
-      'searchUrl': 'https://u2.dmhy.org/torrents.php?incldead=1&spstate=0&inclbookmarked=0&search=%tt%&search_area=1&search_mode=0',
+      'searchUrl': 'https://u2.dmhy.org/torrents.php?incldead=0&spstate=0&inclbookmarked=0&search=%tt%&search_area=1&search_mode=0',
+      'loggedOutRegex': /<title>Access Point :: U2</,
       'matchRegex': /Nothing found/},
   {   'name': 'UHDB',
       'searchUrl': 'https://uhdbits.org/torrents.php?action=advanced&groupname=%tt%',
+      'loggedOutRegex': /Lost your password/,
       'matchRegex': /Your search did not match anything./},
   {   'name': 'XS',
       'searchUrl': 'https://www.xspeeds.eu/browse.php?do=search&keywords=%search_string%&search_type=t_name&category=0&include_dead_torrents=yes',
+      'loggedOutRegex': /Forget your password/,
       'matchRegex': /<b>Nothing Found<\/b>/}
 ];
 
+var sites = public_sites.concat(private_sites);
+
 var icon_sites = [
-  {   'name': 'Google',
-      'searchUrl': 'https://www.google.com/search?q=%search_string%'},
-  {   'name': 'TMDB',
-      'icon': 'https://www.themoviedb.org/assets/2/favicon-16x16-b362d267873ce9c5a39f686a11fe67fec2a72ed25fa8396c11b71aa43c938b11.png',
-      'searchUrl': 'https://www.themoviedb.org/search?query=%search_string%'},
-  {   'name': 'TVDB',
-      'searchUrl': 'https://www.thetvdb.com/search?query=%search_string%'},
-  {   'name': 'BCDB',
-      'searchUrl': 'https://www.bcdb.com/bcdb/search.cgi?query=%search_string%'},
-  {   'name': 'OpenSubtitles',
-      'searchUrl': 'https://www.opensubtitles.org/en/search/imdbid-%tt%'},
-  {   'name': 'YouTube.com',
-      'searchUrl': 'https://www.youtube.com/results?search_query="%search_string%"+%year%+trailer'},
-  {   'name': 'Rotten Tomatoes',
-      'searchUrl': 'https://www.rottentomatoes.com/search/?search=%search_string%'},
-  {   'name': 'Criticker',
-      'searchUrl': 'https://www.criticker.com/?search=%search_string%&type=films'},
-  {   'name': 'iCheckMovies',
-      'searchUrl': 'https://www.icheckmovies.com/search/movies/?query=%tt%'},
-  {   'name': 'Letterboxd',
-      'searchUrl': 'https://letterboxd.com/imdb/%nott%'},
-  {   'name': 'Subscene',
-      'icon': 'https://subscene.com/favicon.ico',
-      'searchUrl': 'https://subscene.com/subtitles/title?q=%search_string%'},
-  {   'name': 'Wikipedia',
-      'searchUrl': 'https://en.wikipedia.org/w/index.php?search=%search_string%&go=Go'},
-  {   'name': 'FilmAffinity',
-      'searchUrl': 'https://www.filmaffinity.com/en/advsearch.php?stext=%search_string%&stype[]=title&fromyear=%year%&toyear=%year%',
-      'showByDefault': false},
-  {   'name': 'Metacritic',
-      'searchUrl': 'https://www.metacritic.com/search/all/%search_string%/results?cats[movie]=1&cats[tv]=1&search_type=advanced&sort=relevancy',
-      'showByDefault': false},
-  {   'name': 'Can I Stream.It? (Movie)',
-      'searchUrl': 'http://www.canistream.it/search/movie/%search_string%',
-      'showByDefault': false},
-  {   'name': 'Can I Stream.It? (TV)',
-      'searchUrl': 'http://www.canistream.it/search/tv/%search_string%',
-      'showByDefault': false},
   {   'name': 'AllMovie',
       'searchUrl': 'https://www.allmovie.com/search/movies/%search_string%',
-      'showByDefault': false},
-  {   'name': 'Facebook',
-      'searchUrl': 'https://www.facebook.com/search/str/%search_string%/keywords_pages',
       'showByDefault': false},
   {   'name': 'Amazon',
       'searchUrl': 'https://www.amazon.com/s/ref=nb_sb_noss?url=search-alias%3Dmovies-tv&field-keywords=%search_string%',
       'showByDefault': false},
-  {   'name': 'Netflix',
-      'searchUrl': 'https://www.netflix.com/search/%search_string%',
-      'showByDefault': false},
+  {   'name': 'BCDB',
+      'icon': 'https://i.imgur.com/IZwCRkn.png',
+      'searchUrl': 'https://www.bcdb.com/bcdb/search.cgi?query=%search_string%'},
   {   'name': 'Blu-ray.com',
       'searchUrl': 'https://www.blu-ray.com/search/?quicksearch=1&quicksearch_country=all&quicksearch_keyword=%search_string%+&section=bluraymovies',
       'showByDefault': false},
-  {   'name': 'trakt.tv',
+  {   'name': 'Criticker',
+      'searchUrl': 'https://www.criticker.com/?search=%search_string%&type=films'},
+  {   'name': 'Facebook',
+      'searchUrl': 'https://www.facebook.com/search/str/%search_string%/keywords_pages',
+      'showByDefault': false},
+  {   'name': 'FilmAffinity',
+      'searchUrl': 'https://www.filmaffinity.com/en/advsearch.php?stext=%search_string%&stype[]=title&fromyear=%year%&toyear=%year%',
+      'showByDefault': false},
+  {   'name': 'Google',
+      'searchUrl': 'https://www.google.com/search?q=%search_string%'},
+  {   'name': 'iCheckMovies',
+      'searchUrl': 'https://www.icheckmovies.com/search/movies/?query=%tt%'},
+  {   'name': 'Letterboxd',
+      'searchUrl': 'https://letterboxd.com/imdb/%nott%'},
+  {   'name': 'Metacritic',
+      'searchUrl': 'https://www.metacritic.com/search/all/%search_string%/results?cats[movie]=1&cats[tv]=1&search_type=advanced&sort=relevancy',
+      'showByDefault': false},
+  {   'name': 'Netflix',
+      'searchUrl': 'https://www.netflix.com/search/%search_string%',
+      'showByDefault': false},
+  {   'name': 'OpenSubtitles',
+      'searchUrl': 'https://www.opensubtitles.org/en/search/imdbid-%tt%'},
+  {   'name': 'Rotten Tomatoes',
+      'searchUrl': 'https://www.rottentomatoes.com/search/?search=%search_string%'},
+  {   'name': 'Subscene',
+      'icon': 'https://subscene.com/favicon.ico',
+      'searchUrl': 'https://subscene.com/subtitles/title?q=%search_string%'},
+  {   'name': 'TMDB',
+      'icon': 'https://www.themoviedb.org/assets/2/favicon-16x16-b362d267873ce9c5a39f686a11fe67fec2a72ed25fa8396c11b71aa43c938b11.png',
+      'searchUrl': 'https://www.themoviedb.org/search?query=%search_string%'},
+  {   'name': 'Trakt.tv',
       'icon': 'https://walter.trakt.tv/hotlink-ok/public/favicon.ico',
       'searchUrl': 'https://trakt.tv/search/imdb?query=%tt%',
       'showByDefault': false},
-  {   'name': 'unogs',
+  {   'name': 'TVDB',
+      'icon': 'https://www.thetvdb.com/images/icon.png',
+      'searchUrl': 'https://www.thetvdb.com/search?query=%search_string%'},
+  {   'name': 'uNoGS',
       'searchUrl': 'https://unogs.com/?q=%tt%',
-      'showByDefault': false}
+      'showByDefault': false},
+  {   'name': 'Wikipedia',
+      'searchUrl': 'https://en.wikipedia.org/w/index.php?search=%search_string%&go=Go'},
+  {   'name': 'YouTube.com',
+      'searchUrl': 'https://www.youtube.com/results?search_query="%search_string%"+%year%+trailer'}
 ];
 
 // For internal use (order matters)
@@ -814,22 +1139,24 @@ var valid_states = [
   'error'
 ];
 
-function replaceSearchUrlParams(site, movie_id, movie_title) {
+function replaceSearchUrlParams(site, movie_id, movie_title, movie_title_orig) {
   var search_url = site['searchUrl'];
   // If an array, do a little bit of recursion
   if ($.isArray(search_url)) {
     var search_array = [];
     $.each(search_url, function(index, url) {
-      search_array[index] = replaceSearchUrlParams(url, movie_id, movie_title);
+      search_array[index] = replaceSearchUrlParams(url, movie_id, movie_title, movie_title_orig);
     });
     return search_array;
   }
   var space_replace = ('spaceEncode' in site) ? site['spaceEncode'] : '+';
-  var search_string = movie_title.trim().replace(/ +\(.*/, '').replace(/\s+/g, space_replace);
+  var search_string = movie_title.trim().replace(/ +\(.*|&/g, '').replace(/\s+/g, space_replace);
+  var search_string_orig = movie_title_orig.trim().replace(/ +\(.*|&/g, '').replace(/\s+/g, space_replace);
   var movie_year = document.title.replace(/^(.+) \((.*)([0-9]{4})(.*)$/gi, '$3');
   var s = search_url.replace(/%tt%/g, 'tt' + movie_id)
     .replace(/%nott%/g, movie_id)
     .replace(/%search_string%/g, search_string)
+    .replace(/%search_string_orig%/g, search_string_orig)
     .replace(/%year%/g, movie_year);
   return s;
 }
@@ -849,7 +1176,7 @@ function getFavicon(site, hide_on_err) {
     favicon = url.origin + '/favicon.ico';
   }
   var img = $('<img />').attr({'style': '-moz-opacity: 0.4; border: 0; vertical-align: text-top',
-                               'width': '16',
+                               'width': GM_config.get('cfg_icons_size'),
                                'src': favicon,
                                'title': site['name'],
                                'alt': site['name']});
@@ -864,9 +1191,9 @@ function addLink(elem, link_text, target, site, state) {
   if ($.inArray(state, valid_states) < 0) {
     console.log("Unknown state " + state);
   }
-  if (getPageSetting('use_icons')) {
+  if (getPageSetting('use_mod_icons')) {
     var icon = getFavicon(site);
-    icon.css({'border-width': '3px', 'border-style': 'solid', 'border-radius': '2px'});
+    (GM_config.get('one_line')) ? icon.css({'border-width': '3px', 'border-style': 'solid', 'border-radius': '2px'}) : icon.css({'border-width': '0px', 'border-style': 'solid', 'border-radius': '2px'});
     if (state == 'error' || state == 'logged_out') {
       icon.css('border-color', 'red');
     } else if (state == 'missing') {
@@ -935,17 +1262,21 @@ function maybeAddLink(elem, link_text, search_url, site) {
     method: 'GET',
     url: search_url,
     onload: function(response) {
-      if (String(response.responseText).match(site['matchRegex']) ? !(success_match) : success_match) {
-        if (getPageSetting('highlight_missing').split(',').includes(site['name'])) {
-          if (elem.style) {
+      if (response.responseHeaders.indexOf('efresh: 0; url') > -1) {
+      addLink(elem, link_text, target, site, 'logged_out');
+      } else if (site['positiveMatch'] && site['loggedOutRegex'] && String(response.responseText).match(site['loggedOutRegex'])) {
+        addLink(elem, link_text, target, site, 'logged_out');
+      } else if (String(response.responseText).match(site['matchRegex']) ? !(success_match) : success_match) {
+          if (getPageSetting('highlight_missing').split(',').includes(site['name'])) {
+            if (elem.style) {
             elem.parentNode.style.background = 'rgba(255,104,104,0.7)';
-          } else {
-            document.querySelector('#imdbscout_missing').style.background = 'rgba(255,104,104,0.7)';
+            } else {
+              document.querySelector('#imdbscout_missing').style.background = 'rgba(255,104,104,0.7)';
+            }
           }
-        }
-        if (!getPageSetting('hide_missing')) {
+          if (!getPageSetting('hide_missing')) {
           addLink(elem, link_text, target, site, 'missing');
-        }
+          }
       } else if (site['loggedOutRegex'] && String(response.responseText).match(site['loggedOutRegex'])) {
         addLink(elem, link_text, target, site, 'logged_out');
       } else {
@@ -962,7 +1293,7 @@ function maybeAddLink(elem, link_text, search_url, site) {
 }
 
 // Run code to create fields and display sites
-function perform(elem, movie_id, movie_title, is_tv, is_movie) {
+function perform(elem, movie_id, movie_title, movie_title_orig, is_tv, is_movie) {
   var site_shown = false;
   $.each(sites, function(index, site) {
     if (site['show']) {
@@ -971,13 +1302,13 @@ function perform(elem, movie_id, movie_title, is_tv, is_movie) {
       if ((Boolean(site['TV']) == is_tv ||
            Boolean(site['both'])) ||
           (!is_tv && !is_movie) || getPageSetting('ignore_type')) {
-        var searchUrl = replaceSearchUrlParams(site, movie_id, movie_title);
+        var searchUrl = replaceSearchUrlParams(site, movie_id, movie_title, movie_title_orig);
         if (site.goToUrl)
           site.goToUrl = replaceSearchUrlParams({
             'searchUrl': site['goToUrl'],
             'spaceEncode': ('spaceEncode' in site) ? site['spaceEncode'] : '+'
-          }, movie_id, movie_title);
-        if (getPageSetting('call_http')) {
+          }, movie_id, movie_title, movie_title_orig);
+        if (getPageSetting('call_http_mod')) {
           maybeAddLink(elem, site['name'], searchUrl, site);
         } else {
           addLink(elem, site['name'], searchUrl, site, 'found');
@@ -986,7 +1317,7 @@ function perform(elem, movie_id, movie_title, is_tv, is_movie) {
     }
   });
   if (!site_shown) {
-    $(elem).append('No sites enabled! You can change this via the Greasemonkey option "IMDb Scout Preferences".');
+    $(elem).append('No sites enabled! "IMDb Scout Mod Preferences" button you can find on Monkeys plugin icon.');
   }
 }
 
@@ -1019,7 +1350,7 @@ function displayButton() {
 
 // Adds a dictionary of icons to the top of the page.
 // Unlike the other URLs, they aren't checked to see if the movie exists.
-function addIconBar(movie_id, movie_title) {
+function addIconBar(movie_id, movie_title, movie_title_orig) {
   var iconbar;
   if ($('h1.header:first').length) {
     iconbar = $('h1.header:first').append($('<br/>'));
@@ -1032,7 +1363,7 @@ function addIconBar(movie_id, movie_title) {
   }
   $.each(icon_sites, function(index, site) {
     if (site['show']) {
-      var search_url = replaceSearchUrlParams(site, movie_id, movie_title);
+      var search_url = replaceSearchUrlParams(site, movie_id, movie_title, movie_title_orig);
       var image = getFavicon(site);
       var html = $('<span />').append("&nbsp;").attr('style', 'font-size: 11px;').append(
         $('<a />').attr('href', search_url)
@@ -1077,6 +1408,7 @@ function performSearch() {
       var is_movie = Boolean($(this).find('.year_type').html()
                              .match(/\(([0-9]*)\)/));
       var movie_title = link.html();
+      var movie_title_orig = movie_title;
       var movie_id = link.attr('href').match(/tt([0-9]*)\/?$/)[1];
 
       $(this).find('span.genre a').each(function() {
@@ -1085,7 +1417,7 @@ function performSearch() {
             .css('background-color', 'red');
         }
       });
-      perform($(this), movie_id, movie_title, is_tv, is_movie);
+      perform($(this), movie_id, movie_title, movie_title_orig, is_tv, is_movie);
     });
   } else {
     // Chameleon code, in a different style
@@ -1103,12 +1435,13 @@ function performSearch() {
       var is_tv = link.nextElementSibling.textContent.indexOf('-')!==-1;
       var is_movie = !is_tv;
       var movie_title = link.textContent;
+      var movie_title_orig = movie_title;
       var movie_id = link.href.split("/title/tt")[1].split("/")[0];
 
       var elem = t.parentNode.parentNode;
       if(!compact)
         elem = t.parentNode;
-      perform(elem, movie_id, movie_title, is_tv, is_movie);
+      perform(elem, movie_id, movie_title, movie_title_orig, is_tv, is_movie);
     }
   }
 }
@@ -1133,8 +1466,9 @@ function performWatchlist() {
       var is_movie = Boolean($(this).find('.lister-item-year').html()
                              .match(/^([0-9]*)$/));
       var movie_title = link.html();
+      var movie_title_orig = movie_title;
       var movie_id = link.attr('href').match(/tt([0-9]*)\/?.*/)[1];
-      perform($(this), movie_id, movie_title, is_tv, is_movie);
+      perform($(this), movie_id, movie_title, movie_title_orig, is_tv, is_movie);
     });
   }
 }
@@ -1148,14 +1482,18 @@ function performPage() {
   if (movie_title === "") {
     movie_title = $('h3[itemprop="name"]').text().trim();
   }
+  var movie_title_orig = $('.originalTitle').clone().children().remove().end().text();
+  if (movie_title_orig === "") {
+    movie_title_orig = movie_title;
+  }
   var movie_id = document.URL.match(/\/tt([0-9]+)\//)[1].trim('tt');
   var is_tv_page = Boolean($('title').text().match('TV Series')) ||
       Boolean($('.tv-extra').length);
   var is_movie_page = Boolean($('title').text().match(/.*? \(([0-9]*)\)/));
   //Create area to put links in
-  perform(getLinkArea(), movie_id, movie_title,
+  perform(getLinkArea(), movie_id, movie_title, movie_title_orig,
           is_tv_page, is_movie_page);
-  addIconBar(movie_id, movie_title);
+  addIconBar(movie_id, movie_title, movie_title_orig);
 }
 
 //------------------------------------------------------
@@ -1167,10 +1505,24 @@ function getLinkArea() {
   if ($('#imdbscout_header').length) {
     return $('#imdbscout_header');
   }
-  var p = $('<p />').append('<h2>' + GM_config.get('imdbscout_header_text') + '</h2>').attr('id', 'imdbscout_header').css({
+  var p = $('<p />').append('<h2>' + GM_config.get('imdbscoutmod_header_text') + '</h2>').attr('id', 'imdbscout_header').css({
     'padding': '0px 20px',
     'font-weight': 'bold'
   });
+  var background_color = (GM_config.get('new_layout_dark')) ? '#333333' : '#EEEEEE';
+  var txt_color = (GM_config.get('new_layout_dark')) ? '#EEEEEE' : '#333333';
+  var p_new = $('<p />').append(GM_config.get('imdbscoutmod_header_text')).attr('id', 'imdbscout_header').css({
+    'padding': '4px 11px',
+    'font-weight': 'bold',
+    'background-color': background_color,
+    'margin-top': '0px',
+    'margin-bottom': '0px',
+    'overflow': 'hidden',
+    'color': txt_color
+  });
+  if (GM_config.get('use_new_layout')) {
+  var p = p_new;
+  }
   $.each(valid_states, function(i, name) {
     if (GM_config.get('one_line')) {
       p.append($('<span />').attr('id', 'imdbscout_' + name));
@@ -1185,7 +1537,13 @@ function getLinkArea() {
   });
   if ($('h1.header:first').length) {
     $('h1.header:first').parent().append(p);
-  } else if ($('#title-overview-widget').length) {
+  } else if (GM_config.get('use_new_layout')) {
+      if ($('.button_panel.navigation_panel').length) {
+      $('.button_panel.navigation_panel').after(p);
+      } else if ($('.title_block').length) {
+        $('.title_block').after(p);
+        }
+  } else if ($('#title-overview-widget').length && !GM_config.get('use_new_layout')) {
     $('#title-overview-widget').parent().append(p);
   } else if ($('.titlereference-header').length) {
     $('.titlereference-header').append(p);
@@ -1206,6 +1564,7 @@ function configName(site) {
     return 'show_' + site['name'] + (site['TV'] ? '_TV' : '');
   }
 }
+
 //------------------------------------------------------
 // Code being run (main)
 //------------------------------------------------------
@@ -1214,20 +1573,35 @@ function configName(site) {
 
 // Create the non-site dictionary for GM_config
 var config_fields = {
-  'imdbscout_header_text': {
-    'label': 'Header text:',
+  'imdbscoutmod_header_text': {
+    'label': 'Header text for torrent sites:',
     'type': 'text',
-    'default': 'Pirate this film: '
+    'default': ''
   },
-  'call_http_movie': {
-    'section': 'Movie Page:',
+  'cfg_icons_size': {
+    'label': 'Size of the icons (pixels):',
+    'type': 'text',
+    'default': '20'
+  },
+  'use_new_layout': {
+    'section': 'Movie Page:'.bold(),
     'type': 'checkbox',
-    'label': 'Actually check for torrents?',
+    'label': 'Use the new layout?',
     'default': true
   },
-  'load_on_start_movie': {
+  'new_layout_dark': {
+    'type': 'checkbox',
+    'label': 'Dark background for the new layout?',
+    'default': true
+  },
+  'loadmod_on_start_movie': {
     'type': 'checkbox',
     'label': 'Load on start?',
+    'default': true
+  },
+  'call_http_mod_movie': {
+    'type': 'checkbox',
+    'label': 'Actually check for torrents?',
     'default': true
   },
   'hide_missing_movie': {
@@ -1235,10 +1609,10 @@ var config_fields = {
     'label': 'Hide missing links?',
     'default': false
   },
-  'use_icons_movie': {
+  'use_mod_icons_movie': {
     'type': 'checkbox',
     'label': 'Use icons instead of text?',
-    'default': false
+    'default': true
   },
   'one_line': {
     'type': 'checkbox',
@@ -1255,26 +1629,26 @@ var config_fields = {
     'type': 'text',
     'default': ''
   },
-  'call_http_search': {
-    'section': 'Search Page:',
-    'type': 'checkbox',
-    'label': 'Actually check for torrents?',
-    'default': true
-  },
-  'load_on_start_search': {
+  'loadmod_on_start_search': {
+    'section': 'Search Page:'.bold(),
     'type': 'checkbox',
     'label': 'Load on start?',
-    'default': true
+    'default': false
+  },
+  'call_http_mod_search': {
+    'type': 'checkbox',
+    'label': 'Actually check for torrents?',
+    'default': false
   },
   'hide_missing_search': {
     'type': 'checkbox',
     'label': 'Hide missing links?',
     'default': false
   },
-  'use_icons_search': {
+  'use_mod_icons_search': {
     'type': 'checkbox',
     'label': 'Use icons instead of text?',
-    'default': false
+    'default': true
   },
   'ignore_type_search': {
     'type': 'checkbox',
@@ -1293,11 +1667,21 @@ var config_fields = {
   }
 };
 
-// Add each site to a GM_config dictionary schema
+// Add each public site to a GM_config dictionary schema
 // The GM_config default for checkboxes is false
-$.each(sites, function(index, site) {
+$.each(public_sites, function(index, site) {
   config_fields[configName(site)] = {
-    'section': (index == 0) ? ['Torrents:'] : '',
+    'section': (index == 0) ? ['Public download sites:'.bold()] : '',
+    'type': 'checkbox',
+    'label': ' ' + site['name'] + (site['TV'] ? ' (TV)' : '')
+  };
+});
+
+// Add each private site to a GM_config dictionary schema
+// The GM_config default for checkboxes is false
+$.each(private_sites, function(index, site) {
+  config_fields[configName(site)] = {
+    'section': (index == 0) ? ['Private download sites:'.bold()] : '',
     'type': 'checkbox',
     'label': ' ' + site['name'] + (site['TV'] ? ' (TV)' : '')
   };
@@ -1307,7 +1691,7 @@ $.each(sites, function(index, site) {
 // since they barely use any resources.
 $.each(icon_sites, function(index, icon_site) {
   config_fields['show_icon_' + icon_site['name']] = {
-    'section': (index == 0) ? ['Other sites:'] : '',
+    'section': (index == 0) ? ['Other sites:'.bold()] : '',
     'type': 'checkbox',
     'label': ' ' + icon_site['name'],
     'default': ('showByDefault' in icon_site) ?
@@ -1318,7 +1702,7 @@ $.each(icon_sites, function(index, icon_site) {
 // Initialize and register GM_config
 GM_config.init({
   'id': 'imdb_scout',
-  'title': 'IMDb Scout Preferences',
+  'title': 'IMDb Scout Mod Preferences',
   'fields': config_fields,
   'css': '.section_header { \
             background: white   !important; \
@@ -1331,19 +1715,25 @@ GM_config.init({
   {
     'open': function() {
       $('#imdb_scout').contents().find('#imdb_scout_section_2').find('.field_label').each(function(index, label) {
-        var url = new URL(sites[index].searchUrl);
+        var url = new URL(public_sites[index].searchUrl);
         $(label).append(' ' + '<a class="grey_link" target="_blank" style="color: gray; text-decoration : none" href="' + url.origin + '">'
                         + (/www./.test(url.hostname) ? url.hostname.match(/www.(.*)/)[1] : url.hostname)  + '</a>');
-        $(label).prepend(getFavicon(sites[index], true));
+        $(label).prepend(getFavicon(public_sites[index], true));
       });
       $('#imdb_scout').contents().find('#imdb_scout_section_3').find('.field_label').each(function(index, label) {
+        var url = new URL(private_sites[index].searchUrl);
+        $(label).append(' ' + '<a class="grey_link" target="_blank" style="color: gray; text-decoration : none" href="' + url.origin + '">'
+                        + (/www./.test(url.hostname) ? url.hostname.match(/www.(.*)/)[1] : url.hostname)  + '</a>');
+        $(label).prepend(getFavicon(private_sites[index], true));
+      });
+      $('#imdb_scout').contents().find('#imdb_scout_section_4').find('.field_label').each(function(index, label) {
   $(label).prepend(getFavicon(icon_sites[index], true));
       });
     }
   }
 });
 
-GM_registerMenuCommand('IMDb Scout Preferences', function() {GM_config.open()});
+GM_registerMenuCommand('IMDb Scout Mod Preferences', function() {GM_config.open()});
 
 // Fetch per-site values from GM_config
 $.each(sites, function(index, site) {
@@ -1361,9 +1751,9 @@ var onSearchPage = Boolean(location.href.match('search')) || Boolean(location.hr
 
 $('title').ready(function() {
   if (window.top == window.self) {
-    if (!onSearchPage && GM_config.get('load_on_start_movie')) {
+    if (!onSearchPage && GM_config.get('loadmod_on_start_movie')) {
       performPage();
-    } else if (onSearchPage && GM_config.get('load_on_start_search')) {
+    } else if (onSearchPage && GM_config.get('loadmod_on_start_search')) {
       if (Boolean(location.href.match('watchlist')) && GM_config.get('watchlist_as_search')) {
         performWatchlist();
       } else {
@@ -1374,4 +1764,3 @@ $('title').ready(function() {
     }
   }
 });
-
